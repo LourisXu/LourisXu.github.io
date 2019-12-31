@@ -1,0 +1,56 @@
+<% var defaultBg = '#279ADB'; %>
+<div class="overlay" style="background: <%= theme.style && theme.style.header ? theme.style.header : defaultBg %>"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			<img src="<%=theme.avatar%>" class="js-avatar">
+		</a>
+		<hgroup>
+		  <h1 class="header-author"><a href="/"><%=theme.author%></a></h1>
+		</hgroup>
+		<% if (theme.subtitle){ %>
+		<p class="header-subtitle"><%=theme.subtitle%></p>
+		<%}%>
+
+		<nav class="header-menu">
+			<ul>
+			<% for (var i in theme.menu){ %>
+				<li><a href="<%- url_for(theme.menu[i]) %>"><%= i %></a></li>
+	        <%}%>
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+    		<% for (var i in theme.smart_menu){ %>
+    			<% if(theme.smart_menu[i]){ %>
+    			<a q-on="click: openSlider(e, '<%-i%>')" href="javascript:void(0)"><%= theme.smart_menu[i] %></a>
+    			<% } %>
+            <%}%>
+		</nav>
+		<nav>
+		 <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=230 height=86 src="//music.163.com/outchain/player?type=2&id=5171538&auto=0&height=66"></iframe>
+		 <!--<div id="aplayer_home" class="aplayer" style="margin-bottom: 20px;width:100%;"></div>
+		 <script type="text/javascript" src="\assets\js\APlayer.min.js"> </script>
+ 			<script>
+   			new APlayer({
+     		element: document.getElementById("aplayer_home"),
+     		narrow: false,
+     		autoplay: false,
+     		showlrc: 0,
+     		music: {
+       		title: "What Are Words",
+       		author: "Chris Media",
+       		url: "https://coding.net/u/LourisXu/p/LourisXu/attachment/4532287/preview/4533847",
+       		pic: "http://ov4otygyd.bkt.clouddn.com/What_Are_Words.jpg",
+   			}
+ 			});
+			</script>-->
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				<% for (var i in theme.subnav){ %>
+					<a class="<%= i %>" target="_blank" href="<%- url_for(theme.subnav[i]) %>" title="<%= i %>"><i class="icon-<%= i %>"></i></a>
+		        <%}%>
+			</div>
+		</nav>
+	</header>
+</div>
