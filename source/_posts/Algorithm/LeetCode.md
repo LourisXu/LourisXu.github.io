@@ -28,6 +28,7 @@ toc: true
 |67. 二进制求和|Easy|加法进位|
 |69. x 的平方根|Easy|二分法|
 |70. 爬楼梯|Easy|动态规划|
+|78. 子集|Medium|位运算|
 |83. 删除排序链表中的重复元素|Easy|单链表|
 |88. 合并两个有序数组|Easy|数组合并|
 |98. 验证二叉搜索树|Medium|二叉搜索树|
@@ -43,12 +44,17 @@ toc: true
 |111. 二叉树的最小深度|Easy|二叉树|
 |112. 路径总和|Easy|二叉树|
 |113. 路径总和 II|Medium|二叉树|
+|114. 二叉树展开为链表|Medium|二叉树遍历|
+|116. 填充每个节点的下一个右侧节点指针|Medium|层次遍历|
+|117. 填充每个节点的下一个右侧节点指针 II|Medium|层次遍历|
 |118. 杨辉三角|Easy|简单模拟|
 |119. 杨辉三角 II|Easy|动态规划|
 |121. 买卖股票的最佳时机|Easy|动态规划|
 |122. 买卖股票的最佳时机 II|Easy|动态规划|
 |125. 验证回文串|Easy|字符串|
+|129. 求根到叶子节点数字之和|Medium|二叉树遍历|
 |130. 被围绕的区域|Medium|并查集|
+|133. 克隆图|Medium|BFS+Map|
 |136. 只出现一次的数字|Easy|逻辑|
 |141. 环形链表|Easy|单链表，快慢指针|
 |155. 最小栈|Easy|栈|
@@ -57,11 +63,14 @@ toc: true
 |168. Excel表列名称|Easy|字符串hash|
 |169. 多数元素|Easy|逻辑|
 |171. Excel表列序号|Easy|字符串hash|
+|187. 重复的DNA序列|Medium|位运算|
 |189. 旋转数组|Easy|数组移动|
 |190. 颠倒二进制位|Easy|二进制|
 |191. 位1的个数|Easy|二进制|
 |198. 打家劫舍|Easy|动态规划|
+|199. 二叉树的右视图|Medium|DFS|
 |200. 岛屿数量|Medium|并查集|
+|201. 数字范围按位与|Medium|位运算|
 |202. 快乐数|Easy|快慢指针|
 |203. 移除链表元素|Easy|单链表|
 |204. 计数质数|Easy|素数Euler|
@@ -74,11 +83,34 @@ toc: true
 |225. 用队列实现栈|Easy|队列|
 |226. 翻转二叉树|Easy|二叉树|
 |231. 2的幂|Easy|快速幂|
+|257. 二叉树的所有路径|Easy|深搜|
+|260. 只出现一次的数字 III|Medium|位运算|
+|268. 缺失数字|Medium|位运算|
 |307. 区域和检索 - 数组可修改|Medium|树状数组|
 |315. 计算右侧小于当前元素的个数|Hard|树状数组|
+|318. 最大单词长度乘积|Medium|位运算|
+|332. 重新安排行程|Medium|欧拉回路、深搜|
+|338. 比特位计数|Medium|位运算+动态规划|
+|342. 4的幂|Easy|位运算|
+|371. 两整数之和|Easy|位运算|
+|389. 找不同|Easy|位运算|
+|393. UTF-8 编码验证|Medium|位运算|
+|397. 整数替换|Medium|位运算、动态规划|
 |399. 除法求值|Medium|并查集|
+|401. 二进制手表|Easy|位运算|
+|405. 数字转换为十六进制数|Easy|位运算|
+|421. 数组中两个数的最大异或值|Medium|位运算|
+|461. 汉明距离|Easy|位运算|
+|476. 数字的补数|Easy|位运算|
+|477. 汉明距离总和|Medium|位运算|
 |547. 朋友圈|Medium|并查集|
 |684. 冗余连接|Medium|并查集|
+|693. 交替位二进制数|Easy|位运算|
+|756. 金字塔转换矩阵|Medium|位运算+深搜|
+|762. 二进制表示中质数个计算置位|Easy|位运算|
+|784. 字母大小写全排列|Easy|位运算|
+|898. 子数组按位或操作|Medium|位运算+unordered_set|
+|1131. 绝对值表达式的最大值|Medium|位运算+数学|
 
 ## 1.两数之和
 **Description**
@@ -1621,6 +1653,18 @@ public:
     }
 };
 ```
+```cpp
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int num=0;
+        for(int i=0;i<nums.size();i++){
+            num^=nums[i];
+        }
+        return num;
+    }
+};
+```
 ## 141. 环形链表
 **Description**
 给定一个链表，判断链表中是否有环。
@@ -2582,6 +2626,14 @@ public:
     }
 };
 ```
+```cpp
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        return (n>0 && (n&(n-1))==0);
+    }
+};
+```
 ## 207. 课程表
 **Description**
 现在你总共有 n 门课需要选，记为 0 到 n-1。
@@ -3474,6 +3526,1646 @@ public:
         if(root->left!=NULL) findPath(root->left, vec, sum);
         if(root->right!=NULL) findPath(root->right, vec, sum);
         vec.pop_back();
+    }
+};
+```
+## 114. 二叉树展开为链表
+**Description**
+给定一个二叉树，原地将它展开为链表。
+**Example**
+例如，给定二叉树
+```
+    1
+   / \
+  2   5
+ / \   \
+3   4   6
+```
+将其展开为：
+```
+1
+ \
+  2
+   \
+    3
+     \
+      4
+       \
+        5
+         \
+          6
+```
+**Program**
+前序遍历，自顶而下
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void flatten(TreeNode* root){
+        if(root==NULL) return;
+        TreeNode* r=root->right;
+        if(root->left!=NULL){
+            flatten(root->left);
+            TreeNode* lR=root->left;
+            while(lR->right!=NULL) lR=lR->right;
+            root->right=root->left;
+            root->left=NULL;
+            flatten(r);
+            lR->right=r;
+        }else flatten(root->right);
+    }
+};
+```
+后序遍历，自底而上
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void flatten(TreeNode* root){
+        if(root==NULL) return;
+        flatten(root->left);
+        flatten(root->right);
+        if(root->left!=NULL){
+            TreeNode* lR=root->left;
+            while(lR->right!=NULL) lR=lR->right;
+            TreeNode* right=root->right;
+            root->right=root->left;
+            lR->right=right;
+            root->left=NULL;
+        }
+    }
+};
+```
+## 116. 填充每个节点的下一个右侧节点指针
+**Description**
+给定一个完美二叉树，其所有叶子节点都在同一层，每个父节点都有两个子节点。二叉树定义如下：
+```
+struct Node {
+  int val;
+  Node *left;
+  Node *right;
+  Node *next;
+}
+```
+填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL。
+初始状态下，所有 next 指针都被设置为 NULL。
+**Example**
+![图示](/assets/img/algorithm/116_sample.png)
+```
+输入：{"$id":"1","left":{"$id":"2","left":{"$id":"3","left":null,"next":null,"right":null,"val":4},"next":null,"right":{"$id":"4","left":null,"next":null,"right":null,"val":5},"val":2},"next":null,"right":{"$id":"5","left":{"$id":"6","left":null,"next":null,"right":null,"val":6},"next":null,"right":{"$id":"7","left":null,"next":null,"right":null,"val":7},"val":3},"val":1}
+
+输出：{"$id":"1","left":{"$id":"2","left":{"$id":"3","left":null,"next":{"$id":"4","left":null,"next":{"$id":"5","left":null,"next":{"$id":"6","left":null,"next":null,"right":null,"val":7},"right":null,"val":6},"right":null,"val":5},"right":null,"val":4},"next":{"$id":"7","left":{"$ref":"5"},"next":null,"right":{"$ref":"6"},"val":3},"right":{"$ref":"4"},"val":2},"next":null,"right":{"$ref":"7"},"val":1}
+
+解释：给定二叉树如图 A 所示，你的函数应该填充它的每个 next 指针，以指向其下一个右侧节点，如图 B 所示。
+
+```
+**Program**
+```cpp
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+    Node* next;
+
+    Node() : val(0), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val, Node* _left, Node* _right, Node* _next)
+        : val(_val), left(_left), right(_right), next(_next) {}
+};
+*/
+class Solution {
+public:
+    Node* connect(Node* root) {
+        if(root==NULL) return NULL;
+        Node* levelNode=root;
+        queue<Node*> q;
+        q.push(root);
+        while(!q.empty()){
+            Node* top=q.front();
+            q.pop();
+            if(top!=levelNode){
+                top->next=q.front();
+            }else{
+                levelNode=levelNode->right;
+            }
+            if(top->left!=NULL) q.push(top->left);
+            if(top->right!=NULL) q.push(top->right);
+
+        }
+        return root;
+    }
+};
+```
+## 117. 填充每个节点的下一个右侧节点指针 II
+**Description**
+给定一个二叉树
+```
+struct Node {
+  int val;
+  Node *left;
+  Node *right;
+  Node *next;
+}
+```
+填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL。
+初始状态下，所有 next 指针都被设置为 NULL。
+
+进阶：
+你只能使用常量级额外空间。
+使用递归解题也符合要求，本题中递归程序占用的栈空间不算做额外的空间复杂度。
+**Example**
+示例：
+![图示](/assets/img/algorithm/117_sample.png)
+**Program**
+```cpp
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+    Node* next;
+
+    Node() : val(0), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val, Node* _left, Node* _right, Node* _next)
+        : val(_val), left(_left), right(_right), next(_next) {}
+};
+*/
+class Solution {
+public:
+    Node* connect(Node* root) {
+        if(root==NULL) return root;
+        Node* levelNode=root;
+        queue<Node*> q;
+        q.push(root);
+        Node* tmpLevel=levelNode;
+        while(!q.empty()){
+            Node* top=q.front();
+            q.pop();
+            if(top->left!=NULL){
+                q.push(top->left);
+                tmpLevel=top->left;
+            }
+            if(top->right!=NULL){
+                q.push(top->right);
+                tmpLevel=top->right;
+            }
+            if(top!=levelNode){
+                top->next=q.front();
+            }else levelNode=tmpLevel;
+        }
+        return root;
+    }
+};
+```
+## 129. 求根到叶子节点数字之和
+**Description**
+给定一个二叉树，它的每个结点都存放一个 0-9 的数字，每条从根到叶子节点的路径都代表一个数字。
+例如，从根到叶子节点路径 1->2->3 代表数字 123。
+计算从根到叶子节点生成的所有数字之和。
+说明: 叶子节点是指没有子节点的节点。
+**Example**
+示例 1:
+输入: [1,2,3]
+```
+    1
+   / \
+  2   3
+```
+输出: 25
+解释:
+从根到叶子节点路径 1->2 代表数字 12.
+从根到叶子节点路径 1->3 代表数字 13.
+因此，数字总和 = 12 + 13 = 25.
+示例 2:
+输入: [4,9,0,5,1]
+```
+    4
+   / \
+  9   0
+ / \
+5   1
+```
+输出: 1026
+解释:
+从根到叶子节点路径 4->9->5 代表数字 495.
+从根到叶子节点路径 4->9->1 代表数字 491.
+从根到叶子节点路径 4->0 代表数字 40.
+因此，数字总和 = 495 + 491 + 40 = 1026.
+**Progam**
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int result=0;
+    int sumNumbers(TreeNode* root) {
+        sumNodes(root, 0);
+        return result;
+    }
+    void sumNodes(TreeNode* root, int sum){
+        if(root==NULL) return;
+        sum=sum*10+root->val;
+        if(root->left==NULL&&root->right==NULL) result+=sum;
+        if(root->left!=NULL) sumNodes(root->left, sum);
+        if(root->right!=NULL) sumNodes(root->right, sum);
+    }
+};
+```
+## 133. 克隆图
+**Description**
+给定无向连通图中一个节点的引用，返回该图的深拷贝（克隆）。图中的每个节点都包含它的值 val（Int） 和其邻居的列表（list[Node]）。
+**Example**
+示例：
+![图示](/assets/img/algorithm/113_sample.png)
+```
+输入：
+{"$id":"1","neighbors":[{"$id":"2","neighbors":[{"$ref":"1"},{"$id":"3","neighbors":[{"$ref":"2"},{"$id":"4","neighbors":[{"$ref":"3"},{"$ref":"1"}],"val":4}],"val":3}],"val":2},{"$ref":"4"}],"val":1}
+
+解释：
+节点 1 的值是 1，它有两个邻居：节点 2 和 4 。
+节点 2 的值是 2，它有两个邻居：节点 1 和 3 。
+节点 3 的值是 3，它有两个邻居：节点 2 和 4 。
+节点 4 的值是 4，它有两个邻居：节点 1 和 3 。
+ ```
+
+提示：
+节点数介于 1 到 100 之间。
+无向图是一个简单图，这意味着图中没有重复的边，也没有自环。
+由于图是无向的，如果节点 p 是节点 q 的邻居，那么节点 q 也必须是节点 p 的邻居。
+必须将给定节点的拷贝作为对克隆图的引用返回。
+**Program**
+```cpp
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> neighbors;
+
+    Node(int _val) {
+        val = _val;
+        neighbors = vector<Node*>();
+    }
+};
+*/
+class Solution {
+public:
+    Node* cloneGraph(Node* node) {
+        if(node==NULL) return NULL;
+        queue<Node*> q;
+        map<Node*, Node*> m;
+        q.push(node);
+        Node* root=new Node(node->val);
+        m[node]=root;
+        while(!q.empty()){
+            Node* top=q.front();
+            q.pop();
+            for(int i=0;i<top->neighbors.size();i++){
+                Node* tmp=top->neighbors[i];
+                if(m.find(tmp)==m.end()){
+                    Node* newNode=new Node(tmp->val);
+                    m[tmp]=newNode;
+                    q.push(tmp);
+                }
+            }
+        }
+        for(map<Node*, Node*>::iterator it=m.begin();it!=m.end();it++){
+            for(int i=0;i<it->first->neighbors.size();i++){
+                it->second->neighbors.push_back(m[it->first->neighbors[i]]);
+            }
+        }
+        return root;
+    }
+};
+```
+## 199. 二叉树的右视图
+**Description**
+给定一棵二叉树，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
+**Example**
+示例:
+输入: [1,2,3,null,5,null,4]
+输出: [1, 3, 4]
+解释:
+```
+   1            <---
+ /   \
+2     3         <---
+ \     \
+  5     4       <---
+```
+**Program**
+```cpp
+ /**
+  * Definition for a binary tree node.
+  * struct TreeNode {
+  *     int val;
+  *     TreeNode *left;
+  *     TreeNode *right;
+  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+  * };
+  */
+ class Solution {
+ public:
+     vector<int> rightSideView(TreeNode* root) {
+         if(root==NULL) return {};
+         queue<TreeNode*> q;
+         TreeNode* levelNode=root;
+         vector<int> result;
+         q.push(root);
+         TreeNode* tmpLevel;
+         while(!q.empty()){
+             TreeNode* top=q.front();
+             q.pop();
+             if(top->left!=NULL){
+                 q.push(top->left);
+                 tmpLevel=top->left;
+             }
+             if(top->right!=NULL){
+                 q.push(top->right);
+                 tmpLevel=top->right;
+             }
+             if(top==levelNode){
+                 result.push_back(levelNode->val);
+                 levelNode=tmpLevel;   
+             }
+         }
+         return result;
+     }
+ };
+```
+## 257. 二叉树的所有路径
+**Description**
+给定一个二叉树，返回所有从根节点到叶子节点的路径。
+说明: 叶子节点是指没有子节点的节点。
+**Example**
+示例:
+输入:
+```
+   1
+ /   \
+2     3
+ \
+  5
+```
+输出: ["1->2->5", "1->3"]
+解释: 所有根节点到叶子节点的路径为: 1->2->5, 1->3
+**Program**
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<string> paths;
+    vector<string> binaryTreePaths(TreeNode* root) {
+        DFS(root, "");
+        return paths;
+    }
+    string converStr(int val){
+        string str;
+        if(val<0){
+            str+='-';
+            val=-val;
+        }
+        vector<int> vec;
+        while(val!=0){
+            vec.push_back(val%10);
+            val/=10;
+        }
+        for(vector<int>::reverse_iterator rit=vec.rbegin();rit!=vec.rend();rit++){
+            str+=*rit+'0';
+        }
+        return str;
+    }
+    void DFS(TreeNode* root, string s){
+        if(root==NULL) return;
+        string str=s+"->";
+        str+=converStr(root->val);
+        if(root->left==NULL&&root->right==NULL){
+            paths.push_back(str.substr(2,str.length()-2));
+            return;
+        }
+        if(root->left!=NULL) DFS(root->left, str);
+        if(root->right!=NULL) DFS(root->right, str);
+    }
+};
+```
+## 78. 子集
+**Description**
+给定一组不含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）。
+说明：解集不能包含重复的子集。
+**Example**
+示例:
+输入: nums = [1,2,3]
+输出:
+```
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
+```
+**Program**
+```cpp
+class Solution {
+public:
+    vector<int> subset(int x, int n, vector<int>& nums){
+        vector<int> vec;
+        for(int i=0;i<n;i++){
+            if((x>>i)&1==1){
+                vec.push_back(nums[i]);
+            }
+        }  
+        return vec;
+    }
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> result;
+        int n=nums.size();
+        for(int i=0;i<(1<<n);i++){
+            result.push_back(subset(i, n, nums));
+        }
+        return result;
+    }
+};
+```
+## 137. 只出现一次的数字 II
+**Description**
+给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现了三次。找出那个只出现了一次的元素。
+说明：
+你的算法应该具有线性时间复杂度。 你可以不使用额外空间来实现吗？
+**Example**
+示例 1:
+输入: [2,2,3,2]
+输出: 3
+
+示例 2:
+输入: [0,1,0,1,0,1,99]
+输出: 99
+**Program**
+```cpp
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int one,two,three;
+        one=two=three=0;
+        for(int x: nums){
+            two |= one & x;
+            one ^=x;
+            three = one & two;
+            one &= ~three;
+            two &= ~three;
+        }
+        return one;
+    }
+};
+```
+## 187. 重复的DNA序列
+**Description**
+所有 DNA 都由一系列缩写为 A，C，G 和 T 的核苷酸组成，例如：“ACGAATTCCG”。在研究 DNA 时，识别 DNA 中的重复序列有时会对研究非常有帮助。
+编写一个函数来查找 DNA 分子中所有出现超过一次的 10 个字母长的序列（子串）。
+**Example**
+示例：
+输入：s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"
+输出：["AAAAACCCCC", "CCCCCAAAAA"]
+**Program**
+A:00
+C:01
+G:10
+T:11
+滑动窗口左移两位，最后两位填充上述对应二进制位，或运算后，即新一次的字符串所对应的key
+```cpp
+class Solution {
+public:
+    vector<string> findRepeatedDnaSequences(string s) {
+        int len=s.length();
+        map<int, int> m;
+        m['A'-'A']=0;
+        m['C'-'A']=1;
+        m['G'-'A']=2;
+        m['T'-'A']=3;
+        int key=0;
+        for(int i=0;i<10;i++){
+            key<<=2;
+            key|=m[s[i]-'A'];
+            key&=0xfffff;
+        }
+        set<int> sKey;
+        set<string> res;
+        sKey.insert(key);
+        vector<string> result;
+        for(int i=10;i<len;i++){
+            key<<=2;
+            key|=m[s[i]-'A'];
+            key&=0xfffff;
+            if(sKey.find(key)==sKey.end()){
+                sKey.insert(key);
+            }else{
+                res.insert(s.substr(i-9, 10));
+            }
+        }
+        for(string str: res){
+            result.push_back(str);
+        }
+        return result;
+    }
+};
+```
+## 201. 数字范围按位与
+**Description**
+给定范围 [m, n]，其中 0 <= m <= n <= 2147483647，返回此范围内所有数字的按位与（包含 m, n 两端点）。
+**Example**
+示例 1: 
+输入: [5,7]
+输出: 4
+
+示例 2:
+输入: [0,1]
+输出: 0
+**Program**
+m&lt;n时，会发现
+m:SSS0XXXX
+n:SSS1XXXX
+即m与n前若干位相同，某个高位不同，后面不一定相同，区间与一定是SSS00000的形式，
+那么如何求SSS00000就变成了m:SSS0XXXX与上11100000即可，
+而m与n异或得到0001XXXX，将其编程00011111的形式取反就是要的11100000的形式了！！！
+```cpp
+class Solution {
+public:
+    int rangeBitwiseAnd(int m, int n) {
+        if(m==n) return m;
+        int i=m^n;
+        i|=(i>>1);
+        i|=(i>>2);
+        i|=(i>>4);
+        i|=(i>>8);
+        i|=(i>>16);
+        return m&~i;
+    }
+};
+```
+## 260. 只出现一次的数字 III
+**Description**
+给定一个整数数组 nums，其中恰好有两个元素只出现一次，其余所有元素均出现两次。 找出只出现一次的那两个元素。
+**Example**
+示例 :
+输入: [1,2,1,3,2,5]
+输出: [3,5]
+注意：
+结果输出的顺序并不重要，对于上面的例子， [5, 3] 也是正确答案。
+你的算法应该具有线性时间复杂度。你能否仅使用常数空间复杂度来实现？
+**Program**
+全部异或得到两个唯一出下一次的数的保留1bitmask，这些位上的1分别来自于两个唯一出现一次的数！
+求lowbit后得到diff，而每个与diff与运算后不为0的数，继续异或得到第一个只出现一次的数x，x与bitmask异或得到第二个只出现一次的数。
+```cpp
+class Solution {
+public:
+    vector<int> singleNumber(vector<int>& nums) {
+        vector<int> result;
+        int bitmask=0;
+        for(int i: nums) bitmask^=i;
+        int diff =bitmask&(-bitmask);
+        int x=0;
+        for(int i:nums){
+            if((i&diff)!=0) x^=i;
+        }
+        result.push_back(x);
+        result.push_back((x^bitmask));
+        return result;
+    }
+};
+```
+## 268. 缺失数字
+**Description**
+给定一个包含 0, 1, 2, ..., n 中 n 个数的序列，找出 0 .. n 中没有出现在序列中的那个数。
+**Example**
+示例 1:
+输入: [3,0,1]
+输出: 2
+
+示例 2:
+输入: [9,6,4,2,3,5,7,0,1]
+输出: 8
+**Program**
+①位运算，$O(n)$，[0...n]异或，而数组缺少其中一个，故整体两次异或编程0，单独一次异或的就是缺失的了
+```cpp
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        int result=nums.size();
+        for(int i=0;i<nums.size();i++){
+            result^=i;
+            result^=nums[i];
+        }
+        return result;
+    }
+};
+```
+②数学，$O(1)$
+```cpp
+
+```
+## 318. 最大单词长度乘积
+**Description**
+给定一个字符串数组 words，找到 length(word[i]) * length(word[j]) 的最大值，并且这两个单词不含有公共字母。你可以认为每个单词只包含小写字母。如果不存在这样的两个单词，返回 0。
+**Example**
+示例 1:
+输入: ["abcw","baz","foo","bar","xtfn","abcdef"]
+输出: 16
+解释: 这两个单词为 "abcw", "xtfn"。
+
+示例 2:
+输入: ["a","ab","abc","d","cd","bcd","abcd"]
+输出: 4
+解释: 这两个单词为 "ab", "cd"。
+
+示例 3:
+输入: ["a","aa","aaa","aaaa"]
+输出: 0
+解释: 不存在这样的两个单词。
+**Program**
+```cpp
+class Solution {
+public:
+    int sToi(string str){
+        int result=0;
+        for(char ch:str){
+            result|=1<<(ch-'a');
+        }
+        return result;
+    }
+    int maxProduct(vector<string>& words) {
+        int result=0;
+        vector<int> vec;
+        for(string str:words){
+            vec.push_back(sToi(str));
+        }
+        for(int i=0;i<words.size();i++){
+            for(int j=i+1;j<words.size();j++){
+                if((vec[i]&vec[j])==0&&words[i].length()*words[j].length()>result){
+                    result=words[i].length()*words[j].length();
+                }
+            }
+        }
+        return result;
+    }
+};
+```
+## 338. 比特位计数
+**Description**
+给定一个非负整数 num。对于 0 ≤ i ≤ num 范围中的每个数字 i ，计算其二进制数中的 1 的数目并将它们作为数组返回。
+**Example**
+示例 1:
+输入: 2
+输出: [0,1,1]
+
+示例 2:
+输入: 5
+输出: [0,1,1,2,1,2]
+**Program**
+考虑x与x>>1，差别就在最低位，DP[x]=DP[x>>1]+(x%2)
+```cpp
+class Solution {
+public:
+    vector<int> countBits(int num) {
+        vector<int> result(num+1, 0);
+        for(int i=1;i<=num;i++){
+            result[i]=result[i>>1]+(i%2);
+        }
+        return result;
+    }
+};
+```
+## 342. 4的幂
+**Description**
+给定一个整数 (32 位有符号整数)，请编写一个函数来判断它是否是 4 的幂次方。
+**Example**
+示例 1:
+输入: 16
+输出: true
+
+示例 2:
+输入: 5
+输出: false
+**Program**
+```cpp
+class Solution {
+public:
+    bool isPowerOfFour(int num) {
+        return num>0 && (num&(num-1))==0 && (num&(0xaaaaaaaa))==0;
+    }
+};
+```
+## 371. 两整数之和
+**Description**
+不使用运算符 + 和 - ​​​​​​​，计算两整数 ​​​​​​​a 、b ​​​​​​​之和。
+**Example**
+示例 1:
+输入: a = 1, b = 2
+输出: 3
+
+示例 2:
+输入: a = -2, b = 3
+输出: 1
+**Progam**
+```cpp
+class Solution {
+public:
+    int getSum(int a, int b) {
+        return b==0?a:getSum(a^b,((unsigned int)(a&b)<<1));
+    }
+};
+```
+## 389. 找不同
+**Description**
+给定两个字符串 s 和 t，它们只包含小写字母。
+字符串 t 由字符串 s 随机重排，然后在随机位置添加一个字母。
+请找出在 t 中被添加的字母。
+**Example**
+示例:
+输入：
+s = "abcd"
+t = "abcde"
+
+输出：
+e
+**Program**
+```cpp
+class Solution {
+public:
+    int toInt(string str){
+        int result=0;
+        for(char ch:str) result^=1<<(ch-'a');
+        return result;
+    }
+    char findTheDifference(string s, string t) {
+        int x=toInt(s);
+        int y=toInt(t);
+        x^=y;
+        y=1;
+        int num=0;
+        while(y!=x){
+            y<<=1;
+            num++;
+        }
+        return num+'a';
+    }
+};
+```
+## 393. UTF-8 编码验证
+**Description**
+UTF-8 中的一个字符可能的长度为 1 到 4 字节，遵循以下的规则：
+对于 1 字节的字符，字节的第一位设为0，后面7位为这个符号的unicode码。
+对于 n 字节的字符 (n > 1)，第一个字节的前 n 位都设为1，第 n+1 位设为0，后面字节的前两位一律设为10。剩下的没有提及的二进制位，全部为这个符号的unicode码。
+这是 UTF-8 编码的工作方式：
+
+   Char. number range  |        UTF-8 octet sequence
+      (hexadecimal)    |              (binary)
+   --------------------+---------------------------------------------
+   0000 0000-0000 007F | 0xxxxxxx
+   0000 0080-0000 07FF | 110xxxxx 10xxxxxx
+   0000 0800-0000 FFFF | 1110xxxx 10xxxxxx 10xxxxxx
+   0001 0000-0010 FFFF | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+给定一个表示数据的整数数组，返回它是否为有效的 utf-8 编码。
+注意:
+输入是整数数组。只有每个整数的最低 8 个有效位用来存储数据。这意味着每个整数只表示 1 字节的数据。
+**Example**
+示例 1:
+data = [197, 130, 1], 表示 8 位的序列: 11000101 10000010 00000001.
+返回 true 。
+这是有效的 utf-8 编码，为一个2字节字符，跟着一个1字节字符。
+示例 2:
+data = [235, 140, 4], 表示 8 位的序列: 11101011 10001100 00000100.
+返回 false 。
+前 3 位都是 1 ，第 4 位为 0 表示它是一个3字节字符。
+下一个字节是开头为 10 的延续字节，这是正确的。
+但第二个延续字节不以 10 开头，所以是不符合规则的。
+**Program**
+```cpp
+class Solution {
+public:
+    bool validUtf8(vector<int>& data) {
+        return valid(data, 0, data.size()-1);
+    }
+    bool valid(vector<int>&data, int l,int r){
+        if(l>r) return true;
+        if(r-l>=0&&(data[l]&0x80)==0){
+            return valid(data, l+1, r);
+        }
+        if(r-l>=1&&(data[l]&0xe0)>>5==6&&(data[l+1]&0xc0)>>6==2){
+            return valid(data,l+2, r);
+        }
+        if(r-l>=2&&(data[l]&0xf0)>>4==14&&(data[l+1]&0xc0)>>6==2&&(data[l+2]&0xc0)>>6==2){
+            return valid(data, l+3, r);
+        }
+        if(r-l>=3&&(data[l]&0xf8)>>3==30&&(data[l+1]&0xc0)>>6==2&&(data[l+2]&0xc0)>>6==2&&(data[l+3]&0xc0)>>6==2){
+            return valid(data, l+4, r);
+        }
+        return false;
+    }
+};
+```
+## 401. 二进制手表
+**Description**
+二进制手表顶部有 4 个 LED 代表小时（0-11），底部的 6 个 LED 代表分钟（0-59）。
+![image](/assets/img/algorithm/Binary_clock_samui_moon.jpg)
+每个 LED 代表一个 0 或 1，最低位在右侧。
+例如，上面的二进制手表读取 “3:25”。
+给定一个非负整数 n 代表当前 LED 亮着的数量，返回所有可能的时间。
+**Example**
+案例:
+输入: n = 1
+返回: ["1:00", "2:00", "4:00", "8:00", "0:01", "0:02", "0:04", "0:08", "0:16", "0:32"]
+ 
+注意事项:
+输出的顺序没有要求。
+小时不会以零开头，比如 “01:00” 是不允许的，应为 “1:00”。
+分钟必须由两位数组成，可能会以零开头，比如 “10:2” 是无效的，应为 “10:02”。
+**Program**
+```cpp
+class Solution {
+public:
+    bool isThreeBit(int x, int k){
+        int mask=0x000003ff; //取后10位
+        x&=mask;
+        int num=0;
+        while(x!=0){
+            x&=(x-1);
+            num++;
+        }
+        return num==k;
+    }
+    string toString(int x){
+        string s="";
+        do{
+            s+=(x%10)+'0';
+            x/=10;
+        }while(x!=0);
+        reverse(s.begin(), s.end());
+        return s;
+    }
+    vector<string> readBinaryWatch(int num) {
+        vector<string> result;
+        for(int i=0;i<(1<<10);i++){
+            string s="";
+            if(isThreeBit(i, num)){
+                int upbit=0x000003c0;
+                int lowbit=0x0000003f;
+                upbit&=i;
+                lowbit&=i;
+                upbit>>=6;
+                if((upbit>=0&&upbit<=11)&&(lowbit>=0&&lowbit<=59)){
+                    s=s+toString(upbit)+":";
+                    if(lowbit<10) s=s+"0";
+                    s=s+toString(lowbit);
+                    result.push_back(s);
+                }
+            }
+        }
+        return result;
+    }
+};
+```
+## 397. 整数替换
+**Description**
+给定一个正整数 n，你可以做如下操作：
+1. 如果 n 是偶数，则用 n / 2替换 n。
+2. 如果 n 是奇数，则可以用 n + 1或n - 1替换 n。
+n 变为 1 所需的最小替换次数是多少？
+**Example**
+示例 1:
+输入:
+8
+输出:
+3
+解释:
+8 -> 4 -> 2 -> 1
+
+示例 2:
+输入:
+7
+输出:
+4
+解释:
+7 -> 8 -> 4 -> 2 -> 1
+或
+7 -> 6 -> 3 -> 2 -> 1
+**Program**
+```cpp
+class Solution {
+public:
+    map<long long, int> DP;
+    int integerReplacement(int n) {
+        DP[1]=0;
+        return integerR(n);
+    }
+    long long integerR(long long n){
+        if(n==1) return DP[1];
+        if(n%2==0){
+            if(DP.find(n)==DP.end()) DP[n]=integerR(n/2)+1;
+        }
+        if(n%2!=0){
+            if(DP.find(n)==DP.end()) DP[n]=min(integerR(n+1), integerR(n-1))+1;
+        }
+        return DP[n];
+    }
+};
+```
+## 405. 数字转换为十六进制数
+**Description**
+给定一个整数，编写一个算法将这个数转换为十六进制数。对于负整数，我们通常使用 补码运算 方法。
+注意:
+十六进制中所有字母(a-f)都必须是小写。
+十六进制字符串中不能包含多余的前导零。如果要转化的数为0，那么以单个字符'0'来表示；对于其他情况，十六进制字符串中的第一个字符将不会是0字符。 
+给定的数确保在32位有符号整数范围内。
+不能使用任何由库提供的将数字直接转换或格式化为十六进制的方法。
+**Example**
+示例 1：
+输入:
+26
+输出:
+"1a"
+
+示例 2：
+输入:
+-1
+
+输出:
+"ffffffff"
+**Program**
+```cpp
+class Solution {
+public:
+    char m[16]={'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+    string toHex(int num) {
+        int carry=0xf;
+        string str;
+        for(int i=0;i<8;i++){
+            str+=m[(carry&num)];
+            num>>=4;
+        }
+        reverse(str.begin(), str.end());
+        int idx=0;
+        while(str[idx]=='0')idx++;
+        str = str.substr(idx);
+        if(str.length()==0) str="0";
+        return str;
+    }
+};
+```
+## 421. 数组中两个数的最大异或值
+**Description**
+给定一个非空数组，数组中元素为 a0, a1, a2, … , an-1，其中 0 ≤ ai < 231 。
+找到 ai 和aj 最大的异或 (XOR) 运算结果，其中0 ≤ i,  j < n 。
+你能在O(n)的时间解决这个问题吗？
+**Example**
+示例:
+输入: [3, 10, 5, 25, 2, 8]
+输出: 28
+解释: 最大的结果是 5 ^ 25 = 28.
+**Program**
+**思路**
+我们需要尽可能保留高位1，根据性质$a\^b=c, a\^c=b$，假设每个高位初始为1，与每个数前缀（高位）异或运算，如果异或结果存在前缀则保留1，否则0.
+```cpp
+class Solution {
+public:
+    int findMaximumXOR(vector<int>& nums) {
+        int res=0;
+        int mask=0;
+        for(int i=31;i>=0;i--){
+            mask = mask | (1<<i);
+            set<int> s;
+            //保留前缀
+            for(int x:nums){
+                s.insert(mask&x);
+            }
+            //性质
+            int temp = res | (1<<i);
+            for(int prefix:s){
+                if(s.find(prefix^temp)!=s.end()){
+                    res=temp;
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+## 461. 汉明距离
+**Description**
+两个整数之间的汉明距离指的是这两个数字对应二进制位不同的位置的数目。
+给出两个整数 x 和 y，计算它们之间的汉明距离。
+注意：
+0 ≤ x, y < 231.
+**Example**
+示例:
+输入: x = 1, y = 4
+输出: 2
+解释:
+```
+1   (0 0 0 1)
+4   (0 1 0 0)
+       ↑   ↑
+```
+上面的箭头指出了对应二进制位不同的位置。
+**Program**
+```cpp
+class Solution {
+public:
+    int hammingDistance(int x, int y) {
+        x ^= y;
+        y = 0;
+        while(x!=0){
+            x&=(x-1);
+            y++;
+        }
+        return y;
+    }
+};
+```
+## 476. 数字的补数
+**Description**
+给定一个正整数，输出它的补数。补数是对该数的二进制表示取反。
+注意:
+给定的整数保证在32位带符号整数的范围内。
+你可以假定二进制数不包含前导零位。
+**Example**
+示例 1:
+输入: 5
+输出: 2
+解释: 5的二进制表示为101（没有前导零位），其补数为010。所以你需要输出2。
+
+示例 2:
+输入: 1
+输出: 0
+解释: 1的二进制表示为1（没有前导零位），其补数为0。所以你需要输出0。
+**Program**
+```cpp
+class Solution {
+public:
+    int findComplement(int num) {
+        int upbit=1<<30;
+        for(int i=30;i>=0;i--){
+            if((num&upbit)!=0) break;
+            upbit>>=1;
+        }
+        for(int i=1;i<=16;i*=2) upbit|=(upbit>>i);
+        return (upbit^num);
+    }
+};
+```
+## 477. 汉明距离总和
+**Description**
+两个整数的 汉明距离 指的是这两个数字的二进制数对应位不同的数量。
+计算一个数组中，任意两个数之间汉明距离的总和。
+**Example**
+示例:
+输入: 4, 14, 2
+输出: 6
+解释: 在二进制表示中，4表示为0100，14表示为1110，2表示为0010。（这样表示是为了体现后四位之间关系）
+所以答案为：
+HammingDistance(4, 14) + HammingDistance(4, 2) + HammingDistance(14, 2) = 2 + 2 + 2 = 6.
+注意:
+数组中元素的范围为从 0到 10^9。
+数组的长度不超过 $10^4$。
+**Program**
+```cpp
+class Solution {
+public:
+    int totalHammingDistance(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> vec(32, 0);
+        for(int x:nums){
+            int i=0;
+            while(i<32){
+                vec[i]+=(x&0x1);
+                x>>=1;
+                i++;
+            }
+        }
+        int sum=0;
+        for(int x:vec){
+            sum+=x*(n-x);
+        }
+        return sum;
+    }
+};
+```
+## 693. 交替位二进制数
+**Description**
+给定一个正整数，检查他是否为交替位二进制数：换句话说，就是他的二进制数相邻的两个位数永不相等。
+**Example**
+示例 1:**Example**
+输入: 5
+输出: True
+解释:
+5的二进制数是: 101
+
+示例 2:
+输入: 7
+输出: False
+解释:
+7的二进制数是: 111
+
+示例 3:
+输入: 11
+输出: False
+解释:
+11的二进制数是: 1011
+
+示例 4:
+输入: 10
+输出: True
+解释:
+10的二进制数是: 1010
+**Program**
+```cpp
+class Solution {
+public:
+    bool hasAlternatingBits(int n) {
+        int bit=1<<30;
+        while((bit&n)==0) bit>>=1;
+        for(int i=2;i<=16;i*=2) bit|=(bit>>i);
+        return (bit^n)==0;
+    }
+};
+```
+## 756. 金字塔转换矩阵
+**Description**
+现在，我们用一些方块来堆砌一个金字塔。 每个方块用仅包含一个字母的字符串表示。
+使用三元组表示金字塔的堆砌规则如下：
+对于三元组(A, B, C) ，“C”为顶层方块，方块“A”、“B”分别作为方块“C”下一层的的左、右子块。当且仅当(A, B, C)是被允许的三元组，我们才可以将其堆砌上。
+初始时，给定金字塔的基层 bottom，用一个字符串表示。一个允许的三元组列表 allowed，每个三元组用一个长度为 3 的字符串表示。
+如果可以由基层一直堆到塔尖就返回 true，否则返回 false。
+**Example**
+示例 1:
+输入: bottom = "BCD", allowed = ["BCG", "CDE", "GEA", "FFF"]
+输出: true
+解析:
+可以堆砌成这样的金字塔:
+```
+    A
+   / \
+  G   E
+ / \ / \
+B   C   D
+```
+因为符合('B', 'C', 'G'), ('C', 'D', 'E') 和 ('G', 'E', 'A') 三种规则。
+示例 2:
+
+输入: bottom = "AABA", allowed = ["AAA", "AAB", "ABA", "ABB", "BAC"]
+输出: false
+解析:
+无法一直堆到塔尖。
+注意, 允许存在像 (A, B, C) 和 (A, B, D) 这样的三元组，其中 C != D。
+ 
+注意：
+bottom 的长度范围在 [2, 8]。
+allowed 的长度范围在[0, 200]。
+方块的标记字母范围为{'A', 'B', 'C', 'D', 'E', 'F', 'G'}。
+**Program**
+```cpp
+class Solution {
+public:
+    bool pyramidTransition(string bottom, vector<string>& allowed) {
+        return judge(bottom, "", allowed);
+    }
+
+    bool judge(string bottom, string new_bottom, vector<string>& allowed){
+        if(bottom.length()==1) return true;
+        if(bottom.length()-new_bottom.length()==1) return judge(new_bottom, "", allowed);
+        else{
+            for(string str:allowed){
+                if(bottom[new_bottom.size()]==str[0]&&bottom[new_bottom.size()+1]==str[1]){
+                    if(judge(bottom, new_bottom+str[2], allowed)) return true;
+                }
+            }
+            return false;
+        }
+    }
+};
+```
+## 762. 二进制表示中质数个计算置位
+**Description**
+给定两个整数 L 和 R ，找到闭区间 [L, R] 范围内，计算置位位数为质数的整数个数。
+（注意，计算置位代表二进制表示中1的个数。例如 21 的二进制表示 10101 有 3 个计算置位。还有，1 不是质数。）
+**Example**
+示例 1:
+输入: L = 6, R = 10
+输出: 4
+解释:
+6 -> 110 (2 个计算置位，2 是质数)
+7 -> 111 (3 个计算置位，3 是质数)
+9 -> 1001 (2 个计算置位，2 是质数)
+10-> 1010 (2 个计算置位，2 是质数)
+
+示例 2:
+输入: L = 10, R = 15
+输出: 5
+解释:
+10 -> 1010 (2 个计算置位, 2 是质数)
+11 -> 1011 (3 个计算置位, 3 是质数)
+12 -> 1100 (2 个计算置位, 2 是质数)
+13 -> 1101 (3 个计算置位, 3 是质数)
+14 -> 1110 (3 个计算置位, 3 是质数)
+15 -> 1111 (4 个计算置位, 4 不是质数)
+注意:
+L, R 是 L <= R 且在 [1, 10^6] 中的整数。
+R - L 的最大值为 10000。
+**Program**
+```cpp
+class Solution {
+public:
+    vector<int> prime;
+    set<int> s;
+    vector<bool> vis;
+    int MAXN=1000001;
+    void Euler(){
+        vis.resize(MAXN, false);
+        for(int i=2;i<MAXN;i++){
+            if(!vis[i]){
+                vis[i]=true;
+                prime.push_back(i);
+                s.insert(i);
+            }
+            for(int j=0;j<prime.size()&&prime[j]*i<MAXN;j++){
+                vis[prime[j]*i]=true;
+                if(i%prime[j]==0) break;
+            }
+        }
+    }
+    bool isPrime(int x){
+        if(x==0||x==1) return false;
+        for(int i=2;i*i<=x;i++){
+            if(x%i==0) return false;
+        }
+        return true;
+    }
+    int countPrimeSetBits(int L, int R) {
+        //Euler();
+        int nCount=0;
+        for(int i=L;i<=R;i++){
+            int x=i;
+            int num=0;
+            while(x!=0){
+                x&=(x-1);
+                num++;
+            }
+            //if(s.find(num)!=s.end()) nCount++;
+            if(isPrime(num)) nCount++;
+        }
+        return nCount;
+    }
+};
+```
+## 332. 重新安排行程
+**Description**
+给定一个机票的字符串二维数组 [from, to]，子数组中的两个成员分别表示飞机出发和降落的机场地点，对该行程进行重新规划排序。所有这些机票都属于一个从JFK（肯尼迪国际机场）出发的先生，所以该行程必须从 JFK 出发。
+说明:
+如果存在多种有效的行程，你可以按字符自然排序返回最小的行程组合。例如，行程 ["JFK", "LGA"] 与 ["JFK", "LGB"] 相比就更小，排序更靠前
+所有的机场都用三个大写字母表示（机场代码）。
+假定所有机票至少存在一种合理的行程。
+**Example**
+示例 1:
+输入: [["MUC", "LHR"], ["JFK", "MUC"], ["SFO", "SJC"], ["LHR", "SFO"]]
+输出: ["JFK", "MUC", "LHR", "SFO", "SJC"]
+
+示例 2:
+输入: [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
+输出: ["JFK","ATL","JFK","SFO","ATL","SFO"]
+解释: 另一种有效的行程是 ["JFK","SFO","ATL","JFK","ATL","SFO"]。但是它自然排序更大更靠后。
+**Program**
+```cpp
+class Solution {
+public:
+    // Hierholzer 算法
+    void dfs(vector<vector<int> >& g, int i, int N, vector<int>& path) {
+        for (int j = 0; j < N; ++j) {
+            if (g[i][j] > 0) {
+                --g[i][j];
+                dfs(g, j, N, path);
+            }
+        }
+        path.push_back(i);
+    }
+    vector<string> findItinerary(vector<vector<string>>& tickets) {
+        // 排序、去重、ID化
+        vector<string> cities;
+        for (auto& t : tickets) {
+            cities.push_back(t[0]);
+            cities.push_back(t[1]);
+        }
+        sort(cities.begin(), cities.end());
+        cities.erase(unique(cities.begin(), cities.end()), cities.end());
+        int N = cities.size();
+        map<string, int> m;
+        for (int i = 0; i < N; ++i) {
+            m[cities[i]] = i;
+        }
+        // 构建有向图
+        vector<vector<int> > g(N, vector<int>(N, 0));
+        for (auto& t : tickets) {
+            ++g[m[t[0]]][m[t[1]]];
+        }
+        // 深度优先搜索得到最终路径
+        vector<int> path;
+        dfs(g, m["JFK"], N, path);
+        vector<string> res;
+        for (auto i : path) {
+            res.push_back(cities[i]);
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
+```
+## 784. 字母大小写全排列
+**Description**
+给定一个字符串S，通过将字符串S中的每个字母转变大小写，我们可以获得一个新的字符串。返回所有可能得到的字符串集合。
+**Example**
+示例:
+输入: S = "a1b2"
+输出: ["a1b2", "a1B2", "A1b2", "A1B2"]
+
+输入: S = "3z4"
+输出: ["3z4", "3Z4"]
+
+输入: S = "12345"
+输出: ["12345"]
+
+注意：
+S 的长度不超过12。
+S 仅由数字和字母组成。
+**Program**
+```cpp
+class Solution {
+public:
+    vector<string> letterCasePermutation(string S) {
+        vector<int> pos;
+        for(int i=0;i<S.length();i++){
+            if(S[i]>='a'&&S[i]<='z') pos.push_back(i);
+            if(S[i]>='A'&&S[i]<='Z') pos.push_back(i);
+        }
+        vector<string> result;
+        for(int i=0;i<(1<<pos.size());i++){
+            string str=S;
+            int x=1;
+            for(int j=0;j<pos.size();j++){
+                if((x&i)!=0){
+                    if(str[pos[j]]>='a'&&str[pos[j]]<='z') str[pos[j]]+='A'-'a';
+                    else if(str[pos[j]]>='A'&&str[pos[j]]<='Z') str[pos[j]]+='a'-'A';
+                }
+                x<<=1;
+            }
+            result.push_back(str);
+        }
+        sort(result.begin(), result.end(), greater<string>());
+        return result;
+    }
+};
+```
+## 898. 子数组按位或操作
+**Description**
+我们有一个非负整数数组 A。
+对于每个（连续的）子数组 B = [A[i], A[i+1], ..., A[j]] （ i <= j），我们对 B 中的每个元素进行按位或操作，获得结果 $A[i] | A[i+1] | ... | A[j]$。
+返回可能结果的数量。 （多次出现的结果在最终答案中仅计算一次。）
+**Example**
+示例 1：
+输入：[0]
+输出：1
+解释：
+只有一个可能的结果 0 。
+
+示例 2：
+输入：[1,1,2]
+输出：3
+解释：
+可能的子数组为 [1]，[1]，[2]，[1, 1]，[1, 2]，[1, 1, 2]。
+产生的结果为 1，1，2，1，3，3 。
+有三个唯一值，所以答案是 3 。
+
+示例 3：
+输入：[1,2,4]
+输出：6
+解释：
+可能的结果是 1，2，3，4，6，以及 7 。
+提示：
+$1 <= A.length <= 50000$
+$0 <= A[i] <= 10^9$
+**Program**
+```
+Result[i,j]=A[i]|A[i+1]|...|A[j], i<=j
+A: 1 2 3 4
+1: [1]
+2: [1, 2], [2]
+3: [1, 2, 3], [2,3], [3]
+4: [1, 2, 3, 4], [3, 4]
+```
+```cpp
+class Solution {
+public:
+    int subarrayBitwiseORs(vector<int>& A) {
+        unordered_set<int> cur;
+        unordered_set<int> result;
+        unordered_set<int> tmp;
+        for(int x: A){
+            tmp.clear();
+            for(int y:cur){
+                tmp.insert(x|y);
+            }
+            tmp.insert(x);
+            cur=tmp;
+            for(int z:cur) result.insert(z);
+        }
+        return result.size();
+    }
+};
+```
+## 1131. 绝对值表达式的最大值
+**Description**
+给你两个长度相等的整数数组，返回下面表达式的最大值：
+$|arr1[i] - arr1[j]| + |arr2[i] - arr2[j]| + |i - j|$
+其中下标 i，j 满足 0 <= i, j < arr1.length。
+**Example**
+示例 1：
+输入：arr1 = [1,2,3,4], arr2 = [-1,4,5,6]
+输出：13
+
+示例 2：
+输入：arr1 = [1,-2,-5,0,10], arr2 = [0,-2,-1,-7,-4]
+输出：20
+**Program**
+**分析:**
+既然暴力解不可行，那么我们就需要思考有没有更好的办法，已知要求 $|arr1[i] - arr1[j]| + |arr2[i] - arr2[j]| + |i - j|$ 的最大值，我们可以先考虑一下子问题的求解：
+**子问题 1. 求 |arr1[i] - arr1[j]| 的最大值**
+这就比较简单了，可以直观地看出来答案，一个数组 arr1 里两个元素差的绝对值的最大值，应该等于 max(arr1) - min(arr1)
+**子问题 2. 求 |arr1[i] - arr1[j]| + |i - j| 的最大值**
+比上一题复杂了一点，观察并不能得出答案，因此，不妨把表达式的绝对值符号去掉，看看展开后会得到怎样的结果：
+```
+abs( arr1[i] - arr1[j]) + abs(i - j)
+=  arr1[i] - arr1[j] + i - j =  (arr1[i] + i) - (arr1[j] + j) # 式1
+=  arr1[i] - arr1[j] - i + j =  (arr1[i] - i) - (arr1[j] - j) # 式2
+= -arr1[i] + arr1[j] + i - j = -(arr1[i] - i) + (arr1[j] - j) # 式3
+= -arr1[i] + arr1[j] - i + j = -(arr1[i] + i) + (arr1[j] + j) # 式4
+```
+因为 i 和 j 是可以互换的，所以式 11 等价于式 44， 式 22 等价于式 33，因此可以得到：
+```
+abs( arr1[i] - arr1[j]) + abs(i - j)
+= (arr1[i] + i) - (arr1[j] + j) ------式1
+= (arr1[i] - i) - (arr1[j] - j) ------式2
+```
+现在不难发现， 原始表达式的值只取决于两个中间表达式：
+中间表达式 A = arr1[i] + i
+中间表达式 B = arr1[i] - i
+所以有：
+```
+max(abs( arr1[i] - arr1[j]) + abs(i - j) )
+= max((arr1[i] + i) - (arr1[j] + j),
+      (arr1[i] - i) - (arr1[j] - j))
+= max( max(A) - min(A),
+       max(B) - min(B))
+```
+因此，不难得到子问题的求解代码如下：
+```
+Python
+class Solution(object):
+    def maxAbsValExpr(self, arr1, arr2):
+        """
+        :type arr1: List[int]
+        :type arr2: List[int]
+        :rtype: int
+        """
+        A = []
+        B = []
+        for i, x in enumerate(arr1):
+            A.append(x + i)
+            B.append(x - i)
+        return max(max(A) - min(A), max(B) - min(B))
+```
+现在已经知道了子问题如何求解，那么本题也可以采用相同的解法，首先把绝对值符号去掉，展开表达式：
+```
+|arr1[i] - arr1[j]| + |arr2[i] - arr2[j]| + |i - j|
+
+ =  (arr1[i] + arr2[i] + i) - (arr1[j] + arr2[j] + j)
+ =  (arr1[i] + arr2[i] - i) - (arr1[j] + arr2[j] - j)
+ =  (arr1[i] - arr2[i] + i) - (arr1[j] - arr2[j] + j)
+ =  (arr1[i] - arr2[i] - i) - (arr1[j] - arr2[j] - j)
+ = -(arr1[i] + arr2[i] + i) + (arr1[j] + arr2[j] + j)
+ = -(arr1[i] + arr2[i] - i) + (arr1[j] + arr2[j] - j)
+ = -(arr1[i] - arr2[i] + i) + (arr1[j] - arr2[j] + j)
+ = -(arr1[i] - arr2[i] - i) + (arr1[j] - arr2[j] - j)
+ ```
+因为存在四组两两等价的展开，所以可以优化为四个表达式：
+```
+A = arr1[i] + arr2[i] + i
+B = arr1[i] + arr2[i] - i
+C = arr1[i] - arr2[i] + i
+D = arr1[i] - arr2[i] - i
+
+max( |arr1[i] - arr1[j]| + |arr2[i] - arr2[j]| + |i - j|)
+= max(max(A) - min(A),
+      max(B) - min(B),
+      max(C) - min(C),
+      max(D) - min(D))
+```
+Python代码实现:
+```Python
+class Solution(object):
+    def maxAbsValExpr(self, arr1, arr2):
+        """
+        :type arr1: List[int]
+        :type arr2: List[int]
+        :rtype: int
+        """
+        A, B, C, D= [], [], [], []
+        for i in range(len(arr1)):
+            x, y = arr1[i], arr2[i]
+            A.append(x + y + i)
+            B.append(x + y - i)
+            C.append(x - y + i)
+            D.append(x - y - i)
+
+        a = max(A) - min(A)
+        b = max(B) - min(B)
+        c = max(C) - min(C)
+        d = max(D) - min(D)        
+        return max(a, b, c, d)
+```
+复杂度分析:
+时间复杂度：$O(N)$
+空间复杂度：$O(N)$
+优化分析：
+其实，并没有必要储存所有的 ·A,B,C,D· 表达式的值，
+因为我们需要的仅仅是 ·A,B,C,D· 表达式的最大值和最小值，
+因此可以用八个变量替代四个数组，将空间优化到 $O(1)$。
+```cpp
+class Solution {
+public:
+    int step[4][2]={
+        1, 1,
+        1, -1,
+        -1, 1,
+        -1, -1
+    };
+    int maxAbsValExpr(vector<int>& arr1, vector<int>& arr2) {
+        int result=-1000001;
+        for(int i=0;i<4;i++){
+            int x=step[i][0];
+            int y=step[i][1];
+            int max_value=-1000001;
+            int min_value=1000001;
+            for(int j=0;j<arr1.size();j++){
+                int value=arr1[j]+x*arr2[j]+y*j;
+                max_value=max(value,max_value);
+                min_value=min(value,min_value);
+            }
+            result=max(result, max_value-min_value);
+        }
+        return result;
     }
 };
 ```

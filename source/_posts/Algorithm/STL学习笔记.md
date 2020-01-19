@@ -1,5 +1,5 @@
 ---
-title: STL学习笔记（基本完结）
+title: STL学习笔记
 tags:
   - Algorithm
   - C++
