@@ -106,11 +106,18 @@ toc: true
 |547. 朋友圈|Medium|并查集|
 |684. 冗余连接|Medium|并查集|
 |693. 交替位二进制数|Easy|位运算|
+|721. 账户合并|Medium|并查集|
 |756. 金字塔转换矩阵|Medium|位运算+深搜|
 |762. 二进制表示中质数个计算置位|Easy|位运算|
 |784. 字母大小写全排列|Easy|位运算|
 |898. 子数组按位或操作|Medium|位运算+unordered_set|
 |1131. 绝对值表达式的最大值|Medium|位运算+数学|
+|1239. 串联字符串的最大长度|Medium|位运算+暴力|
+|1290. 二进制链表转整数|Easy|位运算|
+|1297. 子串的最大出现次数|Medium|位运算|
+|1310. 子数组异或查询|Medium|位运算+前缀和|
+|1318. 或运算的最小翻转次数|Medium|位运算|
+
 
 ## 1.两数之和
 **Description**
@@ -5165,6 +5172,459 @@ public:
             }
             result=max(result, max_value-min_value);
         }
+        return result;
+    }
+};
+```
+## 1239. 串联字符串的最大长度
+**Description**
+给定一个字符串数组 arr，字符串 s 是将 arr 某一子序列字符串连接所得的字符串，如果 s 中的每一个字符都只出现过一次，那么它就是一个可行解。
+请返回所有可行解 s 中最长长度。
+**Example**
+示例 1：
+输入：arr = ["un","iq","ue"]
+输出：4
+解释：所有可能的串联组合是 "","un","iq","ue","uniq" 和 "ique"，最大长度为 4。
+
+示例 2：
+输入：arr = ["cha","r","act","ers"]
+输出：6
+解释：可能的解答有 "chaers" 和 "acters"。
+
+示例 3：
+输入：arr = ["abcdefghijklmnopqrstuvwxyz"]
+输出：26
+
+提示：
+1 <= arr.length <= 16
+1 <= arr[i].length <= 26
+arr[i] 中只含有小写英文字母
+**Program**
+```cpp
+class Solution {
+public:
+    int maxLength(vector<string>& arr) {
+        int n=arr.size();
+        int maxLen=0;
+        vector<int> bitMap(n, 0);
+        for(int i=0;i<n;i++){
+            string str=arr[i];
+            for(int j=0;j<str.length();j++){
+                int tmpBit = (1<<(str[j]-'a'));
+                if((bitMap[i]&tmpBit)==0){
+                    bitMap[i]|=tmpBit;
+                }else{  //重复
+                    bitMap[i]=0;
+                    break;
+                }
+            }
+        }
+
+        for(int i=0;i<(1<<n);i++){
+            int bit=0;
+            int len=0;
+            for(int j=0;j<n;j++){
+                if((i & (1<<j)) != 0){
+                    if(bitMap[j]==0){  //重复
+                        len=0;
+                        break;
+                    }
+                    if((bit&bitMap[j])==0){
+                        bit|=bitMap[j];
+                        len+=arr[j].length();
+                    }else{ //重复
+                        len=0;
+                        break;
+                    }
+                }
+            }
+            maxLen=max(maxLen, len);
+        }
+        return maxLen;
+    }
+};
+```
+## 1290. 二进制链表转整数
+**Description**
+给你一个单链表的引用结点 head。链表中每个结点的值不是 0 就是 1。已知此链表是一个整数数字的二进制表示形式。
+请你返回该链表所表示数字的 十进制值 。
+**Example**
+示例 1：
+输入：head = [1,0,1]
+输出：5
+解释：二进制数 (101) 转化为十进制数 (5)
+
+示例 2：
+输入：head = [0]
+输出：0
+
+示例 3：
+输入：head = [1]
+输出：1
+
+示例 4：
+输入：head = [1,0,0,1,0,0,1,1,1,0,0,0,0,0,0]
+输出：18880
+
+示例 5：
+输入：head = [0,0]
+输出：0
+ 
+
+提示：
+链表不为空。
+链表的结点总数不超过 30。
+每个结点的值不是 0 就是 1。
+**Program**
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int getDecimalValue(ListNode* head) {
+        int result=0;
+        while(head!=NULL){
+            result=result*2+head->val;
+            head=head->next;
+        }
+        return result;
+    }
+};
+```
+## 1297. 子串的最大出现次数
+**Description**
+给你一个字符串 s ，请你返回满足以下条件且出现次数最大的 任意 子串的出现次数：
+子串中不同字母的数目必须小于等于 maxLetters 。
+子串的长度必须大于等于 minSize 且小于等于 maxSize 。
+ **Example**
+示例 1：
+输入：s = "aababcaab", maxLetters = 2, minSize = 3, maxSize = 4
+输出：2
+解释：子串 "aab" 在原字符串中出现了 2 次。
+它满足所有的要求：2 个不同的字母，长度为 3 （在 minSize 和 maxSize 范围内）。
+
+示例 2：
+输入：s = "aaaa", maxLetters = 1, minSize = 3, maxSize = 3
+输出：2
+解释：子串 "aaa" 在原字符串中出现了 2 次，且它们有重叠部分。
+
+示例 3：
+输入：s = "aabcabcab", maxLetters = 2, minSize = 2, maxSize = 3
+输出：3
+
+示例 4：
+输入：s = "abcde", maxLetters = 2, minSize = 3, maxSize = 3
+输出：0
+ 
+
+提示：
+1 <= s.length <= 10^5
+1 <= maxLetters <= 26
+1 <= minSize <= maxSize <= min(26, s.length)
+s 只包含小写英文字母。
+**Program**
+假设字符串 T 在给定的字符串 S 中出现的次数为 k，那么 T 的任意一个子串出现的次数至少也为 k，即 T 的任意一个子串在 S 中出现的次数不会少于 T 本身。这样我们就可以断定，在所有满足条件且出现次数最多的的字符串中，一定有一个的长度恰好为 minSize。
+```cpp
+class Solution {
+public:
+    int maxFreq(string s, int maxLetters, int minSize, int maxSize) {
+        int n=s.length();
+        unordered_map<string, int> m;
+        int result=0;
+        for(int i=0;i<n-minSize+1;i++){
+            string str=s.substr(i, minSize);
+            unordered_set<char> st(str.begin(), str.end());
+            if(st.size()<=maxLetters){
+                m[str]++;
+                result=max(result, m[str]);
+            }
+        }
+        return result;
+    }
+};
+```
+## 1310. 子数组异或查询
+**Description**
+有一个正整数数组 arr，现给你一个对应的查询数组 queries，其中 queries[i] = [Li, Ri]。
+对于每个查询 i，请你计算从 Li 到 Ri 的 XOR 值（即 arr[Li] xor arr[Li+1] xor ... xor arr[Ri]）作为本次查询的结果。
+并返回一个包含给定查询 queries 所有结果的数组。
+**Example**
+示例 1：
+输入：arr = [1,3,4,8], queries = [[0,1],[1,2],[0,3],[3,3]]
+输出：[2,7,14,8]
+解释：
+数组中元素的二进制表示形式是：
+1 = 0001
+3 = 0011
+4 = 0100
+8 = 1000
+查询的 XOR 值为：
+[0,1] = 1 xor 3 = 2
+[1,2] = 3 xor 4 = 7
+[0,3] = 1 xor 3 xor 4 xor 8 = 14
+[3,3] = 8
+
+示例 2：
+输入：arr = [4,8,2,10], queries = [[2,3],[1,3],[0,0],[0,3]]
+输出：[8,0,4,4]
+
+提示：
+$$1 <= arr.length <= 3 * 10^4 \\\\
+1 <= arr[i] <= 10^9  \\\\
+1 <= queries.length <= 3 * 10^4 \\\\
+queries[i].length == 2 \\\\
+0 <= queries[i][0] <= queries[i][1] < arr.length$$
+**Program**
+```cpp
+class Solution {
+public:
+    vector<int> xorQueries(vector<int>& arr, vector<vector<int>>& queries) {
+        int n = arr.size();
+        vector<int> s(n+1,0);
+        vector<int> result;
+        for(int i=1;i<=n;i++) s[i]=s[i-1]^arr[i-1];
+        for(vector<int> vec:queries){
+            int l=vec[0];
+            int r=vec[1];
+            result.push_back(s[r+1]^s[l]);
+        }
+        return result;
+    }
+};
+```
+## 1318. 或运算的最小翻转次数
+**Description**
+给你三个正整数 a、b 和 c。
+你可以对 a 和 b 的二进制表示进行位翻转操作，返回能够使按位或运算   a OR b == c  成立的最小翻转次数。
+「位翻转操作」是指将一个数的二进制表示任何单个位上的 1 变成 0 或者 0 变成 1 。
+**Example**
+示例 1：
+输入：a = 2, b = 6, c = 5
+输出：3
+解释：翻转后 a = 1 , b = 4 , c = 5 使得 a OR b == c
+
+示例 2：
+输入：a = 4, b = 2, c = 7
+输出：1
+
+示例 3：
+输入：a = 1, b = 2, c = 3
+输出：0
+ 
+提示：
+1 <= a <= 10^9
+1 <= b <= 10^9
+1 <= c <= 10^9
+**Program**
+```cpp
+class Solution {
+public:
+    int minFlips(int a, int b, int c) {
+        int result=0;
+        for(int i=0;i<31;i++){
+            int x=((a>>i)&1);
+            int y=((b>>i)&1);
+            int z=((c>>i)&1);
+            if((x|y)!=z){
+                if(z==1) result+=((x|y)>0)?0:1;
+                else result+=(x+y);
+            }
+        }
+        return result;
+    }
+};
+```
+## 721. 账户合并
+**Description**
+给定一个列表 accounts，每个元素 accounts[i] 是一个字符串列表，其中第一个元素 accounts[i][0] 是 名称 (name)，其余元素是 emails 表示该帐户的邮箱地址。
+现在，我们想合并这些帐户。如果两个帐户都有一些共同的邮件地址，则两个帐户必定属于同一个人。请注意，即使两个帐户具有相同的名称，它们也可能属于不同的人，因为人们可能具有相同的名称。一个人最初可以拥有任意数量的帐户，但其所有帐户都具有相同的名称。
+合并帐户后，按以下格式返回帐户：每个帐户的第一个元素是名称，其余元素是按顺序排列的邮箱地址。accounts 本身可以以任意顺序返回。
+**Example**
+例子 1:
+```
+Input:
+accounts = [["John", "johnsmith@mail.com", "john00@mail.com"], ["John", "johnnybravo@mail.com"], ["John", "johnsmith@mail.com", "john_newyork@mail.com"], ["Mary", "mary@mail.com"]]
+Output: [["John", 'john00@mail.com', 'john_newyork@mail.com', 'johnsmith@mail.com'],  ["John", "johnnybravo@mail.com"], ["Mary", "mary@mail.com"]]
+```
+Explanation:
+```
+  第一个和第三个 John 是同一个人，因为他们有共同的电子邮件 "johnsmith@mail.com"。
+  第二个 John 和 Mary 是不同的人，因为他们的电子邮件地址没有被其他帐户使用。
+  我们可以以任何顺序返回这些列表，例如答案[['Mary'，'mary@mail.com']，['John'，'johnnybravo@mail.com']，
+  ['John'，'john00@mail.com'，'john_newyork@mail.com'，'johnsmith@mail.com']]仍然会被接受。
+```
+注意：
+accounts的长度将在[1，1000]的范围内。
+accounts[i]的长度将在[1，10]的范围内。
+accounts[i][j]的长度将在[1，30]的范围内。
+**Program**
+```cpp
+//超时，注意合并操作，复杂度O(10^6*300*log2(10))
+class Solution {
+public:
+    vector<int> father;
+    int n;
+    void init(){
+        for(int i=0;i<n;i++) father[i]=i;
+    }
+    int findFather(int x){
+        if(father[x]!=x) father[x]=findFather(father[x]);
+        return father[x];
+    }
+    void unionSet(int x, int y, const vector<vector<string>>& accounts){
+        int fa=findFather(x);
+        int fb=findFather(y);
+        unordered_set<string> st;
+        for(int i=1;i<accounts[x].size();i++) st.insert(accounts[x][i]);
+        for(int i=1;i<accounts[y].size();i++){
+            if(st.find(accounts[y][i])!=st.end()){
+                father[fa]=fb;
+                break;
+            }
+        }
+    }
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        n=accounts.size();
+        father.resize(n);
+        init();
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                unionSet(i, j, accounts);
+            }
+        }
+        //for(int i=0;i<n;i++) cout<<father[i]<<endl;
+        map<int, set<string>> m;
+        for(int i=0;i<n;i++){
+            int fa=findFather(i);
+            // if(m.find(fa)==m.end()){
+            //     m[fa]=set<string>();
+            // }
+            for(int j=1;j<accounts[i].size();j++) m[fa].insert(accounts[i][j]);
+        }
+        vector<vector<string>> result;
+        for(map<int, set<string>>::iterator it=m.begin();it!=m.end();it++){
+            set<string>& st=it->second;
+            vector<string> vec;
+            vec.push_back(accounts[it->first][0]);
+            for(string str:st) vec.push_back(str);
+            result.push_back(vec);
+        }
+        return result;
+    }
+};
+```
+```cpp
+class Solution {
+public:
+    vector<int> father;
+    int n;
+    void init(){
+        for(int i=0;i<n;i++) father[i]=i;
+    }
+    int findFather(int x){
+        if(father[x]!=x) father[x]=findFather(father[x]);
+        return father[x];
+    }
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        n=accounts.size();
+        father.resize(n);
+        init();
+        unordered_map<string, vector<int>> m;
+        for(int i=0;i<n;i++){
+            vector<string>& vec=accounts[i];
+            for(int j=1;j<vec.size();j++) m[vec[j]].push_back(i);
+        }
+        for(unordered_map<string, vector<int>>::iterator it=m.begin();it!=m.end();it++){
+            vector<int>& vec=it->second;
+            for(int i=1;i<vec.size();i++){
+                int fa=findFather(vec[0]); //不能放外面！
+                int fb=findFather(vec[i]);
+                if(fa!=fb) father[fa]=fb;
+            }
+        }
+        vector<set<string>> vs;
+        unordered_map<int, int> iTol;
+        int idx=0;
+        for(int i=0;i<n;i++){
+            int fa=findFather(i);
+            if(iTol.find(fa)==iTol.end()){
+                iTol[fa]=idx++;
+            }
+        }
+        vs.resize(idx);
+        for(unordered_map<string, vector<int>>::iterator it=m.begin();it!=m.end();it++){
+            string str=it->first;
+            vector<int>& vec=it->second;
+            for(int i=0;i<vec.size();i++){
+                int fa=findFather(vec[i]);
+                int idx=iTol[fa];
+                if(vs[idx].empty()){
+                    vs[idx].insert(accounts[vec[i]][0]);
+                }
+                vs[idx].insert(str);
+            }
+        }
+        vector<vector<string>> result;
+        for(int i=0;i<vs.size();i++) result.push_back(vector<string>(vs[i].begin(),vs[i].end()));
+        return result;
+    }
+};
+```
+```cpp
+//O(10000)
+class Solution {
+public:
+    vector<int> father;
+    int n;
+    void init(){
+        for(int i=0;i<n;i++) father[i]=i;
+    }
+    int findFather(int x){
+        if(father[x]!=x) father[x]=findFather(father[x]);
+        return father[x];
+    }
+    void unionSet(int x, int y){
+        int fa=findFather(x);
+        int fb=findFather(y);
+        if(fa!=fb) father[fa]=fb;
+    }
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        n=accounts.size();
+        father.resize(n);
+        init();
+        unordered_map<string, int> m;
+        for(int i=0;i<n;i++){
+            for(int j=1;j<accounts[i].size();j++){
+                if(m.find(accounts[i][j])==m.end()) m[accounts[i][j]]=i;
+                else unionSet(m[accounts[i][j]], i);
+            }
+        }
+        vector<vector<string>> result;
+        unordered_map<int, int> iTol;
+        int idx=0;
+        for(int i=0;i<n;i++){
+            int fa=findFather(i);
+            if(iTol.find(fa)==iTol.end()){
+                iTol[fa]=idx++;
+            }
+        }
+        result.resize(idx);
+        for(pair<string, int> it:m){
+            string str=it.first;
+            int fa=findFather(it.second);
+            int idx=iTol[fa];
+            if(result[idx].empty()){
+                result[idx].push_back(accounts[fa][0]);
+            }
+            result[idx].push_back(str);
+        }
+        for(int i=0;i<result.size();i++) sort(result[i].begin()+1, result[i].end());
         return result;
     }
 };
