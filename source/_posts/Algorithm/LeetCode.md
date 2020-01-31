@@ -106,18 +106,22 @@ toc: true
 |547. 朋友圈|Medium|并查集|
 |684. 冗余连接|Medium|并查集|
 |693. 交替位二进制数|Easy|位运算|
-|721. 账户合并|Medium|并查集|
+|721. 账户合并|Medium|并查集+Hash|
 |756. 金字塔转换矩阵|Medium|位运算+深搜|
 |762. 二进制表示中质数个计算置位|Easy|位运算|
 |784. 字母大小写全排列|Easy|位运算|
 |898. 子数组按位或操作|Medium|位运算+unordered_set|
+|947. 移除最多的同行或同列石头|Medium|并查集+Hash|
+|959. 由斜杠划分区域|Medium|并查集|
+|990. 等式方程的可满足性|Medium|并查集|
 |1131. 绝对值表达式的最大值|Medium|位运算+数学|
+|1202. 交换字符串中的元素|Medium|并查集|
 |1239. 串联字符串的最大长度|Medium|位运算+暴力|
 |1290. 二进制链表转整数|Easy|位运算|
 |1297. 子串的最大出现次数|Medium|位运算|
 |1310. 子数组异或查询|Medium|位运算+前缀和|
 |1318. 或运算的最小翻转次数|Medium|位运算|
-
+|1319. 连通网络的操作次数|Medium|并查集|
 
 ## 1.两数之和
 **Description**
@@ -221,7 +225,7 @@ public:
 思路**
 映入脑海的第一个想法是将数字转换为字符串，并检查字符串是否为回文。但是，这需要额外的非常量空间来创建问题描述中所不允许的字符串。
 第二个想法是将数字本身反转，然后将反转后的数字与原始数字进行比较，如果它们是相同的，那么这个数字就是回文。
-但是，如果反转后的数字大于 \text{int.MAX}int.MAX，我们将遇到整数溢出问题。
+但是，如果反转后的数字大于 $\text{int.MAX}int.MAX$，我们将遇到整数溢出问题。
 按照第二个想法，为了避免数字反转可能导致的溢出问题，为什么不考虑只反转 \text{int}int 数字的一半？毕竟，如果该数字是回文，其后半部分反转后应该与原始数字的前半部分相同。
 例如，输入 1221，我们可以将数字 “1221” 的后半部分从 “21” 反转为 “12”，并将其与前半部分 “12” 进行比较，因为二者相同，我们得知数字 1221 是回文。
 让我们看看如何将这个想法转化为一个算法。
@@ -5626,6 +5630,485 @@ public:
         }
         for(int i=0;i<result.size();i++) sort(result[i].begin()+1, result[i].end());
         return result;
+    }
+};
+```
+## 947. 移除最多的同行或同列石头
+**Description**
+在二维平面上，我们将石头放置在一些整数坐标点上。每个坐标点上最多只能有一块石头。
+现在，move 操作将会移除与网格上的某一块石头共享一列或一行的一块石头。
+我们最多能执行多少次 move 操作？
+**Example**
+示例 1：
+输入：stones = [[0,0],[0,1],[1,0],[1,2],[2,1],[2,2]]
+输出：5
+
+示例 2：
+输入：stones = [[0,0],[0,2],[1,1],[2,0],[2,2]]
+输出：3
+
+示例 3：
+输入：stones = [[0,0]]
+输出：0
+**Program**
+```cpp
+class Solution {
+public:
+    struct Node{
+        int f;
+        int s;
+        Node(){}
+        Node(int ff,int ss):f(ff), s(ss){}
+    };
+    vector<Node> father;
+    int n;
+    void init(){
+        for(int i=0;i<n;i++){
+            father[i].f=i;
+            father[i].s=1;
+        }
+    }
+    int findFather(int x){
+        if(father[x].f!=x) father[x].f=findFather(father[x].f);
+        return father[x].f;
+    }
+    void unionSet(int x, int y){
+        int fa=findFather(x);
+        int fb=findFather(y);
+        if(fa!=fb){
+            father[fa].f=fb;
+            father[fb].s+=father[fa].s;
+        }
+    }
+    int removeStones(vector<vector<int>>& stones) {
+        n = stones.size();
+        father.resize(n);
+        init();
+        unordered_map<int, int> mx, my;
+        for(int i=0;i<stones.size();i++){
+            int x=stones[i][0];
+            int y=stones[i][1];
+            if(mx.find(x)==mx.end()) mx[x]=i;
+            else unionSet(mx[x], i);
+            if(my.find(y)==my.end()) my[y]=i;
+            else unionSet(my[y], i);
+        }
+        unordered_set<int> st;
+        for(int i=0;i<n;i++){
+            int fa=findFather(i);
+            st.insert(fa);
+        }
+        int ans=0;
+        for(int i:st){
+            ans+=father[i].s-1;
+        }
+        return ans;
+    }
+};
+```
+## 959. 由斜杠划分区域
+**Description**
+在由 1 x 1 方格组成的 N x N 网格 grid 中，每个 1 x 1 方块由 /、\ 或空格构成。这些字符会将方块划分为一些共边的区域。
+（请注意，反斜杠字符是转义的，因此 \ 用 "\\" 表示。）。
+返回区域的数目。
+**Example**
+示例 1：
+输入：
+[
+  " /",
+  "/ "
+]
+输出：2
+解释：2x2 网格如下：
+![image](/assets/img/algorithm/959_1.png)
+示例 2：
+输入：
+[
+  " /",
+  "  "
+]
+输出：1
+解释：2x2 网格如下：
+![image](/assets/img/algorithm/959_2.png)
+示例 3：
+输入：
+[
+  "\\/",
+  "/\\"
+]
+输出：4
+解释：（回想一下，因为 \ 字符是转义的，所以 "\\/" 表示 \/，而 "/\\" 表示 /\。）
+2x2 网格如下：
+![image](/assets/img/algorithm/959_3.png)
+示例 4：
+输入：
+[
+  "/\\",
+  "\\/"
+]
+输出：5
+解释：（回想一下，因为 \ 字符是转义的，所以 "/\\" 表示 /\，而 "\\/" 表示 \/。）
+2x2 网格如下：
+![image](/assets/img/algorithm/959_4.png)
+示例 5：
+输入：
+[
+  "//",
+  "/ "
+]
+输出：3
+解释：2x2 网格如下：
+![image](/assets/img/algorithm/959_5.png)
+提示：
+1 <= grid.length == grid[0].length <= 30
+grid[i][j] 是 '/'、'\'、或 ' '。
+**Program**
+```cpp
+/*
+注意每个方格由0或1组成的m*m的方阵，注意m>2，m=2会出现某些斜角0不连通
+这里采用3*3方格，然后求连通分量个数
+复杂度O(9*1000*1000)
+*/
+class Solution {
+public:
+    int n;
+    vector<int> father;
+    int step[4][2]={
+        -1, 0,
+        1, 0,
+        0, -1,
+        0, 1
+    };
+    int findFather(int x){
+        if(father[x]!=x) father[x]=findFather(father[x]);
+        return father[x];
+    }
+    void unionSet(int x, int y){
+        int fa=findFather(x);
+        int fb=findFather(y);
+        if(fa!=fb) father[fa]=fb;
+    }
+    int regionsBySlashes(vector<string>& grid) {
+        n=grid.size();
+        vector<vector<int>> graph;
+        graph.resize(3*n);
+        for(int i=0;i<3*n;i++) graph[i].resize(3*n, 0);
+
+        for(int i=0;i<n;i++){
+            string str=grid[i];
+            for(int j=0;j<n;j++){
+                if(str[j]=='/'){
+                    graph[i*3][j*3+2]=1;
+                    graph[i*3+1][j*3+1]=1;
+                    graph[i*3+2][j*3]=1;
+                }
+                if(str[j]=='\\'){
+                    graph[i*3][j*3]=1;
+                    graph[i*3+1][j*3+1]=1;
+                    graph[i*3+2][j*3+2]=1;
+                }
+            }
+        }
+
+        father.resize(9*n*n);
+        for(int i=0;i<9*n*n;i++) father[i]=i;
+        vector<int> vec;
+        for(int i=0;i<3*n;i++){
+            for(int j=0;j<3*n;j++){
+                if(graph[i][j]==0){
+                    vec.push_back(i*3*n+j);
+                    for(int k=0;k<4;k++){
+                        int x=i+step[k][0];
+                        int y=j+step[k][1];
+                        int idx=i*3*n+j;
+                        int idy=x*3*n+y;
+                        if(judge(x, y)&&graph[x][y]==0) unionSet(idx, idy);
+                    }
+                }
+            }
+        }
+        set<int> st;
+        for(int i=0;i<vec.size();i++) st.insert(findFather(vec[i]));
+        return st.size();
+    }
+    bool judge(int x, int y){
+        if(x>=0&&x<3*n&&y>=0&&y<3*n) return true;
+        return false;
+    }
+};
+```
+```cpp
+/*
+用(n+1)*(n+1)的图表示，
+边框已经是相连，而后如果连线使得边框两个点再次相连说明有个划分，
+即一个划分产生两个连通分量，所以初试1，而后每出现一个划分则增加一个连通分量，复杂度O(1001*1001)
+*/
+class Solution {
+public:
+    int n;
+    vector<int> father;
+    int step[4][2]={
+        -1, 0,
+        1, 0,
+        0, -1,
+        0, 1
+    };
+    int findFather(int x){
+        if(father[x]!=x) father[x]=findFather(father[x]);
+        return father[x];
+    }
+    int regionsBySlashes(vector<string>& grid) {
+        n=grid.size();
+        father.resize((n+1)*(n+1));
+        for(int i=0;i<(n+1)*(n+1);i++) father[i]=i;
+        //边框为一个相连
+        for(int i=0;i<n+1;i++){
+            father[i]=0;
+            father[n*(n+1)+i]=0;
+            father[i*(n+1)]=0;
+            father[i*(n+1)+n]=0;
+        }
+        int ans=1;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]=='/'){
+                    int x1=i+1, y1=j;
+                    int x2=i, y2=j+1;
+                    int fa=findFather(x1*(n+1)+y1);
+                    int fb=findFather(x2*(n+1)+y2);
+                    if(fa!=fb){
+                        father[fa]=fb;
+                    }else ans++;
+                }
+                if(grid[i][j]=='\\'){
+                    int x1=i, y1=j;
+                    int x2=i+1, y2=j+1;
+                    int fa=findFather(x1*(n+1)+y1);
+                    int fb=findFather(x2*(n+1)+y2);
+                    if(fa!=fb){
+                        father[fa]=fb;
+                    }else ans++;
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+## 990. 等式方程的可满足性
+**Description**
+给定一个由表示变量之间关系的字符串方程组成的数组，每个字符串方程 equations[i] 的长度为 4，并采用两种不同的形式之一："a==b" 或 "a!=b"。在这里，a 和 b 是小写字母（不一定不同），表示单字母变量名。
+只有当可以将整数分配给变量名，以便满足所有给定的方程时才返回 true，否则返回 false。 
+**Example**
+示例 1：
+输入：["a==b","b!=a"]
+输出：false
+解释：如果我们指定，a = 1 且 b = 1，那么可以满足第一个方程，但无法满足第二个方程。没有办法分配变量同时满足这两个方程。
+
+示例 2：
+输出：["b==a","a==b"]
+输入：true
+解释：我们可以指定 a = 1 且 b = 1 以满足满足这两个方程。
+
+示例 3：
+输入：["a==b","b==c","a==c"]
+输出：true
+示例 4：
+
+输入：["a==b","b!=c","c==a"]
+输出：false
+示例 5：
+
+输入：["c==c","b==d","x!=z"]
+输出：true
+ 
+提示：
+1 <= equations.length <= 500
+equations[i].length == 4
+equations[i][0] 和 equations[i][3] 是小写字母
+equations[i][1] 要么是 '='，要么是 '!'
+equations[i][2] 是 '='
+**Program**
+```cpp
+class Solution {
+public:
+    vector<int> father;
+    int n;
+    int findFather(int x){
+        if(father[x]!=x) father[x]=findFather(father[x]);
+        return father[x];
+    }
+    bool equationsPossible(vector<string>& equations) {
+        n = equations.size();
+        father.resize(26);
+        for(int i=0;i<26;i++) father[i]=i;
+
+        for(int i=0;i<n;i++){
+            int x=equations[i][0]-'a';
+            int y=equations[i][3]-'a';
+            int fa=findFather(x);
+            int fb=findFather(y);
+            if(equations[i][1]=='='){
+                if(fa!=fb) father[fa]=fb;
+            }
+        }
+        for(int i=0;i<n;i++){
+            int x=equations[i][0]-'a';
+            int y=equations[i][3]-'a';
+            int fa=findFather(x);
+            int fb=findFather(y);
+            if(equations[i][1]=='!'){
+                if(fa==fb) return false;
+            }
+        }
+        return true;
+    }
+};
+```
+## 1202. 交换字符串中的元素
+**Description**
+给你一个字符串 s，以及该字符串中的一些「索引对」数组 pairs，其中 pairs[i] = [a, b] 表示字符串中的两个索引（编号从 0 开始）。
+你可以 任意多次交换 在 pairs 中任意一对索引处的字符。
+返回在经过若干次交换后，s 可以变成的按字典序最小的字符串。
+**Example**
+示例 1:
+输入：s = "dcab", pairs = [[0,3],[1,2]]
+输出："bacd"
+解释：
+交换 s[0] 和 s[3], s = "bcad"
+交换 s[1] 和 s[2], s = "bacd"
+
+示例 2：
+输入：s = "dcab", pairs = [[0,3],[1,2],[0,2]]
+输出："abcd"
+解释：
+交换 s[0] 和 s[3], s = "bcad"
+交换 s[0] 和 s[2], s = "acbd"
+交换 s[1] 和 s[2], s = "abcd"
+
+示例 3：
+输入：s = "cba", pairs = [[0,1],[1,2]]
+输出："abc"
+解释：
+交换 s[0] 和 s[1], s = "bca"
+交换 s[1] 和 s[2], s = "bac"
+交换 s[0] 和 s[1], s = "abc"
+
+提示：
+1 <= s.length <= 10^5
+0 <= pairs.length <= 10^5
+0 <= pairs[i][0], pairs[i][1] < s.length
+s 中只含有小写英文字母
+**Program**
+```cpp
+/*
+根据pair进行并查集合并，在同一个集合里的两两位置可以相互交换！！
+然后每个集合对应的序列进行排序，结果对应回原字符串
+*/
+class Solution {
+public:
+    vector<int> father;
+    int n;
+    int findFather(int x){
+        if(father[x]!=x) father[x]=findFather(father[x]);
+        return father[x];
+    }
+    void unionSet(int x, int y){
+        int fa=findFather(x);
+        int fb=findFather(y);
+        if(fa!=fb) father[fa]=fb;
+    }
+    string smallestStringWithSwaps(string s, vector<vector<int>>& pairs) {
+        n=s.length();
+        father.resize(n);
+        for(int i=0;i<n;i++) father[i]=i;
+        for(int i=0;i<pairs.size();i++){
+            unionSet(pairs[i][0], pairs[i][1]);
+        }
+        unordered_map<int, vector<int>> m;
+        for(int i=0;i<n;i++){
+            int fa=findFather(i);
+            m[fa].push_back(i);
+        }
+        string str(n, 'a');
+        for(pair<int, vector<int>> it:m){
+            string ss;
+            for(int i=0;i<it.second.size();i++){
+                ss+=s[it.second[i]];
+            }
+            sort(ss.begin(), ss.end());
+            for(int i=0;i<it.second.size();i++) str[it.second[i]]=ss[i];
+        }
+        return str;
+    }
+};
+```
+## 1319. 连通网络的操作次数
+**Description**
+用以太网线缆将 n 台计算机连接成一个网络，计算机的编号从 0 到 n-1。线缆用 connections 表示，其中 connections[i] = [a, b] 连接了计算机 a 和 b。
+网络中的任何一台计算机都可以通过网络直接或者间接访问同一个网络中其他任意一台计算机。
+给你这个计算机网络的初始布线 connections，你可以拔开任意两台直连计算机之间的线缆，并用它连接一对未直连的计算机。请你计算并返回使所有计算机都连通所需的最少操作次数。如果不可能，则返回 -1 。 
+**Example**
+示例 1：
+![image](/assets/img/algorithm/sample_1_1677.png)
+输入：n = 4, connections = [[0,1],[0,2],[1,2]]
+输出：1
+解释：拔下计算机 1 和 2 之间的线缆，并将它插到计算机 1 和 3 上。
+示例 2：
+![image](/assets/img/algorithm/sample_2_1677.png)
+输入：n = 6, connections = [[0,1],[0,2],[0,3],[1,2],[1,3]]
+输出：2
+
+示例 3：
+输入：n = 6, connections = [[0,1],[0,2],[0,3],[1,2]]
+输出：-1
+解释：线缆数量不足。
+
+示例 4：
+输入：n = 5, connections = [[0,1],[0,2],[3,4],[2,3]]
+输出：0
+ 
+提示：
+```
+1 <= n <= 10^5
+1 <= connections.length <= min(n*(n-1)/2, 10^5)
+connections[i].length == 2
+0 <= connections[i][0], connections[i][1] < n
+connections[i][0] != connections[i][1]
+没有重复的连接。
+两台计算机不会通过多条线缆连接。
+```
+**Program**
+```cpp
+/*
+合并a和b， 如果早已连接，说明多了一条冗余可操作性的边
+之后计算集合个数n，最少需要n-1条冗余的可操作边才满足条件，否则返回-1.
+*/
+class Solution {
+public:
+    int resLine=0;
+    vector<int>father;
+    int findFather(int x){
+        if(father[x]!=x) father[x]=findFather(father[x]);
+        return father[x];
+    }
+    void unionSet(int x, int y){
+        int fa=findFather(x);
+        int fb=findFather(y);
+        if(fa!=fb) father[fa]=fb;
+        else resLine++;
+    }
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        father.resize(n);
+        for(int i=0;i<n;i++) father[i]=i;
+        for(int i=0;i<connections.size();i++){
+            unionSet(connections[i][0], connections[i][1]);
+        }
+        unordered_set<int> st;
+        for(int i=0;i<n;i++) st.insert(findFather(i));
+        int nCount=st.size();
+        if(resLine<nCount-1) return -1;
+        return nCount-1;
     }
 };
 ```

@@ -1,5 +1,6 @@
 ---
 title: Hello World
+translate_title: hello world
 tag:
   - Essay
 ---

@@ -141,15 +141,15 @@ githubEmojis:
   styles:
   customEmojis:
 
-translate_title:
-  translate_way: google  # google,youdao,baidu_with_appid,baidu_no_appid
-  youdao_api_key: '' # Your youdao_api_key
-  youdao_keyfrom: xxxx-blog # Your youdao_keyfrom
-  is_need_proxy: false     # true | false
-  proxy_url: http://localhost:4000 # Your proxy_url
-  baidu_appid: '' # Your baidu_appid
-  baidu_appkey: '' # Your baidu_appkey
-  rewrite: false
+# translate_title:
+#   translate_way: google  # google,youdao,baidu_with_appid,baidu_no_appid
+#   youdao_api_key: '' # Your youdao_api_key
+#   youdao_keyfrom: xxxx-blog # Your youdao_keyfrom
+#   is_need_proxy: false     # true | false
+#   proxy_url: http://localhost:4000 # Your proxy_url
+#   baidu_appid: '' # Your baidu_appid
+#   baidu_appkey: '' # Your baidu_appkey
+#   rewrite: false
 
 flowchart:
   # raphael:   # optional, the source url of raphael.js
@@ -235,10 +235,3 @@ live2d:
 
   # (optional) Log options
   #log: true
-
-#translate_title:
-  #translate_way: google    #google | baidu | youdao
-  #youdao_api_key: XXX
-  #youdao_keyfrom: XXX
-  #is_need_proxy: true     #true | false
-  #proxy_url:  http://louris.space

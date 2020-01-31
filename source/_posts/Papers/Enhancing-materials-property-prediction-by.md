@@ -1,5 +1,6 @@
 ---
 title: Enhancing materials property prediction by leveraging computational and experimental data using deep transfer learning
+translate_title: enhancing-materials-property-prediction-by-leveraging-computational-and-experimental-data-using-deep-transfer-learning
 date: 2020-01-19 10:42:52
 tags:
   - papers

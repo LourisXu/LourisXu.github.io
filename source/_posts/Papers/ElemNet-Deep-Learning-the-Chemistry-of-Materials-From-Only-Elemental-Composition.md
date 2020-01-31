@@ -3,6 +3,7 @@ title: >-
   ElemNet: Deep Learning the Chemistry of Materials From Only Elemental
   Composition
 date: 2020-01-05 20:33:57
+translate_title: ElemNet-Deep-Learning-the-Chemistry-of-Materials-From-Only-Elemental-Composition
 tags:
   - papers
 ---
