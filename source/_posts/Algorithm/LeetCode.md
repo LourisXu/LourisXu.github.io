@@ -11,6 +11,7 @@ toc: true
 |题目|难度|算法|
 |:--|:--:|:--:|
 |1. 两数之和|Easy|Hash|
+|5. 最长回文子串|Medium|动态规划|
 |7. 整数反转|Easy|限制判断|
 |9. 回文数|Easy|字符串，Two points|
 |13. 罗马数字转整数|Easy|字符串，技巧|
@@ -24,6 +25,9 @@ toc: true
 |38. 报数|Easy|字符串|
 |53. 最大子序和|Easy|动态规划|
 |58. 最后一个单词的长度|Easy|字符串|
+|62. 不同路径|Medium|动态规划|
+|63. 不同路径 II|Medium|动态规划|
+|64. 最小路径和|Medium|动态规划|
 |66. 加一|Easy|加法进位|
 |67. 二进制求和|Easy|加法进位|
 |69. x 的平方根|Easy|二分法|
@@ -31,6 +35,9 @@ toc: true
 |78. 子集|Medium|位运算|
 |83. 删除排序链表中的重复元素|Easy|单链表|
 |88. 合并两个有序数组|Easy|数组合并|
+|91. 解码方法|Medium|动态规划|
+|95. 不同的二叉搜索树 II|Medium|递归|
+|96. 不同的二叉搜索树|Medium|动态规划|
 |98. 验证二叉搜索树|Medium|二叉搜索树|
 |100. 相同的树|Easy|二叉树|
 |101. 对称二叉树|Easy|二叉树|
@@ -49,6 +56,7 @@ toc: true
 |117. 填充每个节点的下一个右侧节点指针 II|Medium|层次遍历|
 |118. 杨辉三角|Easy|简单模拟|
 |119. 杨辉三角 II|Easy|动态规划|
+|120. 三角形最小路径和|Medium|动态规划|
 |121. 买卖股票的最佳时机|Easy|动态规划|
 |122. 买卖股票的最佳时机 II|Easy|动态规划|
 |125. 验证回文串|Easy|字符串|
@@ -56,7 +64,9 @@ toc: true
 |130. 被围绕的区域|Medium|并查集|
 |133. 克隆图|Medium|BFS+Map|
 |136. 只出现一次的数字|Easy|逻辑|
+|139. 单词拆分|Medium|动态规划|
 |141. 环形链表|Easy|单链表，快慢指针|
+|152. 乘积最大子序列|Medium|动态规划|
 |155. 最小栈|Easy|栈|
 |160. 相交链表|Easy|双指针|
 |167. 两数之和 II - 输入有序数组|Easy|Hash|
@@ -78,8 +88,10 @@ toc: true
 |206. 反转链表|Easy|单链表|
 |207. 课程表|Medium|拓扑排序|
 |210. 课程表 II|Medium|拓扑排序|
+|213. 打家劫舍 II|Medium|动态规划|
 |217. 存在重复元素|Easy|Hash|
 |219. 存在重复元素 II|Easy|Hash|
+|221. 最大正方形|Medium|动态规划|
 |225. 用队列实现栈|Easy|队列|
 |226. 翻转二叉树|Easy|二叉树|
 |231. 2的幂|Easy|快速幂|
@@ -4201,7 +4213,7 @@ public:
 输入: [9,6,4,2,3,5,7,0,1]
 输出: 8
 **Program**
-①位运算，$O(n)$，[0...n]异或，而数组缺少其中一个，故整体两次异或编程0，单独一次异或的就是缺失的了
+位运算，$O(n)$，[0...n]异或，而数组缺少其中一个，故整体两次异或编程0，单独一次异或的就是缺失的了
 ```cpp
 class Solution {
 public:
@@ -4214,10 +4226,6 @@ public:
         return result;
     }
 };
-```
-②数学，$O(1)$
-```cpp
-
 ```
 ## 318. 最大单词长度乘积
 **Description**
@@ -6109,6 +6117,575 @@ public:
         int nCount=st.size();
         if(resLine<nCount-1) return -1;
         return nCount-1;
+    }
+};
+```
+## 5. 最长回文子串
+**Description**
+给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。
+**Example**
+示例 1：
+输入: "babad"
+输出: "bab"
+注意: "aba" 也是一个有效答案。
+
+示例 2：
+输入: "cbbd"
+输出: "bb"
+**Program**
+```cpp
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int n=s.length();
+        if(n==0) return s;
+        vector<vector<int>> DP;
+        DP.resize(n);
+        int maxLen=1, l=0, r=0;
+        for(int i=0;i<n;i++){
+            DP[i].resize(n, 0);
+            DP[i][i]=1;
+        }
+        for(int i=0;i<n-1;i++){
+            if(s[i]==s[i+1]){
+                DP[i][i+1]=1;
+                if(maxLen==1){
+                    maxLen=2;
+                    l=i;
+                    r=i+1;
+                }
+            }
+        }
+        for(int len=3;len<=n;len++){
+            for(int i=0;i+len-1<n;i++){
+                int j=i+len-1;
+                if(s[i]==s[j]) DP[i][j]=DP[i+1][j-1];
+                if(DP[i][j]==1&&len>maxLen){
+                    maxLen=len;
+                    l=i;
+                    r=j;
+                }
+            }
+        }
+        return s.substr(l, maxLen);
+    }
+};
+```
+## 62. 不同路径
+**Description**
+一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为“Start” ）。
+机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。
+问总共有多少条不同的路径？
+![image](/assets/img/algorithm/robot_maze.png)
+例如，上图是一个7 x 3 的网格。有多少可能的路径？
+说明：m 和 n 的值均不超过 100。
+**Example**
+示例 1:
+输入: m = 3, n = 2
+输出: 3
+解释:
+从左上角开始，总共有 3 条路径可以到达右下角。
+1. 向右 -> 向右 -> 向下
+2. 向右 -> 向下 -> 向右
+3. 向下 -> 向右 -> 向右
+
+示例 2:
+输入: m = 7, n = 3
+输出: 28
+**Program**
+```cpp
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        vector<int> DP;
+        DP.resize(n,0);
+        DP[0]=1;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(j>0) DP[j]+=DP[j-1];
+            }
+        }
+        return DP[n-1];
+    }
+};
+```
+## 63. 不同路径 II
+**Description**
+一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为“Start” ）。
+机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。
+现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？
+![image](/assets/img/algorithm/robot_maze.png)
+网格中的障碍物和空位置分别用 1 和 0 来表示。
+说明：m 和 n 的值均不超过 100。
+**Example**
+示例 1:
+输入:
+[
+  [0,0,0],
+  [0,1,0],
+  [0,0,0]
+]
+输出: 2
+解释:
+3x3 网格的正中间有一个障碍物。
+从左上角到右下角一共有 2 条不同的路径：
+1. 向右 -> 向右 -> 向下 -> 向下
+2. 向下 -> 向下 -> 向右 -> 向右
+**Program**
+```cpp
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        if(obstacleGrid.size()==0) return 0;
+        int m=obstacleGrid.size();
+        int n=obstacleGrid[0].size();
+        vector<long long> DP;
+        DP.resize(n, 0);
+        DP[0]=1;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(j>0) DP[j]+=DP[j-1];
+                if(obstacleGrid[i][j]==1) DP[j]=0;
+            }
+        }
+        return DP[n-1];
+    }
+};
+```
+## 64. 最小路径和
+**Description**
+给定一个包含非负整数的 m x n 网格，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
+说明：每次只能向下或者向右移动一步。
+**Example**
+示例:
+输入:
+[
+  [1,3,1],
+  [1,5,1],
+  [4,2,1]
+]
+输出: 7
+解释: 因为路径 1→3→1→1→1 的总和最小。
+**Program**
+```cpp
+class Solution {
+public:
+    int minPathSum(vector<vector<int>>& grid) {
+        if(grid.size()==0) return 0;
+        int m=grid.size();
+        int n=grid[0].size();
+        vector<int> DP=grid[0];
+        for(int i=1;i<n;i++) DP[i]+=DP[i-1];
+        for(int i=1;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(j>0) DP[j]=min(DP[j], DP[j-1]);
+                DP[j]+=grid[i][j];
+            }
+        }
+        return DP[n-1];
+    }
+};
+```
+## 91. 解码方法
+**Description**
+一条包含字母 A-Z 的消息通过以下方式进行了编码：
+'A' -> 1
+'B' -> 2
+...
+'Z' -> 26
+给定一个只包含数字的非空字符串，请计算解码方法的总数。
+**Example**
+示例 1:
+输入: "12"
+输出: 2
+解释: 它可以解码为 "AB"（1 2）或者 "L"（12）。
+
+示例 2:
+输入: "226"
+输出: 3
+解释: 它可以解码为 "BZ" (2 26), "VF" (22 6), 或者 "BBF" (2 2 6) 。
+**Program**
+计算DP[n]时，
+①若s[n]满足要求，DP[n]=DP[n-1];否则0;
+②若s[n-1]与s[n]构成两位数满足条件(9<value<27), DP[n]+=DP[n-2];如果value==0,直接return 0;
+注意DP[2]是关键！
+```cpp
+class Solution {
+public:
+    int numDecodings(string s) {
+        int n=s.length();
+        if(s[0]=='0') return 0;
+        if(n==1) return 1;
+        vector<int> DP(n, 0);
+        DP[0]=1;
+        int value=(s[0]-'0')*10+(s[1]-'0');
+        if(value==10||value==20) DP[1]=1;
+        else if(value>9&&value<27) DP[1]=2;
+        else if(s[1]=='0') DP[1]=0;
+        else DP[1]=1;
+        for(int i=2;i<n;i++){
+            value=(s[i-1]-'0')*10+(s[i]-'0');
+            if(s[i]!='0') DP[i]=DP[i-1];
+            if(value==0) return 0;
+            if(value>9&&value<27) DP[i]+=DP[i-2];
+        }
+        return DP[n-1];
+    }
+};
+```
+## 95. 不同的二叉搜索树 II
+**Description**
+给定一个整数 n，生成所有由 1 ... n 为节点所组成的二叉搜索树。
+**Example**
+示例:
+输入: 3
+输出:
+[
+  [1,null,3,2],
+  [3,2,null,1],
+  [3,1,null,null,2],
+  [2,1,3],
+  [1,null,2,null,3]
+]
+解释:
+以上的输出对应以下 5 种不同结构的二叉搜索树：
+```
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+```
+**Program**
+递归中，需要遍历所有情况，但是问题在于左右子树遍历时，如果直接想得到一棵树不可能，因为一次遍历只能得到左/右子树的所有情况，所以必须拼接！！
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<TreeNode*> generateTrees(int n) {
+        if(n==0) return {};
+        return tree(1, n);
+    }
+    vector<TreeNode*> tree(int l, int r){
+        if(l>r) return {NULL};
+        vector<TreeNode*> result;
+        for(int i=l;i<=r;i++){
+            vector<TreeNode*> leftTree, rightTree;
+            leftTree=tree(l, i-1);
+            rightTree=tree(i+1, r);
+            for(TreeNode* lt:leftTree){
+                for(TreeNode* rt:rightTree){
+                    TreeNode* root=new TreeNode(i);
+                    root->left=lt;
+                    root->right=rt;
+                    result.push_back(root);
+                }
+            }
+        }
+        return result;
+    }
+};
+```
+## 96. 不同的二叉搜索树
+**Description**
+给定一个整数 n，求以 1 ... n 为节点组成的二叉搜索树有多少种？
+**Example**
+示例:
+输入: 3
+输出: 5
+解释:
+给定 n = 3, 一共有 5 种不同结构的二叉搜索树:
+```
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+```
+**Program**
+DP[n]：序列n为节点组成的二叉搜索树的个数
+$DP[n]=sum((DP[i-1]*DP[n-i]) for i in range(1, n))$
+DP[i-1] 为选择i为根结点下左子树组成的个数，DP[n-i]表示选择i为根结点下右子树组成的个数
+边界条件DP[0]=DP[1]=1
+```cpp
+class Solution {
+public:
+    int numTrees(int n) {
+        vector<int> DP(n+1, 0);
+        DP[0]=DP[1]=1;
+        //DP[n]=sum((DP[i-1]*DP[n-i]) for i in range(1, n))
+        for(int i=2;i<=n;i++){
+            for(int j=1;j<=i;j++){
+                DP[i]+=DP[j-1]*DP[i-j];
+            }
+        }
+        return DP[n];
+    }
+};
+```
+DP[n]满足卡特兰数！
+```cpp
+class Solution {
+public:
+    int numTrees(int n) {
+        vector<long> DP(n+1, 0);
+        DP[0]=1;
+        for(int i=0;i<n;i++){
+            DP[i+1]=DP[i]*2*(2*i+1)/(i+2);
+        }
+        return DP[n];
+    }
+};
+```
+## 120. 三角形最小路径和
+**Description**
+给定一个三角形，找出自顶向下的最小路径和。每一步只能移动到下一行中相邻的结点上。
+**Example**
+例如，给定三角形：
+[
+     [2],
+    [3,4],
+   [6,5,7],
+  [4,1,8,3]
+]
+自顶向下的最小路径和为 11（即，2 + 3 + 5 + 1 = 11）。
+
+说明：
+如果你可以只使用$O(n)$的额外空间（n 为三角形的总行数）来解决这个问题，那么你的算法会很加分。
+**Program**
+```cpp
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int n=triangle.size();
+        vector<int> &DP=triangle[n-1];
+        for(int i=n-2;i>=0;i--){
+            for(int j=0;j<i+1;j++){
+                DP[j]=min(DP[j], DP[j+1])+triangle[i][j];
+            }
+        }
+        return DP[0];
+    }
+};
+```
+## 139. 单词拆分
+**Description**
+给定一个非空字符串 s 和一个包含非空单词列表的字典 wordDict，判定 s 是否可以被空格拆分为一个或多个在字典中出现的单词。
+说明：
+拆分时可以重复使用字典中的单词。
+你可以假设字典中没有重复的单词。
+**Example**
+示例 1：
+输入: s = "leetcode", wordDict = ["leet", "code"]
+输出: true
+解释: 返回 true 因为 "leetcode" 可以被拆分成 "leet code"。
+
+示例 2：
+输入: s = "applepenapple", wordDict = ["apple", "pen"]
+输出: true
+解释: 返回 true 因为 "applepenapple" 可以被拆分成 "apple pen apple"。
+     注意你可以重复使用字典中的单词。
+
+示例 3：
+输入: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
+输出: false
+**Program**
+DP[n]=DP[i]&&has(s(i+1, n))
+```cpp
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> st(wordDict.begin(), wordDict.end());
+        int n=s.length();
+        vector<bool> DP(n+1, false);
+        DP[0]=true;
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=i;j++){
+                if(DP[j-1]&&st.find(s.substr(j-1, i-j+1))!=st.end()){
+                    DP[i]=true;
+                    break;
+                }
+            }
+        }
+        return DP[n];
+    }
+};
+```
+## 152. 乘积最大子序列
+**Description**
+给定一个整数数组 nums ，找出一个序列中乘积最大的连续子序列（该序列至少包含一个数）。
+**Example**
+示例 1:
+输入: [2,3,-2,4]
+输出: 6
+解释: 子数组 [2,3] 有最大乘积 6。
+
+示例 2:
+输入: [-2,0,-1]
+输出: 0
+解释: 结果不能为 2, 因为 [-2,-1] 不是子数组。
+**Program**
+很自然地想到$DP[i]=max(DP[i-1]*nums[i], nums[i])$，但是数组存在负数，必须维护两个值，当前最小值和当前最大值，即
+$imax=max(imax*nums[i], nums[i]),imin=min(imin*nums[i], nums[i])$，当出现负数交换两值！！！因为负数出现必然要用最小值（负数）才得到更大的数！
+```cpp
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int n=nums.size();
+        int ans=INT_MIN;
+        int imax=1, imin=1;
+        for(int i=0;i<n;i++){
+            if(nums[i]<0) swap(imax, imin);
+            imax=max(imax*nums[i], nums[i]);
+            imin=min(imin*nums[i], nums[i]);
+            ans=max(imax, ans);
+        }
+        return ans;
+    }
+};
+```
+## 213. 打家劫舍 II
+**Description**
+你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。这个地方所有的房屋都围成一圈，这意味着第一个房屋和最后一个房屋是紧挨着的。同时，相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。
+给定一个代表每个房屋存放金额的非负整数数组，计算你在不触动警报装置的情况下，能够偷窃到的最高金额。
+**Example**
+示例 1:
+输入: [2,3,2]
+输出: 3
+解释: 你不能先偷窃 1 号房屋（金额 = 2），然后偷窃 3 号房屋（金额 = 2）, 因为他们是相邻的。
+
+示例 2:
+输入: [1,2,3,1]
+输出: 4
+解释: 你可以先偷窃 1 号房屋（金额 = 1），然后偷窃 3 号房屋（金额 = 3）。
+     偷窃到的最高金额 = 1 + 3 = 4 。
+**Program**
+由于成环，所以首尾两个数必须不能同时取，则划分成两个子问题：
+①不包含第一个数
+②不包含最后一个数
+两个子问题下求解的不成环单列最大值中取最值就是最终答案！
+```cpp
+class Solution {
+public:
+    int cal(vector<int>& nums){
+        if(nums.size()==0) return 0;
+        if(nums.size()==1) return nums[0];
+        vector<int> DP;
+        DP.resize(nums.size());
+        for(int i=0;i<nums.size();i++) DP[i]=nums[i];
+        int ans=max(DP[0], DP[1]);
+        for(int i=2;i<nums.size();i++){
+            if(i-3<0){
+                DP[i]+=DP[i-2];
+            }else{
+                DP[i] += max(DP[i-2], DP[i-3]);
+            }
+            ans=max(ans, DP[i]);
+        }
+        return ans;
+    }
+    int rob(vector<int>& nums) {
+        if(nums.size()==0) return 0;
+        if(nums.size()==1) return nums[0];
+        vector<int> x1(nums.begin(), nums.end()-1);
+        vector<int> x2(nums.begin()+1, nums.end());
+        int ans1=cal(x1);
+        int ans2=cal(x2);
+        return max(ans1, ans2);
+    }
+};
+```
+## 221. 最大正方形
+**Description**
+在一个由 0 和 1 组成的二维矩阵内，找到只包含 1 的最大正方形，并返回其面积。
+**Example**
+示例:
+输入:
+1 0 1 0 0
+1 0 1 1 1
+1 1 1 1 1
+1 0 0 1 0
+输出: 4
+**Program**
+设$DP[i][j]$为以(i,j)为正方形右下角的正方形边长,$DP[i][j]=max(DP[i-1][j-1],DP[i-1][j],DP[i][j-1])+1 if matrix[i][j]==1 else 0$
+```cpp
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        if(matrix.size()==0) return 0;
+        int m=matrix.size();
+        int n=matrix[0].size();
+        vector<vector<int>> DP(m);
+        for(int i=0;i<m;i++) DP[i].resize(n,0);
+        int radius=0;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(matrix[i][j]=='1'){
+                    DP[i][j]=1;
+                    radius=1;
+                }
+            }
+        }
+        for(int i=1;i<m;i++){
+            for(int j=1;j<n;j++){
+                if(DP[i][j]==1){
+                    DP[i][j]=min(DP[i-1][j], DP[i][j-1]);
+                    DP[i][j]=min(DP[i][j], DP[i-1][j-1])+1;
+                    radius=max(radius, DP[i][j]);
+                }
+            }
+        }
+        return radius*radius;
+    }
+};
+```
+空间优化：
+DP[i][j]在更新的过程中只用到了三个位置DP[i-1][j-1],DP[i-1][j],DP[i][j-1](即，左上，上，左)，考虑用一维数组更新，会发现DP[j]=max(DP[j-1],DP[j])，然而DP[j-1]已经发生了更新覆盖掉了左上那个DP值，所以正确的递推公式为：$DP[i]=max(DP[i-1],DP[i], pre) if matrix[i][j]=1 else 0$其中$pre$为左上元素DP值。
+```cpp
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        if(matrix.size()==0) return 0;
+        int m=matrix.size();
+        int n=matrix[0].size();
+        vector<int>DP(n,0);
+        int radius=0;
+        for(int i=0;i<n;i++){
+            if(matrix[0][i]=='1'){
+                DP[i]=1;
+                radius=1;
+            }
+        }
+        int pre=0;
+        for(int i=1;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(matrix[i][j]=='1'){
+                    if(j==0){  
+                        pre=DP[j];
+                        DP[j]=1;
+                    }else{
+                        int tmp=DP[j];
+                        DP[j]=min(DP[j], DP[j-1]);
+                        DP[j]=min(DP[j], pre)+1;
+                        pre=tmp;
+                    }
+
+                }else{
+                    pre=DP[j];
+                    DP[j]=0;
+                }
+                radius=max(radius, DP[j]);
+            }
+        }
+        return radius*radius;
     }
 };
 ```

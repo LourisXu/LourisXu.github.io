@@ -12,8 +12,9 @@
     "version": "4.2.0"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
     "core-js": "^3.6.1",
-    "hexo": "^4.0.0",
+    "hexo": "^4.2.0",
     "hexo-deployer-git": "^2.1.0",
     "hexo-filter-flowchart": "^1.0.4",
     "hexo-filter-github-emojis": "^2.1.0",
@@ -29,6 +30,7 @@
     "hexo-server": "^1.0.0",
     "hexo-tag-aplayer": "^3.0.4",
     "hexo-tag-dplayer": "^0.3.3",
+    "hexo-translate-title-vss": "^1.0.14",
     "live2d-widget-model-hijiki": "^1.0.5"
   },
   "devDependencies": {
