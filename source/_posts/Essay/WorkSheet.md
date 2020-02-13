@@ -18,14 +18,6 @@ date: 2019-05-18 09:29:30
 |1.[算法](https://louris.cn/2019/02/17/algorithm-note.html/):树、查找树、平很二叉树、图论、动态规划、并查集、堆、哈夫曼树、字符串篇<br>2.[Python学习](https://github.com/apachecn/ai-roadmap/blob/master/ai-union-201904/README.md):Numpy Matplotlib<br>3.[目标检测](https://segmentfault.com/a/1190000016138673?tdsourcetag=s_pctim_aiomsg)(Object Detection):<br>- [基于图的图像分割](https://blog.csdn.net/huixingshao/article/details/42642973/)(Graph-Based Image Segmentation): [PDF](/assets/files/papers/Efficient_Graph-Based_Image_Segmentation.pdf)<br>- [图像梯度](https://blog.csdn.net/saltriver/article/details/78987096)<br>- [Sobel算子](https://blog.csdn.net/qq_29540745/article/details/51918004): [PDF](/assets/files/papers/History_and_Definition_of_Sobel_Operator.pdf)<br>- [梯度直方图](https://blog.csdn.net/nchfgfb/article/details/78708636)：[Article Link](https://www.learnopencv.com/histogram-of-oriented-gradients/#disqus_thread)<br>- [选择性搜索](https://blog.csdn.net/guoyunfei20/article/details/78723646)(Selective Search)：[Article Link](https://www.learnopencv.com/selective-search-for-object-detection-cpp-python/)<br>- [支持向量机SVM](http://www.blogjava.net/zhenandaci/archive/2009/02/13/254519.html)(Support Vector Machine)<br>4.[Linux学习](http://c.biancheng.net/view/3608.html)<br>5.[Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/overview.html)<br>6.Caffe搭建(失败)<br>|2019.06.22--07.01|
 |1.[动手学深度学习](http://zh.d2l.ai/index.html)----CV部分完成(Tag: [DL](https://louris.cn/2019/07/05/deep-learning.html/))<br>2.三个项目实验<br>3.五篇论文精读（见Tag: papers）<br>4.八月份开始《算法笔记实战》截止10月6号完成[PAT甲级](https://louris.cn/2019/08/14/pat-class-a.html/)90题(Tag: Algorithm/PAT甲级) |2019.07.02-10.06|
 
-|周报|
-|:--:|
-|[194712154_徐磊_2019_09_08_周报](/assets/files/194712154_徐磊_2019_09_08_周报.pdf)|
-|[194712154_徐磊_2019_09_15_周报](/assets/files/194712154_徐磊_2019_09_15_周报.pdf)|
-|[194712154_徐磊_2019_09_22_周报](/assets/files/194712154_徐磊_2019_09_22_周报.pdf)|
-|[194712154_徐磊_2019_09_29_周报](/assets/files/194712154_徐磊_2019_09_29_周报.pdf)|
-|[194712154_徐磊_2019_10_06_周报](/assets/files/194712154_徐磊_2019_10_06_周报.pdf)|
-
 1.SSD: Single Shot MultiBox Detector：https://blog.csdn.net/u010167269/article/details/52563573
 2.Object Detection：https://handong1587.github.io/deep_learning/2015/10/09/object-detection.html
 3.RCNN算法详解：https://blog.csdn.net/shenxiaolu1984/article/details/51066975
