@@ -108,18 +108,29 @@ toc: true
 |309. 最佳买卖股票时机含冷冻期|Medium|动态规划|
 |315. 计算右侧小于当前元素的个数|Hard|树状数组|
 |318. 最大单词长度乘积|Medium|位运算|
+|322. 零钱兑换|Medium|动态规划|
 |332. 重新安排行程|Medium|欧拉回路、深搜|
 |338. 比特位计数|Medium|位运算+动态规划|
 |342. 4的幂|Easy|位运算|
+|343. 整数拆分|Medium|动态规划|
+|357. 计算各个位数不同的数字个数|Medium|动态规划|
+|368. 最大整除子集|Medium|动态规划|
 |371. 两整数之和|Easy|位运算|
+|375. 猜数字大小 II|Medium|动态规划|
+|376. 摆动序列|Medium|动态规划|
+|377. 组合总和 Ⅳ|Medium|动态规划|
 |389. 找不同|Easy|位运算|
+|392. 判断子序列|Medium|动态规划|
 |393. UTF-8 编码验证|Medium|位运算|
 |397. 整数替换|Medium|位运算、动态规划|
 |399. 除法求值|Medium|并查集|
 |401. 二进制手表|Easy|位运算|
 |405. 数字转换为十六进制数|Easy|位运算|
+|416. 分割等和子集|Medium|动态规划|
 |421. 数组中两个数的最大异或值|Medium|位运算|
 |461. 汉明距离|Easy|位运算|
+|464. 我能赢吗|Medium|动态规划|
+|467. 环绕字符串中唯一的子字符串|Medium|动态规划|
 |476. 数字的补数|Easy|位运算|
 |477. 汉明距离总和|Medium|位运算|
 |547. 朋友圈|Medium|并查集|
@@ -7496,3 +7507,676 @@ int maxProfit_k_any(int max_k, int[] prices) {
 买卖股票的最佳时机 IV
 最佳买卖股票时机含冷冻期
 买卖股票的最佳时机含手续费
+## 322. 零钱兑换
+**Description**
+给定不同面额的硬币 coins 和一个总金额 amount。编写一个函数来计算可以凑成总金额所需的最少的硬币个数。如果没有任何一种硬币组合能组成总金额，返回 -1。
+**Example**
+示例 1:
+输入: coins = [1, 2, 5], amount = 11
+输出: 3
+解释: 11 = 5 + 5 + 1
+
+示例 2:
+输入: coins = [2], amount = 3
+输出: -1
+**Program**
+DP[m][i]=min{DP[m][i-1], DP[m-v[i]][i]+1}，注意边界：DP[0][i]=0, DP[m][0]=inf if m<v[i] else DP[m-v[i]][i]+1;
+```cpp
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        if(coins.size()==0) return -1;
+        int n=coins.size();
+        int** DP=new int*[amount+1];
+        for(int i=0;i<amount+1;i++) DP[i]=new int[n];
+        for(int m=0;m<amount+1;m++){
+            for(int i=0;i<n;i++){
+                if(m==0){
+                    DP[m][i]=0;
+                    continue;
+                }
+                if(i==0){
+                    if(m>=coins[i]) DP[m][i]=DP[m-coins[i]][i]+1;
+                    else DP[m][i]=0X3f3f3f3f;
+                    continue;
+                }
+                if(m>=coins[i]) DP[m][i]=min(DP[m][i-1], DP[m-coins[i]][i]+1);
+                else DP[m][i]=DP[m][i-1];
+            }
+        }
+        return (DP[amount][n-1]>=0x3f3f3f3f)?-1:DP[amount][n-1];
+    }
+};
+```
+$DP[m]=1+min(DP[m-c_i]+1), i\in{[1, k]}$，边界DP[0]=0;
+```cpp
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        if(coins.size()==0) return -1;
+        int n=coins.size();
+        vector<int> DP(amount+1, 0x3f3f3f3f);
+        DP[0]=0;
+        for(int m=0;m<amount+1;m++){
+            for(int w:coins){
+                if(w<=m) DP[m]=min(DP[m], DP[m-w]+1);
+            }
+        }
+        return (DP[amount]>=0x3f3f3f3f)?-1:DP[amount];
+    }
+};
+```
+## 343. 整数拆分
+**Description**
+给定一个正整数 n，将其拆分为至少两个正整数的和，并使这些整数的乘积最大化。 返回你可以获得的最大乘积。
+**Example**
+示例 1:
+输入: 2
+输出: 1
+解释: 2 = 1 + 1, 1 × 1 = 1。
+
+示例 2:
+输入: 10
+输出: 36
+解释: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36。
+说明: 你可以假设 n 不小于 2 且不大于 58。
+**Program**
+i>3时，DP[i]>=i，递推公式DP[i]=max(DP[i], DP[j]*(i-j))，但是注意到题目要求至少两个正整数之和，那么主要到1~3这三个数题目所求乘积小于自身，那么后面比这几个数大的数，在运用这个递推公式的时候回出现问题，所以要特判！！
+```cpp
+class Solution {
+public:
+    int integerBreak(int n) {
+        vector<int> DP(n+1, 0);
+        DP[1]=1;
+        for(int i=2;i<n+1;i++){
+            for(int j=1;j<i;j++){
+                int x=(j<=3)?j:DP[j];
+                DP[i]=max(DP[i], x*(i-j));
+            }
+        }
+        return DP[n];
+    }
+};
+```
+## 357. 计算各个位数不同的数字个数
+**Description**
+给定一个非负整数 n，计算各位数字都不同的数字 x 的个数，其中 $0 ≤ x < 10^n$ 。
+**Example**
+示例:
+输入: 2
+输出: 91
+解释: 答案应为除去 11,22,33,44,55,66,77,88,99 外，在 [0,100) 区间内的所有数字。
+。
+**Program**
+$DP[n]=DP[n-1]+9 \* C_9^n \* A_n^n=DP[n-1]+9\*A_9^{(n-1)};$
+区间$[0,10^n)=[0,1)+[1,10)+...+[10^{(n-1)}, 10^n)$，即不同的个数由各x位不同数字个数之和
+```cpp
+class Solution {
+public:
+    int countNumbersWithUniqueDigits(int n) {
+        vector<int> DP(11);
+        DP[0]=1;
+        int pre=1;
+        for(int i=1;i<=10;i++){
+            DP[i]=DP[i-1]+9*pre;
+            pre=pre*(10-i);
+        }
+        if(n<=10) return DP[n];
+        else return DP[10];
+    }
+};
+```
+## 368. 最大整除子集
+**Description**
+给出一个由无重复的正整数组成的集合，找出其中最大的整除子集，子集中任意一对 (Si，Sj) 都要满足：Si % Sj = 0 或 Sj % Si = 0。
+如果有多个目标子集，返回其中任何一个均可。
+**Example**
+示例 1:
+输入: [1,2,3]
+输出: [1,2] (当然, [1,3] 也正确)
+
+示例 2:
+输入: [1,2,4,8]
+输出: [1,2,4,8]
+**Program**
+```cpp
+class Solution {
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        if(nums.size()==0) return {};
+        int n=nums.size();
+        vector<vector<int>> DP;
+        DP.resize(n);
+        sort(nums.begin(), nums.end());
+        DP[0]=vector<int>(1,nums[0]);
+
+        int idx=0;
+        for(int i=1;i<n;i++){
+            for(int j=0;j<i;j++){
+                int nTmp=DP[j].size();
+                int x=DP[j][nTmp-1];
+                if(nums[i]%x==0&&nTmp+1>DP[i].size()){
+                    vector<int> vec(DP[j].begin(), DP[j].end());
+                    vec.push_back(nums[i]);
+                    DP[i]=vec;
+                    if(DP[idx].size()<DP[i].size()) idx=i;
+                }else if(DP[i].size()==0){
+                    vector<int> vec(1, nums[i]);
+                    DP[i]=vec;
+                }
+            }
+        }
+        return DP[idx];
+    }
+};
+```
+## 375. 猜数字大小 II
+**Description**
+我们正在玩一个猜数游戏，游戏规则如下：
+我从 1 到 n 之间选择一个数字，你来猜我选了哪个数字。
+每次你猜错了，我都会告诉你，我选的数字比你的大了或者小了。
+然而，当你猜了数字 x 并且猜错了的时候，你需要支付金额为 x 的现金。直到你猜到我选的数字，你才算赢得了这个游戏。
+**Example**
+示例:
+n = 10, 我选择了8.
+第一轮: 你猜我选择的数字是5，我会告诉你，我的数字更大一些，然后你需要支付5块。
+第二轮: 你猜是7，我告诉你，我的数字更大一些，你支付7块。
+第三轮: 你猜是9，我告诉你，我的数字更小一些，你支付9块。
+游戏结束。8 就是我选的数字。
+你最终要支付 5 + 7 + 9 = 21 块钱。
+给定 n ≥ 1，计算你至少需要拥有多少现金才能确保你能赢得这个游戏。
+**Program**
+**①暴力**
+$DP[1, n]=min(i+max(DP[1, i-1], DP[i+1, n])), i\in[1, n]$;
+选择第i个数，然后比较左右两边值大小去最大值，最后去所有i下最小值
+时间复杂度: $O(n!)$
+```cpp
+class Solution {
+public:
+    int cal(int l, int r){
+        if(l>=r) return 0;
+        int minValue=0x3f3f3f3f;
+        for(int i=l;i<=r;i++){
+            int value=i+max(cal(l,i-1), cal(i+1, r));
+            minValue=min(minValue, value);
+        }
+        return minValue;
+    }
+    int getMoneyAmount(int n) {
+        return cal(1, n);
+    }
+};
+```
+**②DP**
+```cpp
+int getMoneyAmount(int n) {
+        vector<vector<int>> DP(n+1);
+        for(int i=0;i<n+1;i++) DP[i].resize(n+1, 0);
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=n;j++){
+                int minValue=0x3f3f3f3f;
+                for(int k=i;k<=j;k++){
+                    int value=0;
+                    if(k+1<=j) value=k+max(DP[i][k-1], DP[k+1][j]);
+                    else value=k+DP[i][k-1];
+                    minValue=min(minValue, value);
+                }
+                DP[i][j]=minValue;
+            }
+        }
+        return DP[1][n];
+    }
+```
+一般思路可能那么写代码，但是注意这种写法顺序$DP[k+1][j]$在没计算出来之前就被用到了！！！
+所以就不能那么写！
+注意每次抽取k值，那么会导致一段一段的$DP[i][j]$，有没有感觉？？最长回文子串的写法！！！
+时间复杂度：$O(n^3)$
+```cpp
+class Solution {
+public:
+    int getMoneyAmount(int n) {
+        vector<vector<int>> DP(n+1);
+        for(int i=0;i<n+1;i++) DP[i].resize(n+1, 0);
+        for(int len=2;len<=n;len++){
+            for(int i=1;i<=n-len+1;i++){
+                int j=i+len-1;
+                int minValue=0x3f3f3f3f;
+                for(int k=i;k<=j;k++){
+                    int value=0;
+                    if(k==j) value=k+DP[i][k-1];
+                    else if(k==i) value=k+DP[k+1][j];
+                    else value=k+max(DP[i][k-1], DP[k+1][j]);
+                    minValue=min(minValue, value);
+                }
+                DP[i][j]=minValue;
+            }
+        }
+        return DP[1][n];
+    }
+
+};
+```
+## 376. 摆动序列
+**Description**
+如果连续数字之间的差严格地在正数和负数之间交替，则数字序列称为摆动序列。第一个差（如果存在的话）可能是正数或负数。少于两个元素的序列也是摆动序列。
+例如， [1,7,4,9,2,5] 是一个摆动序列，因为差值 (6,-3,5,-7,3) 是正负交替出现的。相反, [1,4,7,2,5] 和 [1,7,4,5,5] 不是摆动序列，第一个序列是因为它的前两个差值都是正数，第二个序列是因为它的最后一个差值为零。
+给定一个整数序列，返回作为摆动序列的最长子序列的长度。 通过从原始序列中删除一些（也可以不删除）元素来获得子序列，剩下的元素保持其原始顺序。
+**Example**
+示例 1:
+输入: [1,7,4,9,2,5]
+输出: 6
+解释: 整个序列均为摆动序列。
+
+示例 2:
+输入: [1,17,5,10,13,15,10,5,16,8]
+输出: 7
+解释: 这个序列包含几个长度为 7 摆动序列，其中一个可为[1,17,10,13,10,16,8]。
+
+示例 3:
+输入: [1,2,3,4,5,6,7,8,9]
+输出: 2
+进阶:
+你能否用$O(n)$时间复杂度完成此题?
+**Program**
+①$DP[i]=max(DP[i], DP[j]+1)$
+```cpp
+class Solution {
+public:
+    int wiggleMaxLength(vector<int>& nums) {
+        int n=nums.size();
+        if(n==0) return 0;
+        vector<int>DP(n, 1);
+        vector<int> flag(n, 0);
+        int result=1;
+        for(int i=1;i<n;i++){
+            for(int j=0;j<i;j++){
+                if(flag[j]>=0&&nums[i]<nums[j]&&DP[i]<DP[j]+1){
+                    DP[i]=DP[j]+1;
+                    flag[i]=-1;
+                }
+                if(flag[j]<=0&&nums[i]>nums[j]&&DP[i]<DP[j]+1){
+                    DP[i]=DP[j]+1;
+                    flag[i]=1;
+                }
+                result=max(result, DP[i]);
+            }
+        }
+        return result;
+    }
+};
+```
+②令$up[i]$表示以i为结尾的上升摆动序列，$down[i]$表示以i为结尾的下降摆动序列
+```cpp
+class Solution {
+public:
+    int wiggleMaxLength(vector<int>& nums) {
+        int n=nums.size();
+        if(n==0) return 0;
+        vector<int> up(n, 0), down(n ,0);
+        up[0]=down[0]=1;
+        for(int i=1;i<n;i++){
+            if(nums[i]>nums[i-1]){
+                up[i]=down[i-1]+1;
+                down[i]=down[i-1];
+            }
+            if(nums[i]<nums[i-1]){
+                down[i]=up[i-1]+1;
+                up[i]=up[i-1];
+            }
+            if(nums[i]==nums[i-1]){
+                down[i]=down[i-1];
+                up[i]=up[i-1];
+            }
+        }
+        return max(up[n-1], down[n-1]);
+    }
+};
+```
+③空间优化
+```cpp
+class Solution {
+public:
+    int wiggleMaxLength(vector<int>& nums) {
+        int n=nums.size();
+        if(n==0) return 0;
+        int up, down;
+        up=down=1;
+        for(int i=1;i<n;i++){
+            if(nums[i]>nums[i-1]){
+                up=down+1;
+            }
+            if(nums[i]<nums[i-1]){
+                down=up+1;
+            }
+        }
+        return max(up, down);
+    }
+};
+```
+## 377. 组合总和 Ⅳ
+**Description**
+给定一个由正整数组成且不存在重复数字的数组，找出和为给定目标正整数的组合的个数。
+**Example**
+示例:
+nums = [1, 2, 3]
+target = 4
+所有可能的组合为：
+(1, 1, 1, 1)
+(1, 1, 2)
+(1, 2, 1)
+(1, 3)
+(2, 1, 1)
+(2, 2)
+(3, 1)
+请注意，顺序不同的序列被视作不同的组合。
+因此输出为 7。
+**Program**
+暴力就是深搜，动规就是深搜的记忆化搜索翻版，$DP[v]=sum(DP[v-nums[i]]), i\in{[1, n)}$
+```cpp
+class Solution {
+public:
+    int combinationSum4(vector<int>& nums, int target) {
+        if(nums.size()==0&&target!=0) return 0;
+        int n=nums.size();
+        vector<unsigned long long> DP(target+1, 0);
+        DP[0]=1;
+        for(int i=1;i<=target;i++){
+            for(int v:nums){
+                if(i>=v){
+                    DP[i]+=DP[i-v];
+                }
+            }
+        }
+        return DP[target];
+    }
+};
+```
+## 392. 判断子序列
+**Description**
+给定字符串 s 和 t ，判断 s 是否为 t 的子序列。
+你可以认为 s 和 t 中仅包含英文小写字母。字符串 t 可能会很长（长度 ~= 500,000），而 s 是个短字符串（长度 <=100）。
+字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串。（例如，"ace"是"abcde"的一个子序列，而"aec"不是）。
+**Example**
+示例 1:
+s = "abc", t = "ahbgdc"
+返回 true.
+
+示例 2:
+s = "axc", t = "ahbgdc"
+返回 false.
+**Program**
+```cpp
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        if(s.length()>t.length()) return false;
+        int n=s.length();
+        int m=t.length();
+        int idx=0;
+        for(int i=0;i<m;i++){
+            if(s[idx]==t[i]){
+                idx++;
+            }
+        }
+        if(idx==n) return true;
+        else return false;
+    }
+};
+```
+## 413. 等差数列划分
+**Description**
+如果一个数列至少有三个元素，并且任意两个相邻元素之差相同，则称该数列为等差数列。
+例如，以下数列为等差数列:
+1, 3, 5, 7, 9
+7, 7, 7, 7
+3, -1, -5, -9
+以下数列不是等差数列。
+1, 1, 2, 5, 7
+数组 A 包含 N 个数，且索引从0开始。数组 A 的一个子数组划分为数组 (P, Q)，P 与 Q 是整数且满足 $0<=P<Q<N$ 。
+如果满足以下条件，则称子数组(P, Q)为等差数组：
+元素 A[P], A[p + 1], ..., A[Q - 1], A[Q] 是等差的。并且 P + 1 < Q 。
+函数要返回数组 A 中所有为等差数组的子数组个数。
+**Example**
+示例:
+A = [1, 2, 3, 4]
+返回: 3, A 中有三个子等差数组: [1, 2, 3], [2, 3, 4] 以及自身 [1, 2, 3, 4]。
+**Program**
+花里胡哨看不懂题目，题目就是求连续子序列满足等差数列的个数
+**①暴力**
+```cpp
+class Solution {
+public:
+    int numberOfArithmeticSlices(vector<int>& A) {
+        int n=A.size();
+        if(n<3) return 0;
+        int ans=0;
+        for(int i=0;i+2<n;i++){
+            int tmp=0;
+            for(int j=i+1;j<n;j++){
+                if(j==i+1){
+                    tmp=A[j]-A[j-1];
+                    continue;
+                }
+                if(A[j]-A[j-1]!=tmp) break;
+                else ans++;
+            }
+        }
+        return ans;
+    }
+};
+```
+**②DP**
+DP[i]表示以i为结尾的等差数列长度
+```cpp
+class Solution {
+public:
+    int numberOfArithmeticSlices(vector<int>& A) {
+        int n=A.size();
+        if(n<3) return 0;
+        int ans=0;
+        vector<int> DP(n, 0);
+        for(int i=2;i<n;i++){
+            if(DP[i-1]==0){
+                if(A[i]-A[i-1]==A[i-1]-A[i-2]) DP[i]=3;
+            }else if(A[i]-A[i-1]==A[i-1]-A[i-2]) DP[i]=DP[i-1]+1;
+            if(DP[i]>0) ans+=DP[i]-2;
+        }
+        return ans;
+    }
+};
+```
+DP[i]表示以i为结尾的等差子序列个数
+```cpp
+class Solution {
+public:
+    int numberOfArithmeticSlices(vector<int>& A) {
+        int n=A.size();
+        if(n<3) return 0;
+        int ans=0;
+        vector<int> DP(n, 0);
+        for(int i=2;i<n;i++){
+            if(A[i]-A[i-1]==A[i-1]-A[i-2]) DP[i]=DP[i-1]+1;
+            ans+=DP[i];
+        }
+        return ans;
+    }
+};
+```
+优化
+```cpp
+class Solution {
+public:
+    int numberOfArithmeticSlices(vector<int>& A) {
+        int n=A.size();
+        if(n<3) return 0;
+        int ans=0;
+        int dp=0;
+        for(int i=2;i<n;i++){
+            if(A[i]-A[i-1]==A[i-1]-A[i-2]) dp=dp+1;
+            else dp=0;
+            ans+=dp;
+        }
+        return ans;
+    }
+};
+```
+## 416. 分割等和子集
+**Description**
+给定一个只包含正整数的非空数组。是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
+注意:
+每个数组中的元素不会超过 100
+数组的大小不会超过 200
+**Example**
+示例 1:
+输入: [1, 5, 11, 5]
+输出: true
+解释: 数组可以分割成 [1, 5, 5] 和 [11].
+ 
+示例 2:
+输入: [1, 2, 3, 5]
+输出: false
+解释: 数组不能分割成两个元素和相等的子集.
+**Program**
+0-1背包，只要满足整个数组和的一半，取或不取就行了。
+```cpp
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        int ans=0;
+        int n=nums.size();
+        for(int x:nums) ans+=x;
+        if((ans&1)!=0) return false;
+        ans/=2;
+        vector<vector<bool>> DP(n);
+        for(int i=0;i<n;i++) DP[i].resize(ans+1, false);
+        for(int i=0;i<n;i++){
+            for(int v=0;v<=ans;v++){
+                if(v==0){
+                    DP[i][v]=true;
+                    continue;
+                }
+                if(i!=0&&v>=nums[i]) DP[i][v]=DP[i-1][v]||DP[i-1][v-nums[i]];
+                else if(i!=0) DP[i][v]=DP[i-1][v];
+            }
+        }
+        return DP[n-1][ans];
+    }
+};
+```
+空间优化
+```cpp
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        int ans=0;
+        int n=nums.size();
+        for(int x:nums) ans+=x;
+        if((ans&1)!=0) return false;
+        ans/=2;
+        vector<bool> DP(ans+1, false);
+        DP[0]=true;
+        for(int i=1;i<n;i++){
+            for(int v=ans;v>=nums[i];v--){
+                DP[v]=DP[v]||DP[v-nums[i]];
+            }
+        }
+        return DP[ans];
+    }
+};
+```
+## 464. 我能赢吗
+**Description**
+在 "100 game" 这个游戏中，两名玩家轮流选择从 1 到 10 的任意整数，累计整数和，先使得累计整数和达到 100 的玩家，即为胜者。
+如果我们将游戏规则改为 “玩家不能重复使用整数” 呢？
+例如，两个玩家可以轮流从公共整数池中抽取从 1 到 15 的整数（不放回），直到累计整数和 >= 100。
+给定一个整数 maxChoosableInteger （整数池中可选择的最大数）和另一个整数 desiredTotal（累计和），判断先出手的玩家是否能稳赢（假设两位玩家游戏时都表现最佳）？
+你可以假设 maxChoosableInteger 不会大于 20， desiredTotal 不会大于 300。
+**Example**
+示例：
+输入：
+maxChoosableInteger = 10
+desiredTotal = 11
+输出：
+false
+解释：
+无论第一个玩家选择哪个整数，他都会失败。
+第一个玩家可以选择从 1 到 10 的整数。
+如果第一个玩家选择 1，那么第二个玩家只能选择从 2 到 10 的整数。
+第二个玩家可以通过选择整数 10（那么累积和为 11 >= desiredTotal），从而取得胜利.
+同样地，第一个玩家选择任意其他整数，第二个玩家都会赢。
+**Program**
+DP[num][total]=!DP[num|i][total-i] if i<total else 1;
+num用二进制表示共有maxChoosableInteger位，选择了i则其第i-1为数字为1，表示已选。
+DP[num][total]表示当前选取的num组合下先手在total下的输赢情况。
+```cpp
+class Solution {
+private:
+    bool helper(vector<int>& vis, int num, int mvalue, int total){
+        if(vis[num]!=-1) return vis[num];
+
+        for(int i=0;i<mvalue;i++){
+            int cur=(1<<i); //选择i+1
+            if((num&cur)) continue;
+            if(i+1>=total){
+                vis[num]=1;
+                break;
+            }
+            bool next=helper(vis, (num|cur), mvalue, total-i-1);
+            if(next==false){
+                vis[num]=1;
+                break;
+            }
+        }
+        if(vis[num]==-1) vis[num]=0;
+        return vis[num];
+    }
+public:
+    bool canIWin(int maxChoosableInteger, int desiredTotal) {
+        if((maxChoosableInteger*(maxChoosableInteger+1)/2)<desiredTotal) return false;
+        vector<int> vis((1<<maxChoosableInteger)-1, -1); //-1没计算，0和1代表计算后不能赢和能赢
+        int num=0;
+        return helper(vis, num, maxChoosableInteger, desiredTotal);
+    }
+};
+```
+## 467. 环绕字符串中唯一的子字符串
+**Description**
+把字符串 s 看作是“abcdefghijklmnopqrstuvwxyz”的无限环绕字符串，所以 s 看起来是这样的："...zabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcd....". 
+现在我们有了另一个字符串 p 。你需要的是找出 s 中有多少个唯一的 p 的非空子串，尤其是当你的输入是字符串 p ，你需要输出字符串 s 中 p 的不同的非空子串的数目。 
+注意: p 仅由小写的英文字母组成，p 的大小可能超过 10000。
+**Example**
+示例 1:
+输入: "a"
+输出: 1
+解释: 字符串 S 中只有一个"a"子字符。
+ 
+示例 2:
+输入: "cac"
+输出: 2
+解释: 字符串 S 中的字符串“cac”只有两个子串“a”、“c”。.
+**Program**
+题目意思就是求字符串p中满足"...zabcd..."顺序的子串个数
+设DP[i]是以字符p[i]为结尾的字符串最大长度，这是因为较长的以p[i]为结尾的子串串一定包含了较短的子串！不用重复计算！
+DP[i]=max(DP[i], k)，其中k为满足条件子串长度
+```cpp
+class Solution {
+public:
+    bool isContinue(char pre, char next){
+        if(pre=='z') return next=='a';
+        return (pre+1) == next;
+    }
+    int findSubstringInWraproundString(string p) {
+        vector<int> DP(26, 0);
+        int k=1;
+        for(int i=0;i<p.length();i++){
+            if(i>0&&isContinue(p[i-1], p[i])){
+                k++;
+            }else k=1;
+            DP[p[i]-'a'] = max(DP[p[i]-'a'], k);
+        }
+        int ans=0;
+        for(int x:DP) ans+=x;
+        return ans;
+    }
+};
+```

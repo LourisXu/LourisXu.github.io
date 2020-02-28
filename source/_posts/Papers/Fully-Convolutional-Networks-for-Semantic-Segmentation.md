@@ -20,9 +20,9 @@ date: 2020-02-11 16:05:37
 
 |上采样方式|说明|
 |:--:|:--|
-|①Shift-and-stitch|![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_03.png)<br>这里参考一篇：设下采样因子为$f$，即卷积核大小，通过向原图填充$f-1$个padding得到新图，之后将原图在新图的基础左上移动$(x, y)(0<=x,y<f)$，可以得到$f\*f$个新的输入图，经过卷积，可以得到$f\*f$张特征图（尺寸比原图小），而后根据每个特征图每个元素下采样时对应的原图位置在输出图（大小与原图一致）上进行交错编织。具体$2\*2$最大池化的例子如图所示,灰色部分是重复插入了，故可以舍去。|
+|①Shift-and-stitch|![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_03.png)<br>这里参考一篇[博文](https://www.jianshu.com/p/e534e2be5d7d)：设下采样因子为$f$，即卷积核大小，通过向原图填充$f-1$个padding得到新图，之后将原图在新图的基础左上移动$(x, y)(0<=x,y<f)$，可以得到$f\*f$个新的输入图，经过卷积，可以得到$f\*f$张特征图（尺寸比原图小），而后根据每个特征图每个元素下采样时对应的原图位置在输出图（大小与原图一致）上进行交错编织。具体$2\*2$最大池化的例子如图所示,灰色部分是重复插入了，故可以舍去。|
 |②Filter Rarefaction|两层结构：<br>①步长为$S$的池化层或卷积层<br>②卷积核大小为$f$的卷积层，其卷积核权重为$f_{i,j}$<br>为了达到同Shift-and-stitch一样的目的，可以将后一层卷积核权重矩阵稀疏化，前一层步长为1![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_04.png)<br>例如<br>![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_05.png)<br>这里理解还有待进一步验证|
-|③Deconvolution|这里参考一篇<br>卷积的矩阵表示：<br>卷积核：![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_06.png)输入重排：![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_12.png)<br>卷积核重排：![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_07.png)<br>卷积的矩阵运算：![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_08.png)<br>输出重排<br>![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_09.png)<br>反卷积的矩阵表示：<br>反卷积核重排后转置：<br>![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_10.png)<br>输出重排![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_11.png)|
+|③Deconvolution|这里参考一篇[博文](https://blog.csdn.net/lanadeus/article/details/82534425)<br>卷积的矩阵表示：<br>卷积核：![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_06.png)输入重排：![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_12.png)<br>卷积核重排：![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_07.png)<br>卷积的矩阵运算：![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_08.png)<br>输出重排<br>![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_09.png)<br>反卷积的矩阵表示：<br>反卷积核重排后转置：<br>![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_10.png)<br>输出重排![image](/assets/img/papers/Fully_Convolutional_Networks_for_Semantic_Segmentation_11.png)|
 |选择|论文经过比较，采用第三种转置卷积层（反卷积）的方式，速度更快，效果也差不多|
 
 |实验|说明|
@@ -41,4 +41,4 @@ date: 2020-02-11 16:05:37
 |①Patchwise training的论文部分有些不理解，大致为Patchwise的方式在采样图像高度重合的时候，Whole image训练能够加速训练。<br>②三种上采样方式之后试着代码实现以下，有些地方还没搞懂<br>③其他实施细节需要关注论文源代码。|
 
 
-[^1]: [U-Net: Convolutional Networks for Biomedical Image Segmentation](/assets/files/Fully_Convolutional_Networks_for_Semantic_Segmentation.pdf)
+[^1]: [Fully Convolutional  Networks for Semantic Segmentation](/assets/files/Fully_Convolutional_Networks_for_Semantic_Segmentation.pdf)
