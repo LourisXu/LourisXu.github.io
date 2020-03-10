@@ -131,10 +131,21 @@ toc: true
 |461. 汉明距离|Easy|位运算|
 |464. 我能赢吗|Medium|动态规划|
 |467. 环绕字符串中唯一的子字符串|Medium|动态规划|
+|474. 一和零|Medium|动态规划|
 |476. 数字的补数|Easy|位运算|
 |477. 汉明距离总和|Medium|位运算|
+|486. 预测赢家|Medium|动态规划|
+|516. 最长回文子序列|Medium|动态规划|
+|523. 连续的子数组和|Medium|动态规划|
 |547. 朋友圈|Medium|并查集|
+|576. 出界的路径数|Medium|动态规划|
+|638. 大礼包|Medium|动态规划|
+|646. 最长数对链|Medium|动态规划|
+|647. 回文子串|Medium|动态规划|
+|650. 只有两个键的键盘|Medium|深搜+剪枝/数学|
+|673. 最长递增子序列的个数|Medium|动态规划|
 |684. 冗余连接|Medium|并查集|
+|688. “马”在棋盘上的概率|Medium|动态规划|
 |693. 交替位二进制数|Easy|位运算|
 |714. 买卖股票的最佳时机含手续费|Medium|动态规划|
 |721. 账户合并|Medium|并查集+Hash|
@@ -8177,6 +8188,956 @@ public:
         int ans=0;
         for(int x:DP) ans+=x;
         return ans;
+    }
+};
+```
+## 474. 一和零
+**Description**
+在计算机界中，我们总是追求用有限的资源获取最大的收益。
+现在，假设你分别支配着 m 个 0 和 n 个 1。另外，还有一个仅包含 0 和 1 字符串的数组。
+你的任务是使用给定的 m 个 0 和 n 个 1 ，找到能拼出存在于数组中的字符串的最大数量。每个 0 和 1 至多被使用一次。
+注意:
+给定 0 和 1 的数量都不会超过 100。
+给定字符串数组的长度不会超过 600。
+**Example**
+示例 1:
+输入: Array = {"10", "0001", "111001", "1", "0"}, m = 5, n = 3
+输出: 4
+解释: 总共 4 个字符串可以通过 5 个 0 和 3 个 1 拼出，即 "10","0001","1","0" 。
+
+示例 2:
+输入: Array = {"10", "0", "1"}, m = 1, n = 1
+输出: 2
+解释: 你可以拼出 "10"，但之后就没有剩余数字了。更好的选择是拼出 "0" 和 "1" 。
+**Program**
+**①暴力**
+超时
+```cpp
+class Solution {
+public:
+    int maxn=0;
+    int len;
+    void find(vector<int>& zeros, vector<int>& ones, int i, int num, int m, int n){
+        if(i==len){
+            maxn=max(maxn, num);
+            return;
+        }
+        if(zeros[i]<=m&&ones[i]<=n) find(zeros, ones, i+1, num+1, m-zeros[i], n-ones[i]);
+        find(zeros, ones, i+1, num, m, n);
+    }
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        if(strs.size()==0) return 0;
+        len=strs.size();
+        vector<int> zeros(len, 0), ones(len, 0);
+        for(int i=0;i<len;i++){
+            string str=strs[i];
+            for(int j=0;j<str.length();j++){
+                if(str[j]=='1') ones[i]++;
+                else zeros[i]++;
+            }
+        }
+        find(zeros, ones, 0, 0, m, n);
+        return maxn;
+    }
+};
+```
+**②DP**
+0-1背包，$DP[i][m][n]=max(1+DP[i-1][m-zeros[i]][n-ones[i]], DP[i-1][m][n])$，注意边界
+```cpp
+class Solution {
+public:
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        if(strs.size()==0) return 0;
+        int len=strs.size();
+        vector<int> zeros(len, 0), ones(len, 0);
+        for(int i=0;i<len;i++){
+            string str=strs[i];
+            for(int j=0;j<str.length();j++){
+                if(str[j]=='1') ones[i]++;
+                else zeros[i]++;
+            }
+        }
+        vector<vector<vector<int>>> DP(len);
+        for(int i=0;i<len;i++){
+            DP[i].resize(m+1);
+            for(int j=0;j<m+1;j++) DP[i][j].resize(n+1, 0);
+        }
+        for(int i=0;i<len;i++){
+            for(int j=0;j<=m;j++){
+                for(int k=0;k<=n;k++){
+                    if(i==0){
+                        if(j>=zeros[i]&&k>=ones[i]) DP[i][j][k]=1;
+                        continue;
+                    }
+                    if(j>=zeros[i]&&k>=ones[i]){
+                        DP[i][j][k]=max(1+DP[i-1][j-zeros[i]][k-ones[i]], DP[i-1][j][k]);
+                    }else{
+                        DP[i][j][k]=DP[i-1][j][k];
+                    }
+                }
+            }
+        }
+        return DP[len-1][m][n];
+    }
+};
+```
+**状态压缩**
+```cpp
+class Solution {
+public:
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        if(strs.size()==0) return 0;
+        int len=strs.size();
+        vector<int> zeros(len, 0), ones(len, 0);
+        for(int i=0;i<len;i++){
+            string str=strs[i];
+            for(int j=0;j<str.length();j++){
+                if(str[j]=='1') ones[i]++;
+                else zeros[i]++;
+            }
+        }
+        vector<vector<int>> DP(m+1);
+        for(int i=0;i<m+1;i++) DP[i].resize(n+1, 0);
+        for(int i=0;i<len;i++){
+            for(int j=m;j>=0;j--){
+                for(int k=n;k>=0;k--){
+                    if(zeros[i]<=j&&ones[i]<=k){
+                        DP[j][k]=max(1+DP[j-zeros[i]][k-ones[i]], DP[j][k]);
+                    }              
+                }
+            }
+        }
+        return DP[m][n];
+    }
+};
+```
+```cpp
+class Solution {
+public:
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        int len = strs.size();
+        vector<vector<int> > DP(m + 1, vector<int>(n + 1, 0));
+        for(int i = 0; i < len; ++i){
+            int zeros = 0;
+            int ones = 0;
+            for(int j=0;j<strs[i].size();++j){
+                if(strs[i][j] == '1') ++ones;
+                else ++zeros;
+            }
+            for(int j = m; j >= zeros; --j){
+                for(int k = n; k >= ones; --k){
+                    DP[j][k] = max(1 + DP[j-zeros][k-ones], DP[j][k]);             
+                }
+            }
+        }
+        return DP[m][n];
+    }
+};
+```
+## 486. 预测赢家
+**Description**
+给定一个表示分数的非负整数数组。 玩家1从数组任意一端拿取一个分数，随后玩家2继续从剩余数组任意一端拿取分数，然后玩家1拿，……。每次一个玩家只能拿取一个分数，分数被拿取之后不再可取。直到没有剩余分数可取时游戏结束。最终获得分数总和最多的玩家获胜。
+给定一个表示分数的数组，预测玩家1是否会成为赢家。你可以假设每个玩家的玩法都会使他的分数最大化。
+**Example**
+示例 1:
+输入: [1, 5, 2]
+输出: False
+解释: 一开始，玩家1可以从1和2中进行选择。
+如果他选择2（或者1），那么玩家2可以从1（或者2）和5中进行选择。如果玩家2选择了5，那么玩家1则只剩下1（或者2）可选。
+所以，玩家1的最终分数为 1 + 2 = 3，而玩家2为 5。
+因此，玩家1永远不会成为赢家，返回 False。
+
+示例 2:
+输入: [1, 5, 233, 7]
+输出: True
+解释: 玩家1一开始选择1。然后玩家2必须从5和7中进行选择。无论玩家2选择了哪个，玩家1都可以选择233。
+最终，玩家1（234分）比玩家2（12分）获得更多的分数，所以返回 True，表示玩家1可以成为赢家。
+注意:
+1 <= 给定的数组长度 <= 20.
+数组里所有分数都为非负数且不会大于10000000。
+如果最终两个玩家的分数相等，那么玩家1仍为赢家。
+**Program**
+博弈论还是不会，太菜了...
+**①暴力深搜**
+```cpp
+class Solution {
+public:
+	bool PredictTheWinner(vector<int>& nums) {
+		return helper(0, nums.size() - 1, 0, 0, true, nums);
+	}
+    bool helper(int left, int right, int score_A, int score_B, bool isA_B, vector<int>& nums){
+        if(left>right){
+            return score_A>=score_B;  //平局也算A胜
+        }
+        if(isA_B){ //A无论选左还是右，满足一项即可
+            bool bL=helper(left+1, right, score_A+nums[left], score_B, !isA_B, nums);
+            bool bR=helper(left, right-1, score_A+nums[right], score_B, !isA_B, nums);
+            return (bL||bR);
+        }else{ //B只有左右都满足才能保证A胜
+            bool bL=helper(left+1, right, score_A, score_B+nums[left], !isA_B, nums);
+            bool bR=helper(left, right-1, score_A, score_B+nums[right], !isA_B, nums);
+            return (bL&&bR);
+        }
+    }
+};
+```
+```cpp
+class Solution {
+public:
+	bool PredictTheWinner(vector<int>& nums) {
+        return helper(nums, 0, nums.size()-1, 1) >= 0;
+	}
+    int helper(vector<int>& nums, int left, int right, int factor){
+        if(left==right) return factor*nums[left];
+        int a=factor*nums[left]+helper(nums, left+1, right, -factor);
+        int b=factor*nums[right]+helper(nums,left, right-1, -factor);
+        return (factor==1)?max(a, b):min(a, b);  //对弈双方都希望利益最大化，先手来说，差越大越好，反手来说，差越小越好。
+    }
+};
+```
+**②DP**
+设DP[i][j]表示选择了nums[i, j]后两个对手分数之差（这个是关键，博弈论关键找到一个联系点才能统一！），
+$DP[i][j]=max(nums[i]-DP[i+1][j], nums[j]-DP[i][j-1])$ 注意体会！两个对手状态统一于DP，逆向思维，由里向外
+例如：[1, 5, 2, 7]
+A:1
+B:5
+A:2
+B:7
+差为1-5+2-7=1-[5-(2-7)]
+可以发现，差本来是摆动的，全部可以转成减法
+```cpp
+class Solution {
+public:
+	bool PredictTheWinner(vector<int>& nums) {
+        if(nums.size()==0) return true;
+        int n=nums.size();
+		    vector<vector<int>> DP(n, vector<int>(n, 0));
+        for(int i=0;i<n;i++){
+            DP[i][i]=nums[i];
+        }
+        for(int len=2;len<=n;len++){
+            for(int i=0;i+len-1<n;i++){
+                int j=i+len-1;
+                DP[i][j]=max(nums[i]-DP[i+1][j], nums[j]-DP[i][j-1]);
+            }
+        }
+        return DP[0][n-1]>=0;
+	}
+};
+```
+## 494. 目标和
+**Description**
+给定一个非负整数数组，a1, a2, ..., an, 和一个目标数，S。现在你有两个符号 + 和 -。对于数组中的任意一个整数，你都可以从 + 或 -中选择一个符号添加在前面。
+返回可以使最终数组和为目标数 S 的所有添加符号的方法数。
+**Example**
+示例 1:
+输入: nums: [1, 1, 1, 1, 1], S: 3
+输出: 5
+解释:
+-1+1+1+1+1 = 3
++1-1+1+1+1 = 3
++1+1-1+1+1 = 3
++1+1+1-1+1 = 3
++1+1+1+1-1 = 3
+
+一共有5种方法让最终目标和为3。
+注意:
+数组非空，且长度不会超过20。
+初始的数组的和不会超过1000。
+保证返回的最终结果能被32位整数存下。
+**Program**
+**①暴力**
+```cpp
+class Solution {
+public:
+    int ans=0;
+    void helper(vector<int>&nums, int i, int S, int sum){
+        if(i==nums.size()){
+            if(sum==S){
+                ans++;
+            }
+            return;
+        }
+        helper(nums, i+1, S, sum+nums[i]);
+        helper(nums, i+1, S, sum-nums[i]);
+    }
+    int findTargetSumWays(vector<int>& nums, int S) {
+        helper(nums, 0, S, 0);
+        return ans;
+    }
+};
+```
+**②DP**
+类似于背包问题，设DP[i][j]为0...i中结果为j的个数，那么DP[i][j]=DP[i-1][j-nums[i]]+DP[i-1][j+nums[i]]
+```cpp
+class Solution {
+public:
+
+    int findTargetSumWays(vector<int>& nums, int S) {
+        int n=nums.size();
+        int sum=0;
+        for(int x:nums) sum+=x;
+        if(S>sum) return 0; //特判
+        int t=2*sum+1;
+        vector<vector<int>> DP(n, vector<int>(t, 0));
+        for(int i=0;i<n;i++){
+            for(int j=0;j<t;j++){
+                if(i==0){
+                    if(j==sum-nums[i]) DP[i][j]+=1; //注意sum-nums[i]可能等于sum+nums[i]
+                    if(j==sum+nums[i]) DP[i][j]+=1;
+                    continue;
+                }
+                if(j-nums[i]>=0&&j+nums[i]<t) DP[i][j]=DP[i-1][j-nums[i]]+DP[i-1][j+nums[i]];
+                else if(j-nums[i]>=0) DP[i][j]=DP[i-1][j-nums[i]];
+                else if(j+nums[i]<t) DP[i][j]=DP[i-1][j+nums[i]];
+            }
+        }
+        return DP[n-1][sum+S];
+    }
+};
+```
+**③DP优化**
+DP[i][j]=DP[i-1][j-nums[i]]+DP[i-1][j+nums[i]]只与前一行有关，所以只需要两个一维数组即可！
+```cpp
+class Solution {
+public:
+
+    int findTargetSumWays(vector<int>& nums, int S) {
+        int n=nums.size();
+        int sum=0;
+        for(int x:nums) sum+=x;
+        if(S>sum) return 0; //特判
+        int t=2*sum+1;
+        vector<int> DP(t, 0), preDP(t, 0);
+        for(int i=0;i<n;i++){
+            for(int j=0;j<t;j++){
+                if(i==0){
+                    if(j==sum-nums[i]) DP[j]+=1; //注意sum-nums[i]可能等于sum+nums[i]
+                    if(j==sum+nums[i]) DP[j]+=1;
+                    continue;
+                }
+                if(j-nums[i]>=0&&j+nums[i]<t) DP[j]=preDP[j-nums[i]]+preDP[j+nums[i]];
+                else if(j-nums[i]>=0) DP[j]=preDP[j-nums[i]];
+                else if(j+nums[i]<t) DP[j]=preDP[j+nums[i]];
+            }
+            preDP=DP;
+        }
+        return DP[sum+S];
+    }
+};
+```
+## 516. 最长回文子序列
+**Description**
+给定一个字符串s，找到其中最长的回文子序列。可以假设s的最大长度为1000。
+**Example**
+示例 1:
+输入:
+"bbbab"
+输出:
+4
+一个可能的最长回文子序列为 "bbbb"。
+
+示例 2:
+输入:
+"cbbd"
+输出:
+2
+一个可能的最长回文子序列为 "bb"。
+**Program**
+最长回文子串以及最长公共子序列的翻版！注意子串以及子序列的区别！
+设DP[i][j]表示i...j这部分的回文子序列，那么当s[i]=s[j]时，明显DP[i][j]=DP[i+1][j-1]+2,反之DP[i][j]=max(DP[i][j-1], DP[i+1][j]);
+```cpp
+class Solution {
+public:
+    int longestPalindromeSubseq(string s) {
+        if(s.length()==0) return 0;
+        int n=s.length();
+        vector<vector<int>> DP(n, vector<int>(n ,1));
+        for(int i=0;i<n;i++){
+            if(i+1<n&&s[i]==s[i+1]) DP[i][i+1]=2;
+        }
+        for(int len=3;len<=n;len++){
+            for(int i=0;i+len-1<n;i++){
+                int j=i+len-1;
+                if(s[i]==s[j]) DP[i][j]=DP[i+1][j-1]+2;
+                else DP[i][j]=max(DP[i+1][j], DP[i][j-1]);
+            }
+        }
+        return DP[0][n-1];
+    }
+};
+```
+## 523. 连续的子数组和
+**Description**
+给定一个包含非负数的数组和一个目标整数 k，编写一个函数来判断该数组是否含有连续的子数组，其大小至少为 2，总和为 k 的倍数，即总和为 n*k，其中 n 也是一个整数。
+**Example**
+示例 1:
+输入: [23,2,4,6,7], k = 6
+输出: True
+解释: [2,4] 是一个大小为 2 的子数组，并且和为 6。
+示例 2:
+
+输入: [23,2,6,4,7], k = 6
+输出: True
+解释: [23,2,6,4,7]是大小为 5 的子数组，并且和为 42。
+说明:
+数组的长度不会超过10,000。
+你可以认为所有数字总和在 32 位有符号整数范围内。
+**Program**
+```cpp
+class Solution {
+public:
+    bool checkSubarraySum(vector<int>& nums, int k) {
+        if(nums.size()<2) return false;
+        int n=nums.size();
+        vector<int>DP(n, 0);
+        int sum=0;
+        for(int i=0;i<n;i++){
+            sum+=nums[i];
+            DP[i]=sum;
+        }
+        for(int i=1;i<n;i++){
+            if(k==0&&DP[i]==0) return true;
+            else if(k!=0&&DP[i]%k==0) return true;
+            for(int j=0;j<i-1;j++){
+                if(k==0&&(DP[i]-DP[j])==0) return true;
+                else if(k!=0&&(DP[i]-DP[j])%k==0) return true;
+            }
+        }
+        return false;
+    }
+};
+```
+用Hash存当前$sum[i]\%k$，如果i和j位置的余数$sum[i]\%k==sum[j]%k$说明$i+1...j$为所求子数组，因为设i位置和为$m\*k+rem$,j位置和为$n\*k+rem$，其中$rem=sum[i]\%k$，那么$i+1...j$的和为$n\*k+rem-m\*k-rem=(m-n)\*k$！！得证！！！
+```cpp
+class Solution {
+public:
+    bool checkSubarraySum(vector<int>& nums, int k) {
+        if(nums.size()<2) return false;
+        int n=nums.size();
+        unordered_map<int, int> m; //m[rem]=i
+        m[0]=-1; //精髓！i~j为所求子数组！当然要包括第一个数，因为sum%k==0，k==0时也满足
+        int sum=0;
+        for(int i=0;i<n;i++){
+            sum+=nums[i];
+            if(k!=0) sum%=k;
+            if(m.find(sum)!=m.end()){
+                if(i-m[sum]>1) return true; //i和j位置的sum的余数都相同，所以i+1~j为所求子数组
+            }else m[sum]=i;
+        }
+        return false;
+    }
+};
+```
+## 576. 出界的路径数
+**Description**
+给定一个 m × n 的网格和一个球。球的起始坐标为 (i,j) ，你可以将球移到相邻的单元格内，或者往上、下、左、右四个方向上移动使球穿过网格边界。但是，你最多可以移动 N 次。找出可以将球移出边界的路径数量。答案可能非常大，返回 结果 mod 109 + 7 的值。
+**Example**
+示例 1：
+输入: m = 2, n = 2, N = 2, i = 0, j = 0
+输出: 6
+解释:
+![image](/assets/img/algorithm/out_of_boundary_paths_1.png)
+示例 2：
+输入: m = 1, n = 3, N = 3, i = 0, j = 1
+输出: 12
+解释:
+![image](/assets/img/algorithm/out_of_boundary_paths_2.png)
+说明:
+球一旦出界，就不能再被移动回网格内。
+网格的长度和高度在 [1,50] 的范围内。
+N 在 [0,50] 的范围内。
+**Program**
+DP[i][j][v]表示**恰好**走出v步的路径数！但最后要求总数，肯定包括富裕步数走出边界的情况，所以要累加！
+即走1...N步总的结果
+```cpp
+class Solution {
+public:
+    int step[4][2]={
+        {1, 0},
+        {-1, 0},
+        {0, -1},
+        {0, 1}
+    };
+    int mod=1e9+7;
+    int findPaths(int m, int n, int N, int i, int j) {
+        if(N==0) return 0;
+        vector<vector<vector<long long>>> DP(m, vector<vector<long long>>(n, vector<long long>(N+1, 0)));
+        for(int i=0;i<m;i++){
+            DP[i][0][1]+=1;
+            DP[i][n-1][1]+=1;
+        }
+        for(int i=0;i<n;i++){
+            DP[0][i][1]+=1;
+            DP[m-1][i][1]+=1;
+        }
+        for(int v=1;v<=N;v++){
+            for(int i=0;i<m;i++){
+                for(int j=0;j<n;j++){
+                    for(int k=0;k<4;k++){
+                        int x=i+step[k][0];
+                        int y=j+step[k][1];
+                        if(x<0||x>=m||y<0||y>=n) continue;
+                        DP[i][j][v]+=DP[x][y][v-1];
+                        DP[i][j][v]%=mod;
+                    }
+                }
+            }
+        }
+        for(int x=1;x<=N;x++){
+            DP[i][j][x]+=DP[i][j][x-1];
+            DP[i][j][x]%=mod;
+        }
+
+        return DP[i][j][N];
+    }
+};
+```
+DP[i][j][v]表示最终结果，可以有步数v富裕！！相比于记忆化搜索，这个慢了。注意先步数循环，注意DP需要四个方位下的数据都先算出来的！
+```cpp
+class Solution {
+public:
+int step[4][2]={
+        {1, 0},
+        {-1, 0},
+        {0, -1},
+        {0, 1}
+    };
+    int mod=1e9+7;
+    int findPaths(int m, int n, int N, int i, int j) {
+        if(N==0) return 0;
+        vector<vector<vector<long long>>> DP(m, vector<vector<long long>>(n, vector<long long>(N+1, 0)));
+        for(int v=1;v<=N;v++){
+            for(int i=0;i<m;i++){
+                for(int j=0;j<n;j++){
+                    for(int k=0;k<4;k++){
+                        int x=i+step[k][0];
+                        int y=j+step[k][1];
+                        if(x<0||x>=m||y<0||y>=n){
+                            DP[i][j][v]+=1;
+                        }else DP[i][j][v]+=DP[x][y][v-1];
+                        DP[i][j][v]%=mod;
+                    }
+                }
+            }
+        }
+        return DP[i][j][N];
+    }
+};
+```
+记忆化搜索
+```cpp
+class Solution {
+public:
+    int step[4][2]={
+        {1, 0},
+        {-1, 0},
+        {0, -1},
+        {0, 1}
+    };
+    int mod=1e9+7;
+    int findPaths(int m, int n, int N, int i, int j) {
+        if(N==0) return 0;
+        vector<vector<vector<long long>>> DP(m, vector<vector<long long>>(n, vector<long long>(N+1, -1)));
+        return findPath(m,n,N,i,j, DP);
+    }
+    int findPath(int m, int n, int N,int i, int j, vector<vector<vector<long long>>>& DP){
+        if(N<0) return 0;
+        if(i<0||i>=m||j<0||j>=n) return 1;
+        if(DP[i][j][N]==-1){
+            DP[i][j][N]=0;
+            for(int k=0;k<4;k++){
+                int x=i+step[k][0];
+                int y=j+step[k][1];
+                DP[i][j][N]+=findPath(m,n,N-1,x, y, DP);
+                DP[i][j][N]%=mod;
+            }
+        }
+        return DP[i][j][N];
+    }
+};
+```
+## 638. 大礼包
+**Description**
+在LeetCode商店中， 有许多在售的物品。
+然而，也有一些大礼包，每个大礼包以优惠的价格捆绑销售一组物品。
+现给定每个物品的价格，每个大礼包包含物品的清单，以及待购物品清单。请输出确切完成待购清单的最低花费。
+每个大礼包的由一个数组中的一组数据描述，最后一个数字代表大礼包的价格，其他数字分别表示内含的其他种类物品的数量。
+任意大礼包可无限次购买。
+**Example**
+示例 1:
+输入: [2,5], [[3,0,5],[1,2,10]], [3,2]
+输出: 14
+解释:
+有A和B两种物品，价格分别为¥2和¥5。
+大礼包1，你可以以¥5的价格购买3A和0B。
+大礼包2， 你可以以¥10的价格购买1A和2B。
+你需要购买3个A和2个B， 所以你付了¥10购买了1A和2B（大礼包2），以及¥4购买2A。
+
+示例 2:
+输入: [2,3,4], [[1,1,0,4],[2,2,1,9]], [1,2,1]
+输出: 11
+解释:
+A，B，C的价格分别为¥2，¥3，¥4.
+你可以用¥4购买1A和1B，也可以用¥9购买2A，2B和1C。
+你需要买1A，2B和1C，所以你付了¥4买了1A和1B（大礼包1），以及¥3购买1B， ¥4购买1C。
+你不可以购买超出待购清单的物品，尽管购买大礼包2更加便宜。
+
+说明:
+最多6种物品， 100种大礼包。
+每种物品，你最多只需要购买6个。
+你不可以购买超出待购清单的物品，即使更便宜。
+**Program**
+**①暴力**
+这题不好DP，相反深搜更容易些，因为物品种类会变化。
+```cpp
+class Solution {
+public:
+    int minSum=0x3f3f3f3f;
+    void DFS(vector<int>& price, vector<vector<int>>& special, vector<int> needs, int sum){
+        if(sum>minSum) return;  //剪枝
+        for(int i=0;i<special.size();i++){
+            int n=special[i].size();
+            vector<int> tmpNeeds(needs.begin(), needs.end());
+            bool isPass=true;
+            for(int j=0;j<n-1;j++){
+                if(special[i][j]>needs[j]){
+                    isPass=false;
+                    break;
+                }
+                else tmpNeeds[j]-=special[i][j];
+            }
+            if(isPass) DFS(price, special, tmpNeeds, sum+special[i][n-1]);
+        }
+        for(int i=0;i<needs.size();i++){
+            sum+=needs[i]*price[i];
+        }
+        minSum=min(minSum, sum);
+    }
+    int shoppingOffers(vector<int>& price, vector<vector<int>>& special,
+    vector<int>& needs) {
+        DFS(price, special, needs, 0);
+        return minSum;
+    }
+};
+```
+**②记忆化搜索**
+注意到needs可能会重复计算！所以可以记忆化搜索！然而，好像和暴力的做法速度差不多，leetcode判题的时间结果有浮动啊。。
+```cpp
+class Solution {
+public:
+    int minSum=0x3f3f3f3f;
+    unordered_map<int, int> vis;
+    int cal(vector<int>& needs){
+        int ans=0;
+        for(int x:needs){
+            ans=ans*10+x;
+        }
+        return ans;
+    }
+    void DFS(vector<int>& price, vector<vector<int>>& special, vector<int> needs, int sum){
+        if(sum>minSum) return;  //剪枝
+        if(vis.find(cal(needs))!=vis.end()) return; //已记录
+        for(int i=0;i<special.size();i++){
+            int n=special[i].size();
+            vector<int> tmpNeeds(needs.begin(), needs.end());
+            bool isPass=true;
+            for(int j=0;j<n-1;j++){
+                if(special[i][j]>needs[j]){
+                    isPass=false;
+                    break;
+                }
+                else tmpNeeds[j]-=special[i][j];
+            }
+            if(isPass) DFS(price, special, tmpNeeds, sum+special[i][n-1]);
+        }
+        for(int i=0;i<needs.size();i++){
+            sum+=needs[i]*price[i];
+        }
+        minSum=min(minSum, sum);
+        vis[cal(needs)] = minSum;
+    }
+    int shoppingOffers(vector<int>& price, vector<vector<int>>& special,
+    vector<int>& needs) {
+        DFS(price, special, needs, 0);
+        return minSum;
+    }
+};
+```
+## 646. 最长数对链
+给出 n 个数对。 在每一个数对中，第一个数字总是比第二个数字小。
+现在，我们定义一种跟随关系，当且仅当 b < c 时，数对(c, d) 才可以跟在 (a, b) 后面。我们用这种形式来构造一个数对链。
+给定一个对数集合，找出能够形成的最长数对链的长度。你不需要用到所有的数对，你可以以任何顺序选择其中的一些数对来构造。
+**Example**
+示例 :
+输入: [[1,2], [2,3], [3,4]]
+输出: 2
+解释: 最长的数对链是 [1,2] -> [3,4]
+注意：
+给出数对的个数在 [1, 1000] 范围内。
+**Program**
+**①DP**
+DP[i]表示以i为结尾的最长数对链个数，DP[i]=max(DP[i], DP[j]+1) if pairs[i][0]>pairs[j][1]，当然这里应当对pairs按照第一元素升序排列。
+时间复杂度:$O(N^{2})$
+```cpp
+class Solution {
+public:
+    static bool cmp(vector<int> a, vector<int> b){
+        return a[0]<b[0];
+    }
+    int findLongestChain(vector<vector<int>>& pairs) {
+        if(pairs.size()==0) return 0;
+        int n=pairs.size();
+        sort(pairs.begin(), pairs.end(), cmp);
+        vector<int> DP(n, 1);
+        int ans=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<i;j++){
+                if(pairs[i][0]>pairs[j][1]) DP[i]=max(DP[i], DP[j]+1);
+            }
+            ans=max(ans, DP[i]);
+        }
+        return ans;
+    }
+};
+```
+**②贪心**
+将pairs按第二个元素升序排列，贪心的思路就是选择第二个元素较小的数对，之后进行比较，时间复杂度:$O(N\log{N})$
+```cpp
+class Solution {
+public:
+    const int inf=0x3f3f3f3f;
+    static bool cmp(vector<int> a, vector<int> b){
+        return a[1]<b[1];
+    }
+    int findLongestChain(vector<vector<int>>& pairs) {
+        if(pairs.size()==0) return 0;
+        int n=pairs.size();
+        sort(pairs.begin(), pairs.end(), cmp);
+        vector<int> DP(n, 1);
+        int ans=0;
+        int cur=-inf;
+        for(int i=0;i<n;i++){
+            if(cur<pairs[i][0]){
+                cur=pairs[i][1];
+                ans++;
+            }
+        }
+        return ans;
+    }
+};
+```
+## 647. 回文子串
+**Description**
+给定一个字符串，你的任务是计算这个字符串中有多少个回文子串。
+具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被计为是不同的子串。
+**Example**
+示例 1:
+输入: "abc"
+输出: 3
+解释: 三个回文子串: "a", "b", "c".
+
+示例 2:
+输入: "aaa"
+输出: 6
+说明: 6个回文子串: "a", "a", "a", "aa", "aa", "aaa".
+注意:
+输入的字符串长度不会超过1000。
+**Program**
+```cpp
+class Solution {
+public:
+    int countSubstrings(string s) {
+        int n=s.length();
+        vector<vector<int>>DP(n, vector<int>(n, 0));
+        for(int i=0;i<n;i++){
+            DP[i][i]=1;
+            if(i+1<n&&s[i]==s[i+1]) DP[i][i+1]=1;
+        }
+        for(int len=3;len<=n;len++){
+            for(int i=0;i+len-1<n;i++){
+                int j=i+len-1;
+                if(s[i]==s[j]) DP[i][j]=DP[i+1][j-1];
+            }
+        }
+        int ans=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++) ans+=DP[i][j];
+        }
+        return ans;
+    }
+};
+```
+## 650. 只有两个键的键盘
+**Description**
+最初在一个记事本上只有一个字符 'A'。你每次可以对这个记事本进行两种操作：
+Copy All (复制全部) : 你可以复制这个记事本中的所有字符(部分的复制是不允许的)。
+Paste (粘贴) : 你可以粘贴你上一次复制的字符。
+给定一个数字 n 。你需要使用最少的操作次数，在记事本中打印出恰好 n 个 'A'。输出能够打印出 n 个 'A' 的最少操作次数。
+**Example**
+示例 1:
+输入: 3
+输出: 3
+解释:
+最初, 我们只有一个字符 'A'。
+第 1 步, 我们使用 Copy All 操作。
+第 2 步, 我们使用 Paste 操作来获得 'AA'。
+第 3 步, 我们使用 Paste 操作来获得 'AAA'。
+说明:
+n 的取值范围是 [1, 1000] 。
+**Program**
+**①暴力**
+```cpp
+class Solution {
+public:
+    const int inf=0x3f3f3f3f;
+    int minStep=inf;
+    void helper(int n,int cur, int step, int c, bool isCopy){
+        if(step>minStep) return;
+        if(cur>n) return;
+        if(cur==n){
+            minStep=min(minStep, step);
+            return;
+        }
+        if(!isCopy)helper(n, cur, step+1, cur, true); //isCopy防止重复copy
+        if(c!=0) helper(n, cur+c, step+1, c, false);    
+    }
+    int minSteps(int n) {
+        helper(n, 1, 0, 0, false);
+        return minStep;
+    }
+};
+```
+**②分解质因数**
+将所有操作分成以 copy 为首的多组，形如 (copy, paste, ..., paste)，再使用 C 代表 copy，P 代表 paste。例如操作 CPPCPPPPCP 可以分为 [CPP][CPPPP][CP] 三组。
+假设每组的长度为 g_1, g_2, ...。完成第一组操作后，字符串有 g_1 个 A，完成第二组操作后字符串有 g_1 * g_2 个 A。当完成所有操作时，共有 g_1 * g_2 * ... * g_n 个 'A'。
+我们最终想要 N = g_1 * g_2 * ... * g_n 个 A。如果 g_i 是合数，存在 g_i = p * q，那么这组操作可以分解为两组，第一组包含 1 个 C 和 p-1 个 P，第二组包含 1 个 C 和 q-1 个 P。
+现在证明这种分割方式使用的操作最少。原本需要 pq 步操作，分解后需要 p+q 步。因为 p+q <= pq，等价于 1 <= (p-1)(q-1)，当 p >= 2 且 q >= 2 时上式永远成立。
+
+```cpp
+class Solution {
+public:
+    unordered_map<int, int> m;
+    int minSteps(int n) {
+        if(n==1) return 0;
+        for(int i=2;i*i<=n;i++){
+            if(n%i==0){
+                if(m.find(i)==m.end()) m[i]=minSteps(i);
+                if(m.find(n/i)==m.end()) m[n/i]=minSteps(n/i);
+                return m[i]+m[n/i];
+            }
+        }
+        if(m.find(n)==m.end()) m[n]=n;
+        return m[n];
+    }
+};
+```
+## 673. 最长递增子序列的个数
+**Description**
+给定一个未排序的整数数组，找到最长递增子序列的个数。
+**Example**
+示例 1:
+输入: [1,3,5,4,7]
+输出: 2
+解释: 有两个最长递增子序列，分别是 [1, 3, 4, 7] 和[1, 3, 5, 7]。
+
+示例 2:
+输入: [2,2,2,2,2]
+输出: 5
+解释: 最长递增子序列的长度是1，并且存在5个子序列的长度为1，因此输出5。
+注意: 给定的数组长度不超过 2000 并且结果一定是32位有符号整数。
+**Program**
+```cpp
+class Solution {
+public:
+    int findNumberOfLIS(vector<int>& nums) {
+        if(nums.size()==0) return 0;
+        int n=nums.size();
+        vector<int> DP(n, 1), count(n ,1);
+        int maxN=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<i;j++){
+                if(nums[i]>nums[j]){
+                    if(DP[j]+1==DP[i]) count[i]+=count[j];
+                    if(DP[j]+1>DP[i]){
+                        DP[i]=DP[j]+1;
+                        count[i]=count[j];
+                    }
+                }
+            }
+            maxN=max(maxN, DP[i]);
+        }
+        int ans=0;
+        for(int i=0;i<n;i++){
+            if(DP[i]==maxN) ans+=count[i];
+        }
+        return ans;
+    }
+};
+```
+## 688. “马”在棋盘上的概率
+**Description**
+已知一个 NxN 的国际象棋棋盘，棋盘的行号和列号都是从 0 开始。即最左上角的格子记为 (0, 0)，最右下角的记为 (N-1, N-1)。 
+现有一个 “马”（也译作 “骑士”）位于 (r, c) ，并打算进行 K 次移动。 
+如下图所示，国际象棋的 “马” 每一步先沿水平或垂直方向移动 2 个格子，然后向与之相垂直的方向再移动 1 个格子，共有 8 个可选的位置。
+![image](/assets/img/algorithm/knight.png)
+现在 “马” 每一步都从可选的位置（包括棋盘外部的）中独立随机地选择一个进行移动，直到移动了 K 次或跳到了棋盘外面。
+求移动结束后，“马” 仍留在棋盘上的概率。
+**Example**
+示例：
+输入: 3, 2, 0, 0
+输出: 0.0625
+解释:
+输入的数据依次为 N, K, r, c
+第 1 步时，有且只有 2 种走法令 “马” 可以留在棋盘上（跳到（1,2）或（2,1））。对于以上的两种情况，各自在第2步均有且只有2种走法令 “马” 仍然留在棋盘上。
+所以 “马” 在结束后仍在棋盘上的概率为 0.0625。
+ 
+注意：
+N 的取值范围为 [1, 25]
+K 的取值范围为 [0, 100]
+开始时，“马” 总是位于棋盘上
+**Program**
+设DP[k][i][j]为在位置(i, j)时已走过k步的概率，注意如果表示可能走的路径数则会超数值范围。
+那么$DP[k][i][j]=\frac{\sum{DP[k-1][x][y]}}{8}$其中x,y为可走的位置
+```cpp
+class Solution {
+public:
+    int step[8][2]={
+        -2, 1,
+        -1, 2,
+        1, 2,
+        2, 1,
+        2, -1,
+        1, -2,
+        -1, -2,
+        -2, -1
+    };
+
+    bool judge(int N, int x, int y){
+        if(x<0||x>=N||y<0||y>=N) return false;
+        return true;
+    }
+    double knightProbability(int N, int K, int r, int c) {
+        vector<vector<vector<double>>> DP(K+1, vector<vector<double>>(N, vector<double>(N, 0)));
+        for(int k=0;k<=K;k++){
+            for(int i=0;i<N;i++){
+                for(int j=0;j<N;j++){
+                    if(k==0){
+                        DP[k][i][j]=1;
+                        continue;
+                    }
+                    for(int s=0;s<8;s++){
+                        int x=i+step[s][0];
+                        int y=j+step[s][1];
+                        if(judge(N, x, y)){
+                            DP[k][i][j]+=DP[k-1][x][y];    
+                        }
+                    }
+                    DP[k][i][j]/=8;
+                }
+            }
+        }
+        return DP[K][r][c];
     }
 };
 ```
