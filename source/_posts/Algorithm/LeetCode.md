@@ -147,8 +147,12 @@ toc: true
 |684. 冗余连接|Medium|并查集|
 |688. “马”在棋盘上的概率|Medium|动态规划|
 |693. 交替位二进制数|Easy|位运算|
+|698. 划分为k个相等的子集|Medium|动态规划|
+|712. 两个字符串的最小ASCII删除和|Medium|动态规划|
 |714. 买卖股票的最佳时机含手续费|Medium|动态规划|
+|718. 最长重复子数组|Medium|动态规划|
 |721. 账户合并|Medium|并查集+Hash|
+|740. 删除与获得点数|Medium|动态规划|
 |756. 金字塔转换矩阵|Medium|位运算+深搜|
 |762. 二进制表示中质数个计算置位|Easy|位运算|
 |784. 字母大小写全排列|Easy|位运算|
@@ -9138,6 +9142,251 @@ public:
             }
         }
         return DP[K][r][c];
+    }
+};
+```
+## 698. 划分为k个相等的子集
+**Description**
+给定一个整数数组  nums 和一个正整数 k，找出是否有可能把这个数组分成 k 个非空子集，其总和都相等。
+**Example**
+示例 1：
+输入： nums = [4, 3, 2, 3, 5, 2, 1], k = 4
+输出： True
+说明： 有可能将其分成 4 个子集（5），（1,4），（2,3），（2,3）等于总和。
+注意:
+```
+1 <= k <= len(nums) <= 16
+0 < nums[i] < 10000
+```
+**Program**
+**①暴力枚举集合**
+```cpp
+class Solution {
+public:
+    vector<int> h;
+    int n;
+    bool dfs(int u, int p){
+        if(u==h.size()) return p == (1<<n)-1;    //关键，少于k也能判断
+        return dfs(u+1,p) || (!(h[u]&p) && dfs(u+1,p|h[u]));
+    }
+    bool canPartitionKSubsets(vector<int>& nums, int k) {
+        n = nums.size();
+        int target = 0;
+        for(int x:nums) target += x;
+        if(target % k) return false;
+        target /= k;
+
+        for(int i = 0 ; i < 1<<n ; i++) {
+            int s = 0;
+            for(int j = 0 ; j < n ; j++)
+                if(i>>j&1)
+                    s += nums[j];
+            if(s==target) h.push_back(i);
+        }
+        return dfs(0,0);
+    }
+};
+
+```
+**DFS**
+分成k个集合，依次枚举，然鹅还是的优化，对nums降序排列！较大的数更容易确定位置！减少递归次数！
+```cpp
+class Solution {
+public:
+    vector<int> h;
+    int n;
+    int target=0;
+    vector<int> path;
+    bool dfs(vector<int>& nums, int u){
+        if(u==n){
+            for(int x:path) if(x!=target) return false;
+            return true;
+        }
+        if(nums[u]>target) return false;
+        for(int i=0;i<path.size();i++){
+            if(nums[u]+path[i]>target)continue;
+            path[i]+=nums[u];
+            if(dfs(nums, u+1)) return true;
+            path[i]-=nums[u];
+        }
+        return false;
+    }
+    bool canPartitionKSubsets(vector<int>& nums, int k) {
+        n=nums.size();
+        for(int x:nums) target+=x;
+        if((target%k)) return false;
+        path.resize(k ,0);
+        target/=k;
+        sort(nums.begin(), nums.end(), greater<int>());  //优化
+        return dfs(nums,0);
+    }
+};
+```
+## 718. 最长重复子数组
+**Description**
+给两个整数数组 A 和 B ，返回两个数组中公共的、长度最长的子数组的长度。
+**Example**
+示例 1:
+输入:
+A: [1,2,3,2,1]
+B: [3,2,1,4,7]
+输出: 3
+解释:
+长度最长的公共子数组是 [3, 2, 1]。
+说明:
+```
+1 <= len(A), len(B) <= 1000
+0 <= A[i], B[i] < 100
+```
+**Program**
+子数组需要连续，DP[i][j]=DP[i-1][j-1]+1, if A[i]==B[i] else 0.
+```cpp
+class Solution {
+public:
+    int findLength(vector<int>& A, vector<int>& B) {
+        int m=A.size();
+        int n=B.size();
+        if(m==0||n==0) return 0;
+        vector<vector<int>> DP(m+1, vector<int>(n+1, 0));
+        int ans=0;
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(A[i-1]==B[j-1]) DP[i][j]=DP[i-1][j-1]+1;
+                ans=max(DP[i][j], ans);
+            }
+        }
+        return ans;
+    }
+};
+```
+## 712. 两个字符串的最小ASCII删除和
+**Description**
+给定两个字符串s1, s2，找到使两个字符串相等所需删除字符的ASCII值的最小和。
+**Example**
+示例 1:
+输入: s1 = "sea", s2 = "eat"
+输出: 231
+解释: 在 "sea" 中删除 "s" 并将 "s" 的值(115)加入总和。
+在 "eat" 中删除 "t" 并将 116 加入总和。
+结束时，两个字符串相等，115 + 116 = 231 就是符合条件的最小和。
+
+示例 2:
+输入: s1 = "delete", s2 = "leet"
+输出: 403
+解释: 在 "delete" 中删除 "dee" 字符串变成 "let"，
+将 100[d]+101[e]+101[e] 加入总和。在 "leet" 中删除 "e" 将 101[e] 加入总和。
+结束时，两个字符串都等于 "let"，结果即为 100+101+101+101 = 403 。
+如果改为将两个字符串转换为 "lee" 或 "eet"，我们会得到 433 或 417 的结果，比答案更大。
+注意:
+```
+0 < s1.length, s2.length <= 1000。
+所有字符串中的字符ASCII值在[97, 122]之间。
+```
+**Program**
+就是要找最长公共子序列，同时满足最长子序列的和最大。
+```cpp
+class Solution {
+public:
+    int minimumDeleteSum(string s1, string s2) {
+        int m=s1.length();
+        int n=s2.length();
+        vector<vector<int>> S(m+1, vector<int>(n+1, 0));
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(s1[i-1]==s2[j-1]){
+                    S[i][j]=S[i-1][j-1]+(int)s1[i-1];
+                }else{
+                    S[i][j]=max(S[i][j-1],S[i-1][j]);
+                }
+            }
+        }
+        int sum=0;
+        for(int i=0;i<m;i++) sum+=(int)s1[i];
+        for(int j=0;j<n;j++) sum+=(int)s2[j];
+        return sum-2*S[m][n];
+    }
+};
+```
+## 740. 删除与获得点数
+**Description**
+给定一个整数数组 nums ，你可以对它进行一些操作。
+每次操作中，选择任意一个 nums[i] ，删除它并获得 nums[i] 的点数。之后，你必须删除每个等于 nums[i] - 1 或 nums[i] + 1 的元素。
+开始你拥有 0 个点数。返回你能通过这些操作获得的最大点数。
+**Example**
+示例 1:
+输入: nums = [3, 4, 2]
+输出: 6
+解释:
+删除 4 来获得 4 个点数，因此 3 也被删除。
+之后，删除 2 来获得 2 个点数。总共获得 6 个点数。
+
+示例 2:
+输入: nums = [2, 2, 3, 3, 3, 4]
+输出: 9
+解释:
+删除 3 来获得 3 个点数，接着要删除两个 2 和 4 。
+之后，再次删除 3 获得 3 个点数，再次删除 3 获得 3 个点数。
+总共获得 9 个点数。
+注意:
+nums的长度最大为20000。
+每个整数nums[i]的大小都在[1, 10000]范围内。
+**Program**
+**①暴力**
+果断超时
+```cpp
+class Solution {
+public:
+    unordered_map<int, int> m;
+    int ans=0;
+    void dfs(vector<int>& nums, int sum){
+        if(isEmpty()){
+            ans=max(ans, sum);
+            return;
+        }
+        for(int i=0;i<nums.size();i++){
+            if(m[nums[i]]!=0){
+                int tmp1=m[nums[i]-1];
+                int tmp2=m[nums[i]+1];
+                m[nums[i]-1]=0;
+                m[nums[i]+1]=0;
+                m[nums[i]]--;
+                dfs(nums, sum+nums[i]);
+                m[nums[i]]++;
+                m[nums[i]-1]=tmp1;
+                m[nums[i]+1]=tmp2;
+            }
+        }
+    }
+    bool isEmpty(){
+        for(int i=0;i<=10001;i++) if(m[i]!=0) return false;
+        return true;
+    }
+    int deleteAndEarn(vector<int>& nums) {
+        for(int i=0;i<=10001;i++) m[i]=0;
+        for(int x:nums) m[x]++;
+        dfs(nums, 0);
+        return ans;
+    }
+};
+```
+**打家劫舍DP**
+设DP[x]为数组[1...x]进行x的选择与否的点数，则DP[x]=max(DP[x-2]+m[x]*x,DP[x-1]);
+```cpp
+class Solution {
+public:
+    unordered_map<int, int> m;
+    int deleteAndEarn(vector<int>& nums) {
+        if(nums.size()==0) return 0;
+        int mx=0;
+        for(int x:nums) mx=max(mx, x);
+        for(int i=0;i<=mx;i++) m[i]=0;
+        for(int x:nums) m[x]++;
+        vector<int> DP(mx+1, 0);
+        DP[1]=m[1];
+        for(int i=2;i<=mx;i++){
+            DP[i]=max(DP[i-2]+m[i]*i, DP[i-1]);
+        }
+        return DP[mx];
     }
 };
 ```
