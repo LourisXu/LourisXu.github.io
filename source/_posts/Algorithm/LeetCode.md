@@ -155,7 +155,9 @@ toc: true
 |740. 删除与获得点数|Medium|动态规划|
 |756. 金字塔转换矩阵|Medium|位运算+深搜|
 |762. 二进制表示中质数个计算置位|Easy|位运算|
+|764. 最大加号标志|Medium|动态规划|
 |784. 字母大小写全排列|Easy|位运算|
+|787. K 站中转内最便宜的航班|Medium|动态规划|
 |898. 子数组按位或操作|Medium|位运算+unordered_set|
 |947. 移除最多的同行或同列石头|Medium|并查集+Hash|
 |959. 由斜杠划分区域|Medium|并查集|
@@ -9387,6 +9389,223 @@ public:
             DP[i]=max(DP[i-2]+m[i]*i, DP[i-1]);
         }
         return DP[mx];
+    }
+};
+```
+## 764. 最大加号标志
+**Description**
+在一个大小在 (0, 0) 到 (N-1, N-1) 的2D网格 grid 中，除了在 mines 中给出的单元为 0，其他每个单元都是 1。网格中包含 1 的最大的轴对齐加号标志是多少阶？返回加号标志的阶数。如果未找到加号标志，则返回 0。
+
+一个 k" 阶由 1 组成的“轴对称”加号标志具有中心网格  grid[x][y] = 1 ，以及4个从中心向上、向下、向左、向右延伸，长度为 k-1，由 1 组成的臂。下面给出 k" 阶“轴对称”加号标志的示例。注意，只有加号标志的所有网格要求为 1，别的网格可能为 0 也可能为 1。
+
+k 阶轴对称加号标志示例:
+
+阶 1:
+000
+010
+000
+
+阶 2:
+00000
+00100
+01110
+00100
+00000
+
+阶 3:
+0000000
+0001000
+0001000
+0111110
+0001000
+0001000
+0000000
+**Example**
+示例 1：
+输入: N = 5, mines = [[4, 2]]
+输出: 2
+解释:
+11111
+11111
+11111
+11111
+11011
+在上面的网格中，最大加号标志的阶只能是2。一个标志已在图中标出。
+ 
+示例 2：
+输入: N = 2, mines = []
+输出: 1
+解释:
+11
+11
+没有 2 阶加号标志，有 1 阶加号标志。
+ 
+
+示例 3：
+输入: N = 1, mines = [[0, 0]]
+输出: 0
+解释:
+0
+没有加号标志，返回 0 。
+ 
+提示：
+整数N 的范围： [1, 500].
+mines 的最大长度为 5000.
+mines[i] 是长度为2的由2个 [0, N-1] 中的数组成.
+(另外,使用 C, C++, 或者 C# 编程将以稍小的时间限制进行​​判断.)
+**Progarm**
+1，定义数组arm[N][N][4]为点在四方向上延伸的最大长度
+arm[i][j][0]代表点[i, j]向上最长延伸的1的最大长度
+arm[i][j][1]代表点[i, j]向左最长延伸的1的最大长度
+arm[i][j][2]代表点[i, j]向下最长延伸的1的最大长度
+arm[i][j][3]代表点[i, j]向右最长延伸的1的最大长度
+2，遍历所有点四方向延伸手臂最小值的最大值即可
+找到max{min{arm[i][j][0], arm[i][j][1], arm[i][j][2], arm[i][j][3]}}即是答案
+```cpp
+class Solution {
+public:
+    int orderOfLargestPlusSign(int N, vector<vector<int>>& mines) {
+        int m[N][N];
+        int arms[N][N][4];
+        memset(m, -1, sizeof(m));
+        memset(arms, 0, sizeof(arms));
+        for(vector<int> vec:mines){
+            int x=vec[0];
+            int y=vec[1];
+            m[x][y]=0;
+        }
+        for(int i=0;i<N;i++){
+            for(int j=0;j<N;j++){
+                if(m[i][j]!=0){
+                    arms[i][j][0]=(i>0?arms[i-1][j][0]:0)+1;
+                    arms[i][j][1]=(j>0?arms[i][j-1][1]:0)+1;
+                }   
+            }
+        }
+        for(int i=N-1;i>=0;i--){
+            for(int j=N-1;j>=0;j--){
+                if(m[i][j]!=0){
+                    arms[i][j][2]=(i<N-1?arms[i+1][j][2]:0)+1;
+                    arms[i][j][3]=(j<N-1?arms[i][j+1][3]:0)+1;
+                }
+            }
+        }
+        int ans=0;
+        for(int i=0;i<N;i++){
+            for(int j=0;j<N;j++){
+                int min1=min(arms[i][j][0],arms[i][j][1]);
+                int min2=min(arms[i][j][2],arms[i][j][3]);
+                min1=min(min1,min2);
+                ans=max(ans,min1);
+            }
+        }
+        return ans;
+    }
+};
+```
+## 787. K 站中转内最便宜的航班
+**Description**
+有 n 个城市通过 m 个航班连接。每个航班都从城市 u 开始，以价格 w 抵达 v。
+现在给定所有的城市和航班，以及出发城市 src 和目的地 dst，你的任务是找到从 src 到 dst 最多经过 k 站中转的最便宜的价格。 如果没有这样的路线，则输出 -1。
+**Example**
+示例 1：
+输入:
+n = 3, edges = [[0,1,100],[1,2,100],[0,2,500]]
+src = 0, dst = 2, k = 1
+输出: 200
+解释:
+城市航班图如下
+![image](/assets/img/algorithm/995.png)
+从城市 0 到城市 2 在 1 站中转以内的最便宜价格是 200，如图中红色所示。
+示例 2：
+输入:
+n = 3, edges = [[0,1,100],[1,2,100],[0,2,500]]
+src = 0, dst = 2, k = 0
+输出: 500
+解释:
+城市航班图如下
+![image](/assets/img/algorithm/995 (1).png)
+从城市 0 到城市 2 在 0 站中转以内的最便宜价格是 500，如图中蓝色所示。
+
+提示：
+n 范围是 [1, 100]，城市标签从 0 到 n - 1.
+航班数量范围是 [0, n * (n - 1) / 2].
+每个航班的格式 (src, dst, price).
+每个航班的价格范围是 [1, 10000].
+k 范围是 [0, n - 1].
+航班没有重复，且不存在环路
+**Program**
+**最短路径Dijkstra**
+类似最短路径，所区别在于k与cos当做状态，并且当前节点不能vis标识掉，因为到达当前节点花费少，但步数可能多，到最后不满足。
+```cpp
+class Solution {
+public:
+    struct Node{
+        int v;
+        int k;
+        int cos;
+        Node(){}
+        Node(int V,int K, int C):v(V),k(K),cos(C){}
+        bool operator < (const Node &tmp) const{
+            return cos>tmp.cos;
+        }
+    };
+    const int INF=0x3f3f3f3f;
+    vector<int> cost;
+    vector<bool> vis;
+    vector<vector<Node>> Adj;
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K) {
+        Adj.resize(n);
+        vis.resize(n, false);
+        cost.resize(n, INF);
+        for(vector<int> vec:flights){
+            int u=vec[0],v=vec[1],cos=vec[2];
+            Adj[u].push_back(Node(v,0,cos));
+        }
+        priority_queue<Node> pq;
+        pq.push(Node(src, -1, 0));
+        cost[src]=0;
+        int nCount=0;
+        int result=-1;
+        while(!pq.empty()){
+            Node now = pq.top();
+            pq.pop();
+            if(now.v==dst&&now.k<=K){
+                result=now.cos;
+                break;
+            }
+            for(int i=0;i<Adj[now.v].size();i++){
+                int v=Adj[now.v][i].v;
+                int cos=Adj[now.v][i].cos;
+                if(now.k+1<=K){
+                    pq.push(Node(v, now.k+1, now.cos+cos));
+                }
+            }
+        }
+        return result;
+    }
+};
+```
+**②Bellman-Ford变形**
+Bellman-Ford算法变形，每次直走一步更新（注意不能连续更新），k+1步后就是答案，
+例如，[[0,1,1],[0,2,5],[1,2,1],[2,3,1]],n=3,src=0,dst=3,k=1;
+从src=0开始，第一步更新只更新从src=0出发的路径，而其他路径不能更新！否则就不是走了k+1步！
+```cpp
+class Solution {
+public:
+    const int INF=0x3f3f3f3f;
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K) {
+        vector<int> cost(n, INF);
+        cost[src]=0;
+        K=min(K,n-1);
+        for(int k=0;k<=K;k++){
+            vector<int> tCost=cost;  //确保只更新必要的路径一次，cost是上一步更新后的，而tCost是本次要更新的
+            for(vector<int>& vec:flights){
+                tCost[vec[1]]=min(tCost[vec[1]],cost[vec[0]]+vec[2]);
+            }
+            swap(tCost, cost);
+        }
+        return (cost[dst]!=INF)?cost[dst]:-1;
     }
 };
 ```

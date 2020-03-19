@@ -2309,3 +2309,438 @@ v5版本与v3版本有些差异，具体见官网API
 
 </script>
 ```
+> # 交互
+
+## 交互式入门
+```html
+<body>
+<p id="mypara">Click Here</p>
+<script>
+    d3.select('#mypara')
+      .on('click.first', function() {
+            console.log(this);
+            d3.select(this).text('Thank you');
+      })
+      .on('click.second', function(){
+            console.log('Second');
+      });
+      //.on('click', null); //删除监听器
+
+    //过渡对象没有On(),所以注意顺序
+    svg.select('circle')
+       .on()
+       .transition();
+</script>
+
+</body>
+```
+### 鼠标
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="d3/d3.js" charset="utf-8"></script>
+
+    <!--    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>-->
+</head>
+<body>
+<script>
+    var dataset = [50, 43, 120, 87, 99, 167, 142];
+    var width = 400;
+    var height = 400;
+    var svg = d3.select('body')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+    var padding = {top:20, right:20, bottom:20, left:20};
+    var rectStep = 35; //矩形所占的宽度（包括空白），单位为像素
+    var rectWidth = 30; //矩形所占的宽度（不包括空白），单位为像素
+
+    var xAxisWidth = 300;
+    var yAxisWidth = 300;
+
+    function draw(){
+        var updateRect = svg.selectAll('.myrect')
+                            .data(dataset);
+        var enterRect = updateRect.enter();
+        var exitRect = updateRect.exit();
+
+        updateRect.attr('fill', 'steelblue')
+                  .attr('x', function(d, i){
+                    return padding.left + i*rectStep;
+                  })
+                  .attr('y', function(d){
+                    return height-padding.bottom-d;
+                  })
+                  .attr('width', rectWidth)
+                  .attr('height', function(d){
+                    return d;
+                  })
+                  .on('mouseover', function(d,i){
+                        d3.select(this)
+                          .attr('fill', 'yellow')
+                  })
+                  .on('mouseout', function(d, i){
+                        d3.select(this)
+                          .transition()
+                          .duration(500)
+                          .attr('fill', 'steelblue');
+                  });
+        enterRect.append('rect')
+                 .attr('fill', 'steelblue')
+                 .attr('x', function(d, i){
+                    return padding.left + i*rectStep;
+                  })
+                  .attr('y', function(d){
+                    return height-padding.bottom-d;
+                  })
+                  .attr('width', rectWidth)
+                  .attr('height', function(d){
+                    return d;
+                  })
+                  .on('mouseover', function(d,i){
+                        d3.select(this)
+                          .attr('fill', 'yellow')
+                  })
+                  .on('mouseout', function(d, i){
+                        d3.select(this)
+                          .transition()
+                          .duration(500)
+                          .attr('fill', 'steelblue');
+                  });
+        exitRect.remove();
+
+        var updateText = svg.selectAll('.mytext')
+                            .data(dataset);
+        var enterText = updateText.enter();
+        var exitText = updateText.exit();
+
+        updateText.attr('fill', 'blue')
+                  .attr('font-size', '14px')
+                  .attr('text-anchor', 'middle')
+                  .attr('x', function(d, i){
+                    return padding.left + i*rectStep;
+                  })
+                  .attr('y', function(d, i){
+                    return height - padding.bottom - d;
+                  })
+                  .attr('dx', rectWidth/2)
+                  .attr('dy', '-1em')
+                  .text(function(d){
+                    return d;
+                  });
+        enterText.append('text')
+                 .attr('fill', 'blue')
+                  .attr('font-size', '14px')
+                  .attr('text-anchor', 'middle')
+                  .attr('x', function(d, i){
+                    return padding.left + i*rectStep;
+                  })
+                  .attr('y', function(d, i){
+                    return height - padding.bottom - d;
+                  })
+                  .attr('dx', rectWidth/2)
+                  .attr('dy', '-1em')
+                  .text(function(d){
+                    return d;
+                  });
+        exitText.remove();
+
+    }
+    function clear(){
+        var updateRect = svg.selectAll('rect')
+        var updateText = svg.selectAll('text')
+        updateRect.remove();
+        updateText.remove();
+    }
+    function mysort(){
+        clear();
+        dataset.sort(d3.ascending);
+        draw();
+    }
+    function myadd(){
+        clear();
+        dataset.push(Math.floor(Math.random()*100));
+        draw();
+    }
+
+
+</script>
+<button type="button" onclick="mysort()">排序</button>
+<button type="button" onclick="myadd()">增加数据</button>
+</body>
+</html>
+```
+### 键盘
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<!--    <script src="d3/d3.js" charset="utf-8"></script>-->
+    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+    <script type="text/css">
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis text{
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .time{
+            font-family: Cursive;
+            font-size: 40px;
+            stroke: black;
+            stroke-width: 2;
+        }
+
+    </script>
+</head>
+<body>
+<script>
+    var width = 500;
+    var height = 500;
+    var characters = ['A','S','D','F'];
+    var svg = d3.select('body')
+                .append('svg')
+                .attr('width' ,width)
+                .attr('height', height);
+    var rects = svg.selectAll('rect')
+                   .data(characters)
+                   .enter()
+                   .append('rect')
+                   .attr('x', (d,i)=>{return 10+i*60;})
+                   .attr('y', 150)
+                   .attr('width', 55)
+                   .attr('height', 55)
+                   .attr('rx', 5)
+                   .attr('ry', 5)
+                   .attr('fill', 'black');
+
+    var texts = svg.selectAll('text')
+                   .data(characters)
+                   .enter()
+                   .append('text')
+                   .attr('x', (d,i)=>{return 10+i*60;})
+                   .attr('y', 150)
+                   .attr('dx', 10)
+                   .attr('dy', 25)
+                   .attr('fill', 'white')
+                   .attr('font-size', 24)
+                   .text(d => {return d;});
+
+    d3.select('body')
+      .on('keydown', function(){
+            rects.attr('fill', function(d){
+                console.log(d3.event);
+                if(d==String.fromCharCode(d3.event.keyCode)){
+                    return 'yellow';
+                }else{
+                    return 'black';
+                }
+            })
+      })
+      .on('keyup', function(){
+            rects.attr('fill', 'black');
+      });
+</script>
+
+</body>
+</html>
+```
+### 触摸
+```html
+<script>
+    var width = 500;
+    var height = 500;
+    var svg = d3.select('body')
+                .append('svg')
+                .attr('width' ,width)
+                .attr('height', height);
+    var circle = svg.append('circle')
+                    .attr('cx', 200)
+                    .attr('cy', 200)
+                    .attr('r', 50)
+                    .attr('fill', 'blue')
+                    .on('touchstart', function(){
+                        d3.select(this)
+                          .attr('fill', 'yellow');
+                    })
+                    .on('touchmove', function(){
+                        var pos = d3.touches(this)[0];
+                        d3.select(this)
+                          .attr('cx', pos[0])
+                          .attr('cy', pos[1]);
+                    })
+                    .on('touchend', function(){
+                        d3.select(this).attr('fill', 'blue');
+                    });
+</script>
+```
+## 事件
+```html
+<div style="padding:50px; background-color: gray;"></div>
+<script>
+    var width = 400;
+    var height = 400;
+    var svg = d3.select('div')
+                .append('svg')
+                .style('background-color', 'yellow')
+                .attr('width' ,width)
+                .attr('height', height);
+    svg.append('rect')
+       .attr('x', 200)
+       .attr('y', 100)
+       .attr('width', 100)
+       .attr('height', 100)
+       .on('click', function(){
+            console.log(d3.mouse(this)); //左上角[200,100]，说明相对于svg的坐标
+            console.log(d3.event.pageX); //左上角横坐标260，10+250,10为页面相对于浏览器内容的padding
+       });
+</script>
+
+</body>
+```
+![image](/assets/img/D3js/Event_01.png)
+## 拖拽
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<!--    <script src="d3/d3.js" charset="utf-8"></script>-->
+    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+    <script type="text/css">
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis text{
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .time{
+            font-family: Cursive;
+            font-size: 40px;
+            stroke: black;
+            stroke-width: 2;
+        }
+
+    </script>
+</head>
+<body>
+<script>
+    var width = 400;
+    var height = 400;
+    var svg = d3.select('body')
+                .append('svg')
+                .attr('width' ,width)
+                .attr('height', height);
+    var circles = [{cx:150, cy:200, r:30},{cx:250, cy:200, r:30}];
+
+    var drag = d3.drag()
+                 .on('start', d => {
+                      console.log('拖拽开始');
+                 })
+                 .on('end', d => {
+                      console.log('拖拽结束');
+                 })
+                 .on('drag', function(d){
+                      d3.select(this)
+                        .attr('cx', d.cx = d3.event.x)
+                        .attr('cy', d.cy = d3.event.y);
+                 });
+    svg.selectAll('circle')
+       .data(circles)
+       .enter()
+       .append('circle')
+       .attr('cx', d => {return d.cx;})
+       .attr('cy', d => {return d.cy;})
+       .attr('r', d => {return d.r;})
+       .attr('fill', 'black')
+       .call(drag);
+</script>
+
+</body>
+</html>
+```
+## 缩放
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<!--    <script src="d3/d3.js" charset="utf-8"></script>-->
+    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+    <script type="text/css">
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis text{
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .time{
+            font-family: Cursive;
+            font-size: 40px;
+            stroke: black;
+            stroke-width: 2;
+        }
+
+    </script>
+</head>
+<body>
+<script>
+    var width = 500;
+    var height = 500;
+    var svg = d3.select('body')
+                .append('svg')
+                .style('background-color', 'yellow')
+                .attr('width', width)
+                .attr('height',height);
+                //.attr('viewBox', [0,0,width,height]);
+    var circles = [{cx:150, cy:200, r:30},
+                   {cx:220, cy:200, r:30},
+                   {cx:150, cy:270, r:30},
+                   {cx:220, cy:270, r:30}];
+    var zoom = d3.zoom()
+                 .extent([[0,0],[200, 200]])
+                 .scaleExtent([1,10])  //设置缩放的方位1至10倍
+                 .on('zoom', function(d){
+                      d3.select(this)
+                        .attr('transform', d3.event.transform);//缩放
+                        //.transition()
+                        //.duration(200)
+                        //.attr('transform','translate('+d3.event.transform.x+','+d3.event.transform.y+')'+'scale('+d3.event.transform.k+')');
+                      console.log(d3.event.transform);
+                 });
+
+    var g = svg.append('g');
+    g.selectAll('circle')
+       .data(circles)
+       .enter()
+       .append('circle')
+       .attr('cx', d => {return d.cx;})
+       .attr('cy', d => {return d.cy;})
+       .attr('r', d => {return d.r;})
+       .attr('fill', 'black');
+    g.call(zoom); //g一个整体缩放
+</script>
+
+</body>
+</html>
+
+```
