@@ -83,3 +83,47 @@ date: 2020-03-18 17:53:00
 |:--:|:--|
 |①图示|![image](/assets/img/papers/InSituNet_07.png)，总量$N$,批量$b$(batchsize)，正交初始化模型权重，Exit Criterion为125000次迭代，因为此时损失已经收敛。$v,w$分别为鉴别器和回归器的权重|
 |②流程|(1)采样$N$组数据，包括三组参数以及相应真值图像；<br>(2)初始化$R_w,D_v,F$权重;<br>(3)每次迭代训练小批量$b$数据，回归器$R_w$生成预测图像，计算损失函数，反向传播更新鉴别器、归回器权重，直至达到迭代次数。|
+
+|参数空间探究|说明|
+|:--:|:--|
+|①参数空间探究的可视化界面|![image](/assets/img/papers/InSituNet_08.png)|
+|②用户可从两方面进行参数空间的探究|(1)首先,通过InSituNet的正向传播，用户**可以交互地推断参数空间内任意参数的可视化结果**。<br>(2)其次，使用InSituNet的反向传播，用户**可以研究不同参数的敏感性**，从而更好地理解参数的选择。<br>(3)注意，在这项工作中，敏感性分析是用来反映图像空间中的变化(关于参数)，而不是数据空间，本文的分析包括整体敏感性分析和分区敏感性分析。<br>(4)**整体敏感性：重点是分析整个图像的灵敏度相对于每个模拟参数的价值范围。**控制变量法控制其他参数，遍历该参数所有值，为每个参数返回一个灵敏度值列表，并在与该参数对应的滑条顶部以折线图的形式显示(图7(a1))，以指示该参数在其值范围内的灵敏度。<br>(5)**局部敏感性：分析所选参数对所生成图像不同子区域的灵敏度。**将计算出的灵敏度值从白色编码为红色，并将其覆盖在可视化图像的顶部，以指示哪些区域相对于所选参数更敏感(图7(b1)中的红色块)。|
+
+|实验|说明|
+|:--:|:--|
+|①三项仿真应用数据图示|![image](/assets/img/papers/InSituNet_09.png)|
+|②三项仿真应用|(1)二维燃烧仿真$SmallPoolFire$<br>(2)宇宙模拟$Nyx$<br>(3)全球海洋模拟MPAS-Ocean|
+|③实现以及性能|(1)三大组件：现场仿真数据收集、InSituNet训练、可视化探究以及分析组件。<br>(2)现场可视化通过ParaView Catalyst实施，仿真以及现场可视化使用包含648个节点的超级计算机，每个节点由一个14核以及128GB内存的Intel Xeon E50-2680 CPU组成。对于三项仿真，分别使用1,28,128个进程进行仿真计算。<br>(3)InSituNet使用PyTorch编写，由一各包含8块NVIDIA V100 GPU构成的NVIDIA DGX-1系统训练。<br>使用web服务器/客户端框架实施可视化界面，客户端方面使用D3.js进行可视化。<br>(4)由一台包一块Inter Corei7-4770 CPU以及一块NVIDIA 980Ti GPU的电脑进行可视探究与分析。<br>(5)表1右侧表明模型尺寸小于原始仿真数据，且训练时间比仿真时间短。|
+
+|<font size=4>**④模型超参数评估**</font>||
+|:--|:--|
+||从损失函数、网络结构、训练样本数三个方面对模型进行评估|
+|(1)评价指标||
+|**A. peak signal-to-noise ratio (PSNR)**|PSNR利用图像像素间的累积平均平方误差来测量两幅图像之间的像素级差异。**一个更高的PSNR表明比较后的图像在像素方面更加相似**|
+|**B. SSIM**|SSIM基于两幅图像之间的区域汇总统计信息(如小块区域的均值和标准差)对两幅图像进行比较。**较高的SSIM意味着从结构的角度来看，比较的图像更相似。**|
+|**C. earth mover’s distance (EMD) between color histograms**|使用EMD来量化两幅图像的颜色直方图之间的距离。**较低的EMD意味着比较的图像根据颜色分布更相似**|
+|**D. Frechet´ inception distance (FID)**|FID近似于两个图像分布之间的距离，在最近的图像合成工作中被广泛使用，作为对其他指标的补充。**一个较低的FID表明两个图像采集在统计上更相似。**|
+|(2)损失函数评估||
+|损失函数的选择|![image](/assets/img/papers/InSituNet_10.png)![image](/assets/img/papers/InSituNet_11.png)<br>通过图8以及表2可以发现联合特征重构损失以及对抗损失更优|
+|特征比较器特征提取层的选择|![image](/assets/img/papers/InSituNet_12.png)<br>如图经过比较，发现使用relu1_2特征层更优|
+|联合损失函数$\lambda$的选择|![image](/assets/img/papers/InSituNet_13.png)<br>如表所示，发现$\lambda = 0.01$更优|
+|(3)网络结构评估|之前的图示可知，卷积核数量控制变量k决定网络尺寸|
+||![image](/assets/img/papers/InSituNet_14.png)<br>通过对比，三种仿真最优k值分别为32,48,48|
+|(4)仿真训练次数评估|探究仿真运行周期次数对于后续InStituNet训练精度的影响|
+||![image](/assets/img/papers/InSituNet_15.png)<br>对比发现，3900,400,270分别为三种仿真的最优值。|
+|(5)不同方法的对比||
+||![image](/assets/img/papers/InSituNet_16.png)<br>Nxy数据集，两种方法，对比发现，本论文的方法性能更优|
+
+|<font size=4>**⑤参数空间探究**</font>||
+|:--|:--|
+|(1)Nxy仿真参数探究|![image](/assets/img/papers/InSituNet_17.png)![image](/assets/img/papers/InSituNet_18.png)|
+|(2)MPAS-Ocean仿真参数探究|![image](/assets/img/papers/InSituNet_19.png)|
+
+
+|讨论以及结论|说明|
+|:--:|:--|
+|①模型限制|(1)限制了任意visual mapping parameters的探究;<br>(2)数据集的影响;<br>(3)输出图像大小有限制，模型结构、性能的都有待未来研究。|
+|②结论|本文提出了InSituNet，一个基于深度学习的图像合成模型，支持大规模集成仿真的参数空间探索。通过可视化界面，可以探究已训练的模型下的不同仿真参数输入下的预测。通过定量和定性的评估，我们验证了InSituNet在分析模拟不同物理现象的集成仿真中的有效性。|
+
+[^1]: [InSituNet: Deep Image Synthesis for Parameter Space Exploration
+of Ensemble Simulations](/assets/files/InSituNet_Deep_Image_Synthesis_for_Parameter_Space_Exploration.pdf)
