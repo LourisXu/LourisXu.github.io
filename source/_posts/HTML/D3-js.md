@@ -2744,3 +2744,476 @@ v5版本与v3版本有些差异，具体见官网API
 </html>
 
 ```
+> # 导入和导出
+
+## 导入
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./d3/d3.js" charset="utf-8"></script>
+    <!--    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>-->
+    <script type="text/css">
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis text{
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .time{
+            font-family: Cursive;
+            font-size: 40px;
+            stroke: black;
+            stroke-width: 2;
+        }
+
+
+    </script>
+</head>
+<body>
+<script>
+    d3.json('./data/example_data.json')
+      .then(function(data){
+        console.log(data);
+      });
+    d3.csv('./data/example_data.csv', function(d){ //对每项数据进行操作
+        return {
+            name: d.name,
+            age: Number(d.age)+10,
+            sex: d.sex
+        };
+      })
+      .then(function(data){
+        console.log(data);
+        console.log(data[0]);
+        console.log(data[1]);
+      });
+    d3.xml('./data/example_data.xml')
+      .then(function(data){
+        console.log(data);
+        console.log(data.getElementsByTagName('title')[0].innerHTML);
+        console.log(data.getElementsByTagName('date')[0].innerHTML);
+        console.log(data.getElementsByTagName('body')[0].innerHTML);
+      });
+    d3.text('./data/example_data.text')
+      .then(function(data){
+        console.log(data);
+      });
+</script>
+
+</body>
+</html>
+
+```
+```html
+index.html:33 {name: "中国", children: Array(2)}
+index.html:43 (2) [{…}, {…}, columns: Array(3)]
+index.html:44 {name: "张三", age: 32, sex: "男"}
+index.html:45 {name: "Lily", age: 32, sex: "Female"}
+index.html:49 #document
+index.html:50 XML Text
+index.html:51 2020.03.23
+index.html:52 Hello, XML
+index.html:56 This is a text file.
+```
+
+> # 布局
+
+## 饼图
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./d3/d3.js" charset="utf-8"></script>
+    <!--    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>-->
+    <script type="text/css">
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis text{
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .time{
+            font-family: Cursive;
+            font-size: 40px;
+            stroke: black;
+            stroke-width: 2;
+        }
+
+
+    </script>
+</head>
+<body>
+<script>
+    var width = 500;
+    var height = 500;
+    var svg = d3.select('body')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+    var dataset = [['小米', 60.8], ['三星', 58.4],  ['联想', 47.3],
+                   ['苹果', 46.6], ['华为', 41.3], ['酷派', 40.1], ['其他', 111.5]];
+    var pie = d3.pie()
+                .startAngle(Math.PI*0.2)
+                .endAngle(Math.PI*1.5)
+                .value(function(d){return d[1];});
+    var piedata = pie(dataset);
+    console.log(piedata);
+
+    var outerRadius = width / 3;
+    var innerRadius = 0;
+
+
+    var arc = d3.arc()
+                .innerRadius(innerRadius)
+                .outerRadius(outerRadius);
+
+    var colors = d3.schemeCategory10;
+    var arcs = svg.selectAll('g')
+                  .data(piedata)
+                  .enter()
+                  .append('g')
+                  .attr('transform', 'translate('+(width/2)+','+(height/2)+')');
+    // 绘制
+    arcs.append('path')
+        .attr('fill', function(d, i){
+            return colors[i%10];
+        })
+        .attr('d', function(d){
+            return arc(d);
+        });
+    // 文字
+    arcs.append('text')
+        .attr('transform', function(d){
+            var x = arc.centroid(d)[0] * 1.4; //文字横坐标
+            var y = arc.centroid(d)[1] * 1.4; //文字纵坐标，相对于圆心
+            console.log(x)
+            return 'translate('+x+','+y+')';
+        })
+        .attr('text-anchor', 'middle')
+        .text(function(d){
+            var percent = Number(d.value)/d3.sum(dataset, function(d){return d[1];})*100;
+
+            return percent.toFixed(1) +'%';
+        });
+    //添加链接弧外文字的直线元素
+    arcs.append('line')
+        .attr('stroke', 'black')
+        .attr('x1', d => {return arc.centroid(d)[0]*2})
+        .attr('y1', d => {return arc.centroid(d)[1]*2})
+        .attr('x2', d => {return arc.centroid(d)[0]*2.2;})
+        .attr('y2', d => {return arc.centroid(d)[1]*2.2});
+    //添加弧外的文字元素
+    arcs.append('text')
+        .attr('transform', d => {
+            var x = arc.centroid(d)[0]*2.5;
+            var y = arc.centroid(d)[1]*2.5;
+            return 'translate('+x+','+y+')';
+        })
+        .attr('text-anchor', 'middle')
+        .text(d => {return d.data[0];});
+</script>
+
+</body>
+</html>
+
+```
+![image](/assets/img/D3js/layout_pie_01.png)
+![image](/assets/img/D3js/layout_pie_02.png)
+
+## 力向导图
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./d3/d3.js" charset="utf-8"></script>
+    <!--    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>-->
+    <script type="text/css">
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis text{
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .time{
+            font-family: Cursive;
+            font-size: 40px;
+            stroke: black;
+            stroke-width: 2;
+        }
+
+
+    </script>
+</head>
+<body>
+<script>
+    var width = 500;
+    var height = 500;
+    var padding = {top:60,bottom:60,left:60,right:60};
+    var svg = d3.select('body')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+    var g = svg.append('g')
+               .attr('transform', 'translate('+padding.top+','+padding.left+')');
+    var nodes = [{name: '0'}, {name: '1'}, {name: '2'}, {name: '3'}, {name: '4'},
+                 {name: '5'}, {name: '6'}];
+    var edges = [{source: 0, target: 1, relation: 'x', value:1.3},
+                 {source: 0, target: 2, relation: 'x', value:1},
+                 {source: 0, target: 3, relation: 'x', value:1},
+                 {source: 1, target: 4, relation: 'x', value:1.4},
+                 {source: 1, target: 5, relation: 'x', value:0.7},
+                 {source: 1, target: 6, relation: 'x', value:0.8}];
+    var forceSimulation = d3.forceSimulation()
+                  .force('link', d3.forceLink())
+                  .force('charge', d3.forceManyBody())
+                  .force('center', d3.forceCenter());
+    //计算节点、边数据、设置图形中心位置
+    forceSimulation.nodes(nodes)
+                   .on('tick', ticked); //非常重要，更新元素
+    forceSimulation.force('link')
+                   .links(edges)
+                   .distance(d => d.value*100);
+    forceSimulation.force('center')
+                   .x(width/2)
+                   .y(height/2);
+    console.log(nodes);
+    console.log(edges);
+    var colors = d3.schemeCategory10;
+    //绘制边
+    var links = g.append('g')
+                 .selectAll('line')
+                 .data(edges)
+                 .enter()
+                 .append('line')
+                 .attr('stroke', (d, i) => colors[i%10])
+                 .attr('stroke-width', 1);
+    //边上的文字
+    var linksText = g.append('g')
+                     .selectAll('text')
+                     .data(edges)
+                     .enter()
+                     .append('text')
+                     .text(d => d.relation);
+    //节点
+    var gs = g.selectAll('.circleText')
+              .data(nodes)
+              .enter()
+              .append('g')
+              .attr('transform', function(d, i){
+                    var x = d.x;
+                    var y = d.y;
+                    return 'translate('+x+','+y+')';
+              })
+              .call(d3.drag()
+                      .on('start', started)
+                      .on('drag', dragged)
+                      .on('end', ended)
+              );
+
+    gs.append('circle')
+      .attr('r', 10)
+      .attr('fill', (d, i) => colors[i%10]);
+    gs.append('text')
+      .attr('x', -10)
+      .attr('y', -20)
+      .attr('dy', 10)
+      .text(d => d.name);
+
+    function ticked(){
+        links.attr('x1', d => d.source.x)
+             .attr('y1', d => d.source.y)
+             .attr('x2', d => d.target.x)
+             .attr('y2', d => d.target.y)
+        linksText.attr('x', d => (d.source.x+d.target.x)/2)
+                 .attr('y', d => (d.source.y+d.target.y)/2);
+        gs.attr('transform', d => 'translate('+d.x+','+d.y+')');
+    }
+
+    function started(d){
+        if(!d3.event.active){
+            //设置衰减系数，对节点位置移动过程的模拟，数值越高移动越快，数值范围[0，1]
+            forceSimulation.alphaTarget(0.8).restart();
+        }
+        d.fx = d.x; //fx,fy为节点固定位置
+        d.fy = d.y;
+    }
+    function dragged(d){
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+    }
+    function ended(d){
+        if(!d3.event.active){
+            forceSimulation.alphaTarget(0);
+        }
+        d.fx = null;
+        d.fy = null;
+    }
+</script>
+
+</body>
+</html>
+
+```
+![image](/assets/img/D3js/force_graph.png)
+## 弦图
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./d3/d3.js" charset="utf-8"></script>
+    <!--    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>-->
+    <script type="text/css">
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis text{
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .time{
+            font-family: Cursive;
+            font-size: 40px;
+            stroke: black;
+            stroke-width: 2;
+        }
+
+
+    </script>
+</head>
+<body>
+<script>
+    var width = 500;
+    var height = 500;
+    var padding = {top:60,bottom:60,left:60,right:60};
+    var svg = d3.select('body')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+    var continent = ['亚洲', '欧洲', '非洲', '美洲', '大洋洲'];
+    /*
+          亚洲  美洲
+    亚洲  9000  1000
+    美洲  7000  500
+
+    亚洲人口，有9000本地，1000来自美洲的移民，总人口9000+1000
+    美洲人口，有500本地人，7000来自亚洲的移民，总人口500+7000
+    */
+    var population = [
+        [9000, 870, 3000, 1000, 5200],
+        [3400, 8000, 7700, 4881, 1050],
+        [2000, 2000, 7700, 4881, 1050],
+        [3000, 8012, 5531, 500, 400],
+        [3540, 4310, 1500, 1900, 300]
+    ];
+    var chords = d3.chord()
+                  .padAngle(0.03)
+                  .sortSubgroups(d3.ascending);
+    var chords = chords(population);
+
+    console.log(chords.groups);
+    console.log(chords);
+
+    var gChord = svg.append('g')
+                    .attr('transform', 'translate('+width/2+','+height/2+')');
+    var gInner = gChord.append('g')
+                       .attr('fill-opacity', 0.67);
+    var gOuter = gChord.append('g');
+
+    var colors = d3.schemeCategory10;
+    var innerRadius = width/2*0.7;
+    var outerRadius = innerRadius * 1.1;
+
+    //绘制外层弧图
+    var arcOuter = d3.arc()
+                     .innerRadius(innerRadius)
+                     .outerRadius(outerRadius);
+
+    gOuter.selectAll('.outerPath')
+          .data(chords.groups)
+          .enter()
+          .append('path')
+          .attr('class', 'outerPath')
+          .style('fill', d => colors[d.index%10])
+          .attr('d', arcOuter);
+    gOuter.selectAll('.outerText')
+          .data(chords.groups)
+          .enter()
+          .append('text')
+          .attr('class', 'outerText')
+          .each((d,i) => {
+                d.angle = (d.startAngle+d.endAngle)/2;
+                d.name = continent[i];
+          })
+          .attr('dy', '.35em')
+          .attr('transform', d =>{
+                //先旋转d.angle
+                var result = 'rotate('+(d.angle*180/Math.PI)+')';
+                //平移到外半径之外
+                result += 'translate(0,'+ -1.0 *(outerRadius + 10)+')';
+                //对位于弦图下方的文字，翻转180°，为了防止其是倒着的
+                //if(d.angle>Math.PI*3/4&&d.angle<Math.PI*5/4)
+                //    result += 'rotate(180)';
+                return result;
+          })
+          .text(d => d.name);
+
+    //绘制内部弦图
+    var ribbonInner = d3.ribbon()
+                     .radius(innerRadius);
+    gInner.selectAll('.innerPath')
+          .data(chords)
+          .enter()
+          .append('path')
+          .attr('class', 'innerPath')
+          .attr('d', ribbonInner)
+          .style('fill', d => colors[d.source.index%10]);
+
+
+    //交互式
+    gOuter.selectAll('.outerPath')
+          .on('mouseover', fade(0.0))
+          .on('mouseout', fade(1.0));
+
+    function fade(opacity){
+        return function(g, i){
+            gInner.selectAll('.innerPath')
+                  .filter(d => { //过滤器
+                        //没有连接到鼠标所在节点的弦才能通过
+                        return d.source.index != i && d.target.index != i;
+                  })
+                  .transition()
+                  .style('opacity', opacity);
+        }
+    }
+</script>
+</body>
+</html>
+
+```
+![image](/assets/img/D3js/chord_graph_01.png)
+![image](/assets/img/D3js/chord_graph_02.png)

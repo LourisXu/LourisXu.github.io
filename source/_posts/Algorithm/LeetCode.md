@@ -41,6 +41,8 @@ toc: true
 |98. 验证二叉搜索树|Medium|二叉搜索树|
 |100. 相同的树|Easy|二叉树|
 |101. 对称二叉树|Easy|二叉树|
+|102. 二叉树的层次遍历|Medium|广搜|
+|103. 二叉树的锯齿形层次遍历|Medium|广搜|
 |104. 二叉树的最大深度|Easy|二叉树|
 |105. 从前序与中序遍历序列构造二叉树|Medium|二叉树|
 |106. 从中序与后序遍历序列构造二叉树|Medium|二叉树|
@@ -61,6 +63,7 @@ toc: true
 |122. 买卖股票的最佳时机 II|Easy|动态规划|
 |123. 买卖股票的最佳时机 III|Hard|动态规划|
 |125. 验证回文串|Easy|字符串|
+|127. 单词接龙|Medium|广搜|
 |129. 求根到叶子节点数字之和|Medium|二叉树遍历|
 |130. 被围绕的区域|Medium|并查集|
 |133. 克隆图|Medium|BFS+Map|
@@ -106,6 +109,7 @@ toc: true
 |304. 二维区域和检索 - 矩阵不可变|Medium|动态规划|
 |307. 区域和检索 - 数组可修改|Medium|树状数组|
 |309. 最佳买卖股票时机含冷冻期|Medium|动态规划|
+|310. 最小高度树|Medium|拓扑排序变体|
 |315. 计算右侧小于当前元素的个数|Hard|树状数组|
 |318. 最大单词长度乘积|Medium|位运算|
 |322. 零钱兑换|Medium|动态规划|
@@ -9758,6 +9762,406 @@ public:
             change=change2;
         }
         return min(noChange, change);
+    }
+};
+```
+## 102. 二叉树的层次遍历
+**Description**
+给定一个二叉树，返回其按层次遍历的节点值。 （即逐层地，从左到右访问所有节点）。
+**Example**
+例如:
+给定二叉树: [3,9,20,null,null,15,7],
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+返回其层次遍历结果：
+[
+  [3],
+  [9,20],
+  [15,7]
+]
+**Program**
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    struct Node{
+        TreeNode* node;
+        int idx;
+        Node(){}
+        Node(TreeNode* tNode, int Idx){
+            node=tNode;
+            idx=Idx;
+        }
+    };
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> result;
+        if(root==NULL) return result;
+        vector<int> vec;
+        int index=0;
+        int level=0, end=0;
+        queue<Node>q;
+        q.push(Node(root, 0));
+        vec.push_back(root->val);
+        index++;
+
+        result.resize(1);
+        while(!q.empty()){
+            Node tmp=q.front();
+            TreeNode* now=tmp.node;
+            int idx=tmp.idx;
+            result[level].push_back(now->val);
+            q.pop();
+            if(now->left!=NULL){
+                q.push(Node(now->left, index));
+                vec.push_back(now->left->val);
+                index++;
+            }
+            if(now->right!=NULL){
+                q.push(Node(now->right, index));
+                vec.push_back(now->right->val);
+                index++;
+            }
+            if(idx==end){
+                end=index-1;
+                result.push_back(vector<int>());
+                level++;
+            }
+        }
+        if(result[level].size()==0) result.pop_back();
+        return result;
+    }
+};
+```
+## 103. 二叉树的锯齿形层次遍历
+**Description**
+给定一个二叉树，返回其节点值的锯齿形层次遍历。（即先从左往右，再从右往左进行下一层遍历，以此类推，层与层之间交替进行）。
+**Example**
+例如：
+给定二叉树 [3,9,20,null,null,15,7],
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+返回锯齿形层次遍历如下：
+
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+**Program**
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    struct Node{
+        TreeNode* node;
+        int idx;
+        Node(){}
+        Node(TreeNode* tNode, int Idx){
+            node=tNode;
+            idx=Idx;
+        }
+    };
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int>> result;
+        if(root==NULL) return result;
+        vector<int> vec;
+        int index=0;
+        int level=0, end=0;
+        queue<Node>q;
+        q.push(Node(root, 0));
+        vec.push_back(root->val);
+        index++;
+
+        result.resize(1);
+        while(!q.empty()){
+            Node tmp=q.front();
+            TreeNode* now=tmp.node;
+            int idx=tmp.idx;
+            result[level].push_back(now->val);
+            q.pop();
+            if(now->left!=NULL){
+                q.push(Node(now->left, index));
+                vec.push_back(now->left->val);
+                index++;
+            }
+            if(now->right!=NULL){
+                q.push(Node(now->right, index));
+                vec.push_back(now->right->val);
+                index++;
+            }
+            if(idx==end){
+                end=index-1;
+                result.push_back(vector<int>());
+                level++;
+            }
+        }
+        if(result[level].size()==0) result.pop_back();
+        for(int i=1;i<result.size();i+=2){
+            reverse(result[i].begin(), result[i].end());
+        }
+        return result;
+    }
+};
+```
+## 127. 单词接龙
+**Description**
+给定两个单词（beginWord 和 endWord）和一个字典，找到从 beginWord 到 endWord 的最短转换序列的长度。转换需遵循如下规则：
+每次转换只能改变一个字母。
+转换过程中的中间单词必须是字典中的单词。
+说明:
+如果不存在这样的转换序列，返回 0。
+所有单词具有相同的长度。
+所有单词只由小写字母组成。
+字典中不存在重复的单词。
+你可以假设 beginWord 和 endWord 是非空的，且二者不相同。
+**Example**
+示例 1:
+输入:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+输出: 5
+解释: 一个最短转换序列是 "hit" -> "hot" -> "dot" -> "dog" -> "cog",
+     返回它的长度 5。
+
+示例 2:
+输入:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log"]
+输出: 0
+解释: endWord "cog" 不在字典中，所以无法进行转换。
+**Program**
+**单向广搜（超时）**
+```cpp
+class Solution {
+public:
+    struct Node{
+        string str;
+        int step;
+        Node(){}
+        Node(string Str, int Step):str(Str),step(Step){}
+    };
+    bool judge(string a, string b){
+        int ans=0;
+        for(int i=0;i<a.length();i++){
+            if(a[i]!=b[i]) ans++;
+            if(ans>1) return false;
+        }
+        return true;
+    }
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        int n=wordList.size();
+        unordered_set<string> vis;
+        vis.insert(beginWord);
+        queue<Node> q;
+        q.push(Node(beginWord, 1));
+        while(!q.empty()){
+            Node node=q.front();
+            q.pop();
+            if(node.str==endWord){
+                return node.step;
+            }
+            for(int i=0;i<n;i++){
+                if(vis.find(wordList[i])==vis.end()&&judge(node.str, wordList[i])){
+                    q.push(Node(wordList[i], node.step+1));
+                    vis.insert(wordList[i]);
+                }
+            }
+        }
+        return 0;
+    }
+};
+```
+**双向广搜**
+```cpp
+class Solution {
+public:
+    struct Node{
+        int idx;
+        int step;
+        Node(){}
+        Node(int Idx, int Step):idx(Idx),step(Step){}
+    };
+    vector<Node> mQueue[2];
+    vector<bool> vis[2];
+    unordered_map<string, int> m;
+    int qHead[2],qTail[2];
+    int n;
+    int matching_qNo,matching_idx, matching_step=0;
+    bool DBFS(string beginWord, string endWord,vector<string>& wordList){
+        vis[0].resize(n, false);
+        vis[1].resize(n ,false);
+
+        mQueue[0].resize(n);
+        mQueue[1].resize(n);
+
+        qHead[0]=qHead[1]=0;
+        qTail[0]=qTail[1]=0;
+
+        mQueue[0][qTail[0]++]=Node(m[beginWord],1);
+        mQueue[1][qTail[1]++]=Node(m[endWord],1);
+
+        vis[0][m[beginWord]]=true;
+        vis[1][m[endWord]]=true;
+        while(qHead[0]!=qTail[0]&&qHead[1]!=qTail[1]){
+            int qNo=0;
+            if(qHead[0]==qTail[0]) qNo=1;
+            else if(qHead[1]==qTail[1]) qNo=0;
+            else if(qTail[0]-qHead[0]>qTail[1]-qHead[1]){ //选择更新的队列
+                qNo=1;
+            }
+            Node node=mQueue[qNo][qHead[qNo]++];
+            string str=wordList[node.idx]; //队列头元素
+            for(int i=0;i<str.length();i++){
+                for(char ch='a';ch<='z';ch++){
+                    string tmp=str;
+                    tmp[i]=ch;
+                    if(tmp==str) continue;
+                    if(m.find(tmp)!=m.end()){
+                        if(vis[1-qNo][m[tmp]]){ //在另一个队列中出现，说明找到路径
+                            matching_qNo=qNo;
+                            matching_idx=m[tmp];
+                            matching_step=node.step;
+                            return true;
+                        }
+                        if(!vis[qNo][m[tmp]]){
+                            mQueue[qNo][qTail[qNo]]=Node(m[tmp],node.step+1);
+                            vis[qNo][m[tmp]]=true;
+                            qTail[qNo]++;
+                        }   
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {     
+        wordList.push_back(beginWord);
+        n=wordList.size();
+        for(int i=0;i<n;i++) m[wordList[i]]=i;
+        if(m.find(endWord)==m.end()) return 0;
+        bool isMatch=DBFS(beginWord, endWord, wordList);
+        for(int i=qHead[1-matching_qNo];i<=qTail[1-matching_qNo];i++){
+            Node node=mQueue[1-matching_qNo][i];
+            if(node.idx==matching_idx){
+                matching_step+=node.step;
+            }
+        }
+        return matching_step;
+    }
+};
+```
+## 310. 最小高度树
+**Description**
+对于一个具有树特征的无向图，我们可选择任何一个节点作为根。图因此可以成为树，在所有可能的树中，具有最小高度的树被称为最小高度树。给出这样的一个图，写出一个函数找到所有的最小高度树并返回他们的根节点。
+格式
+该图包含 n 个节点，标记为 0 到 n - 1。给定数字 n 和一个无向边 edges 列表（每一个边都是一对标签）。
+你可以假设没有重复的边会出现在 edges 中。由于所有的边都是无向边， [0, 1]和 [1, 0] 是相同的，因此不会同时出现在 edges 里。
+**Example**
+示例 1:
+输入: n = 4, edges = [[1, 0], [1, 2], [1, 3]]
+```
+        0
+        |
+        1
+       / \
+      2   3
+```
+输出: [1]
+
+示例 2:
+输入: n = 6, edges = [[0, 3], [1, 3], [2, 3], [4, 3], [5, 4]]
+```
+     0  1  2
+      \ | /
+        3
+        |
+        4
+        |
+        5
+```
+输出: [3, 4]
+说明:
+ 根据树的定义，树是一个无向图，其中任何两个顶点只通过一条路径连接。 换句话说，一个任何没有简单环路的连通图都是一棵树。
+树的高度是指根节点和叶子节点之间最长向下路径上边的数量。
+**Program**
+**思路**
+一次性删除度为1的节点，直至最后剩余节点数不超过2。
+```cpp
+class Solution {
+public:
+    vector<vector<int>> Adj;
+    vector<int> result;
+    vector<int> degree;
+    vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) {
+        Adj.resize(n);
+        degree.resize(n, 0);
+        for(int i=0;i<edges.size();i++){
+            int u=edges[i][0];
+            int v=edges[i][1];
+            Adj[u].push_back(v);
+            Adj[v].push_back(u);
+            degree[u]++;
+            degree[v]++;
+        }
+        queue<int> q;
+        int cnt=0;
+        for(int i=0;i<n;i++){
+            if(degree[i]<=1){ //散点
+                q.push(i);
+                cnt++;
+            }
+        }
+        int nCount=0; //已删除的节点数
+        while(n-nCount>2){
+            int tmpCnt=0;
+            nCount+=cnt;
+            while(cnt--){ //一次性删除所有度为1的点
+                int u=q.front();
+                q.pop();
+                for(int i=0;i<Adj[u].size();i++){
+                    int v=Adj[u][i];
+                    degree[v]--;
+                    if(degree[v]==1){
+                        q.push(v);
+                        tmpCnt++;
+                    }
+                }
+            }
+            cnt=tmpCnt;
+        }
+        while(!q.empty()){
+            result.push_back(q.front());
+            q.pop();
+        }
+        return result;
     }
 };
 ```
