@@ -3217,3 +3217,305 @@ index.html:56 This is a text file.
 ```
 ![image](/assets/img/D3js/chord_graph_01.png)
 ![image](/assets/img/D3js/chord_graph_02.png)
+## 树状图
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./d3/d3.js" charset="utf-8"></script>
+    <!--    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>-->
+    <script type="text/css">
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis text{
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .time{
+            font-family: Cursive;
+            font-size: 40px;
+            stroke: black;
+            stroke-width: 2;
+        }
+
+
+    </script>
+</head>
+<body>
+<script>
+    var width = 700;
+    var height = 500;
+    var padding = {top:60,bottom:60,left:60,right:60};
+    var svg = d3.select('body')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .append('g')
+                .attr('transform', 'translate('+padding.left+','+0+')');
+    var tree = d3.tree()
+                 .size([width-200, height-200])
+                 .separation((a,b) => {
+                   return (a.parent == b.parent?1:2);
+                 });
+
+    d3.json('data/city.json')
+      .then(function(data){
+        // var nodes = tree.nodes(data);
+        // var links = tree.links(nodes);
+        var hierarchyData = d3.hierarchy(data)
+                              .sum(d => d.value);
+        //console.log(hierarchyData);
+
+        var treeData = tree(hierarchyData);
+        var nodes = treeData.descendants();
+        var links = treeData.links();
+        //console.log(nodes);
+        //console.log(links);
+
+        // 绘制边
+        svg.append('g')
+           .selectAll('path')
+           .data(links)
+           .enter()
+           .append('path')
+           .attr('d',  d3.linkHorizontal().x(d =>d.y).y(d => d.x))
+           .attr('fill', 'none')
+           .attr('stroke', 'grey')
+           .attr('stroke-width', 1);
+        //绘制节点
+        var gNodes = svg.append('g')
+                        .attr('stroke-linejoin', 'round')
+                        .attr('stroke-width', 3)
+                        .selectAll('g')
+                        .data(nodes)
+                        .enter()
+                        .append('g')
+                        .attr('transform', d => 'translate('+d.y+','+d.x+')');
+        //绘制节点文字
+        gNodes.append('circle')
+              .attr('fill', d => d.children?'#555':'#999')
+              .attr('r', 2.5);
+        gNodes.append('text')
+              .attr('dy', '0.31em')
+              .attr('x', d => d.children?-6:6)
+              .attr('text-anchor', d => d.children?'end':'start')
+              .text(d => d.data.name)
+              .clone(true)
+              .lower()
+              .attr('stroke', 'white');
+      });
+
+
+</script>
+</body>
+</html>
+
+```
+![image](/assets/img/D3js/tree_graph.png)
+
+## 集群图
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./d3/d3.js" charset="utf-8"></script>
+    <!--    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>-->
+    <script type="text/css">
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis text{
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .time{
+            font-family: Cursive;
+            font-size: 40px;
+            stroke: black;
+            stroke-width: 2;
+        }
+
+
+    </script>
+</head>
+<body>
+<script>
+    var width = 800;
+    var height = 800;
+    var radius = 400
+    var padding = {top:60,bottom:60,left:60,right:60};
+    var svg = d3.select('body')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .append('g')
+                .attr('transform', 'translate('+radius+','+radius+')');
+    var cluster = d3.cluster()
+                 .size([2*Math.PI, radius - 200])
+                 .separation((a,b) => {
+                   return (a.parent == b.parent?1:2) / a.depth; //成比例减少
+                 });
+
+    d3.json('data/city.json')
+      .then(function(data){
+        // var nodes = tree.nodes(data);
+        // var links = tree.links(nodes);
+        var hierarchyData = d3.hierarchy(data)
+                              .sort((a,b) => d3.ascending(a.data.name, b.data.name));
+        //console.log(hierarchyData);
+
+        var clusterData = cluster(hierarchyData);
+        var nodes = clusterData.descendants();
+        var links = clusterData.links();
+        //console.log(nodes);
+        //console.log(links);
+
+        // 绘制边
+        svg.append('g')
+           .selectAll('path')
+           .data(links)
+           .enter()
+           .append('path')
+           .attr('d',  d3.linkRadial().angle(d =>d.x).radius(d => d.y))
+           .attr('fill', 'none')
+           .attr('stroke', 'grey')
+           .attr('stroke-width', 1);
+        //绘制节点
+        var gNodes = svg.append('g')
+                        .attr('stroke-linejoin', 'round')
+                        .attr('stroke-width', 3)
+                        .selectAll('g')
+                        .data(nodes)
+                        .enter()
+                        .append('g')
+                        .attr('transform', d => {
+                          var result='rotate('+(d.x*180/Math.PI-90)+')';
+                          result+='translate('+d.y+','+0+')';
+                          return result;
+                        });
+        //绘制节点文字
+        gNodes.append('circle')
+              .attr('fill', d => d.children?'#555':'#999')
+              .attr('r', 2.5);
+        gNodes.append('text')
+              // .attr('transform', d => {
+              //   var result = 'rotate('+(d.x >= Math.PI?180:0)+')';
+              //   return result;
+              // })
+              .attr('dy', '0.31em')
+              .attr('x', d => d.children?-6:6)
+              .attr('text-anchor', d => d.children?'end':'start')
+              .text(d => d.data.name)
+              .clone(true)
+              .lower()
+              .attr('stroke', 'white');
+      });
+
+
+</script>
+</body>
+</html>
+
+```
+![image](/assets/img/D3js/cluster_tree_graph.png)
+## 打包图
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./d3/d3.js" charset="utf-8"></script>
+    <!--    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>-->
+    <script type="text/css">
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis text{
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .time{
+            font-family: Cursive;
+            font-size: 40px;
+            stroke: black;
+            stroke-width: 2;
+        }
+
+
+    </script>
+</head>
+<body>
+<script>
+    var width = 800;
+    var height = 800;
+    var radius = 400
+    var padding = {top:60,bottom:60,left:60,right:60};
+    var svg = d3.select('body')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .append('g')
+                .attr('transform', 'translate('+radius/2+','+radius/2+')');
+    var pack = d3.pack()
+                 .size([width/2, height/2])
+                 .padding(5);
+
+    var colors = d3.schemeCategory10;
+    d3.json('data/city.json')
+      .then(function(data){
+
+        var hierarchyData = d3.hierarchy(data)
+                              .sum(d => d.value);
+                              //.sort((a,b) => b.value - a.value);
+        console.log(hierarchyData);
+
+        var clusterData = pack(hierarchyData);
+        var nodes = clusterData.descendants();
+        var links = clusterData.links();
+        console.log(nodes);
+        // console.log(links);
+
+        //绘制节点
+        svg.selectAll('circle')
+           .data(nodes)
+           .enter()
+           .append('circle')
+           .attr('class', d => d.children?'node':'leafNode')
+           .attr('cx', d => d.x)
+           .attr('cy', d => d.y)
+           .attr('r', d => d.r)
+           .attr('fill', d => colors[d.height%10]);
+        svg.selectAll('text')
+           .data(nodes)
+           .enter()
+           .append('text')
+           .attr('class', 'nodeText')
+           .style('fill-opacity', d => d.children?0:1)
+           .attr('x', d => d.x - 14)
+           .attr('y', d => d.y)
+           .attr('dy', '.3em')
+           .attr('fill', '#fff')
+           .text(d => d.data.name);
+      });
+
+</script>
+</body>
+</html>
+
+```
+![image](/assets/img/D3js/pack_graph.png)

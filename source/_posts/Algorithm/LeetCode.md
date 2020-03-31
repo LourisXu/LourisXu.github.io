@@ -26,6 +26,7 @@ toc: true
 |53. 最大子序和|Easy|动态规划|
 |58. 最后一个单词的长度|Easy|字符串|
 |62. 不同路径|Medium|动态规划|
+|面试题62. 圆圈中最后剩下的数字|Easy|数学+迭代|
 |63. 不同路径 II|Medium|动态规划|
 |64. 最小路径和|Medium|动态规划|
 |66. 加一|Easy|加法进位|
@@ -131,6 +132,7 @@ toc: true
 |401. 二进制手表|Easy|位运算|
 |405. 数字转换为十六进制数|Easy|位运算|
 |416. 分割等和子集|Medium|动态规划|
+|417. 太平洋大西洋水流问题|Medium|广搜|
 |421. 数组中两个数的最大异或值|Medium|位运算|
 |461. 汉明距离|Easy|位运算|
 |464. 我能赢吗|Medium|动态规划|
@@ -164,7 +166,10 @@ toc: true
 |787. K 站中转内最便宜的航班|Medium|动态规划|
 |790. 多米诺和托米诺平铺|Medium|动态规划|
 |801. 使序列递增的最小交换次数|Medium|动态规划|
+|808. 分汤|Medium|动态规划|
+|820. 单词的压缩编码|Medium|后缀+字典树|
 |898. 子数组按位或操作|Medium|位运算+unordered_set|
+|914. 卡牌分组|Easy|最大公约数|
 |947. 移除最多的同行或同列石头|Medium|并查集+Hash|
 |959. 由斜杠划分区域|Medium|并查集|
 |990. 等式方程的可满足性|Medium|并查集|
@@ -10164,4 +10169,725 @@ public:
         return result;
     }
 };
+```
+## 914. 卡牌分组
+**Description**
+给定一副牌，每张牌上都写着一个整数。
+此时，你需要选定一个数字 X，使我们可以将整副牌按下述规则分成 1 组或更多组：
+每组都有 X 张牌。
+组内所有的牌上都写着相同的整数。
+仅当你可选的 X >= 2 时返回 true。
+**Example**
+示例 1：
+输入：[1,2,3,4,4,3,2,1]
+输出：true
+解释：可行的分组是 [1,1]，[2,2]，[3,3]，[4,4]
+
+示例 2：
+输入：[1,1,1,2,2,2,3,3]
+输出：false
+解释：没有满足要求的分组。
+
+示例 3：
+输入：[1]
+输出：false
+解释：没有满足要求的分组。
+
+示例 4：
+输入：[1,1]
+输出：true
+解释：可行的分组是 [1,1]
+
+示例 5：
+输入：[1,1,2,2,2,2]
+输出：true
+解释：可行的分组是 [1,1]，[2,2]，[2,2]
+
+提示：
+1 <= deck.length <= 10000
+0 <= deck[i] < 10000
+**Program**
+```cpp
+class Solution {
+public:
+    const int INF=0x3f3f3f3f;
+    int gcd(int x, int y){
+        return (y==0)?x:gcd(y, x%y);
+    }
+    bool hasGroupsSizeX(vector<int>& deck) {
+        int n=deck.size();
+        int m[10001]={0};
+        for(int x:deck) m[x]++;;
+        int g=-1;
+        for(int i=0;i<=10000;i++){
+            if(m[i]>0){
+                if(g==-1) g=m[i];
+                else g=gcd(g, m[i]);
+            }
+        }
+        return g >= 2;
+    }
+};
+```
+## 808. 分汤
+**Description**
+有 A 和 B 两种类型的汤。一开始每种类型的汤有 N 毫升。有四种分配操作：
+提供 100ml 的汤A 和 0ml 的汤B。
+提供 75ml 的汤A 和 25ml 的汤B。
+提供 50ml 的汤A 和 50ml 的汤B。
+提供 25ml 的汤A 和 75ml 的汤B。
+当我们把汤分配给某人之后，汤就没有了。每个回合，我们将从四种概率同为0.25的操作中进行分配选择。如果汤的剩余量不足以完成某次操作，我们将尽可能分配。当两种类型的汤都分配完时，停止操作。
+注意不存在先分配100 ml汤B的操作。
+需要返回的值： 汤A先分配完的概率 + 汤A和汤B同时分配完的概率 / 2。
+**Example**
+示例:
+输入: N = 50
+输出: 0.625
+解释:
+如果我们选择前两个操作，A将首先变为空。对于第三个操作，A和B会同时变为空。对于第四个操作，B将首先变为空。
+所以A变为空的总概率加上A和B同时变为空的概率的一半是 $0.25 *(1 + 1 + 0.5 + 0)= 0.625$。
+注释:
+0 <= N <= 10^9。
+返回值在 10^-6 的范围将被认为是正确的。
+**Program**
+**DP**
+$DP[i][j]=\sum{DP[i-x[k]][j-y[k]]}$，注意边界，超内存！！
+```CPP
+class Solution {
+public:
+    const int step[4][2]={
+        100, 0,
+        75, 25,
+        50, 50,
+        25, 75
+    };
+    double soupServings(int N) {
+        vector<vector<double>> DP(N+1, vector<double>(N+1, 0));
+        for(int i=0;i<=N;i++){
+            for(int j=0;j<=N;j++){
+                if(i==0&&j==0){
+                    DP[i][j]=0.5;
+                    continue;
+                }else if(i==0){
+                    DP[i][j]=1;
+                    continue;
+                }else if(j==0){
+                    DP[i][j]=0;
+                    continue;
+                }
+                for(int k=0;k<4;k++){
+                    int x=i-step[k][0];
+                    int y=j-step[k][1];
+                    if(x<=0&&y<=0) DP[i][j]+=0.25*DP[0][0];
+                    else if(x<=0) DP[i][j]+=0.25*DP[0][y];
+                    else if(y<=0) DP[i][j]+=0.25*DP[x][0];
+                    else DP[i][j]+=0.25*DP[x][y];
+                }
+            }
+        }
+        return DP[N][N];
+    }
+};
+```
+**优化**
+四种操作都是25的倍数，所以可以N/25(有余数，加1)来减少内存。即使将 N 除以 25 之后，仍然没法在短时间内得到答案，因此我们需要尝试一些别的思路。可以发现，分配操作有 (4, 0)，(3, 1)，(2, 2) 和 (1, 3) 四种，那么在一次分配中，汤 A 平均会少 (4 + 3 + 2 + 1) / 4 = 2.5 份，汤 B 平均会少 (0 + 1 + 2 + 3) / 4 = 1.5 份。因此在 N 非常大的时候，A 会有很大的概率比 B 先分配完，所有概率应该非常接近 1。事实上，当 N >= 500 * 25 时，所求概率已经大于 0.999999 了（可以通过上面的动态规划方法求出），它和 1 的误差（无论是绝对误差还是相对误差）都小于 10^-6。因此在 N >= 500 * 25 时，我们只需要输出 1 作为答案即可。在其它的情况下，我们使用动态规划计算出答案。
+```cpp
+class Solution {
+public:
+    const int step[4][2]={
+        100/25, 0/25,
+        75/25, 25/25,
+        50/25, 50/25,
+        25/25, 75/25
+    };
+    double soupServings(int N) {
+        N=N/25+((N%25)?1:0);
+        if(N>=500) return 0.999999;
+        double DP[N+1][N+1];
+        memset(DP, 0.0, sizeof(DP));
+        for(int i=0;i<=N;i++){
+            for(int j=0;j<=N;j++){
+                if(i==0&&j==0){
+                    DP[i][j]=0.5;
+                    continue;
+                }else if(i==0){
+                    DP[i][j]=1;
+                    continue;
+                }else if(j==0){
+                    DP[i][j]=0;
+                    continue;
+                }
+                for(int k=0;k<4;k++){
+                    int x=i-step[k][0];
+                    int y=j-step[k][1];
+                    if(x<=0&&y<=0) DP[i][j]+=0.25*DP[0][0];
+                    else if(x<=0) DP[i][j]+=0.25*DP[0][y];
+                    else if(y<=0) DP[i][j]+=0.25*DP[x][0];
+                    else DP[i][j]+=0.25*DP[x][y];
+                }
+            }
+        }
+        return DP[N][N];
+    }
+};
+```
+## 820. 单词的压缩编码
+**Description**
+给定一个单词列表，我们将这个列表编码成一个索引字符串 S 与一个索引列表 A。
+例如，如果这个列表是 ["time", "me", "bell"]，我们就可以将其表示为 S = "time#bell#" 和 indexes = [0, 2, 5]。
+对于每一个索引，我们可以通过从字符串 S 中索引的位置开始读取字符串，直到 "#" 结束，来恢复我们之前的单词列表。
+那么成功对给定单词列表进行编码的最小字符串长度是多少呢？
+**Example**
+示例：
+输入: words = ["time", "me", "bell"]
+输出: 10
+说明: S = "time#bell#" ， indexes = [0, 2, 5] 。
+ 
+提示：
+1 <= words.length <= 2000
+1 <= words[i].length <= 7
+每个单词都是小写字母 。
+**Program**
+**集合去重，而后删除重复后缀。**
+```cpp
+class Solution {
+public:
+    int minimumLengthEncoding(vector<string>& words) {
+        unordered_set<string> s(words.begin(), words.end());
+        for(string word:words){
+            for(int i=1;i<word.length();i++){
+                auto iter=s.find(word.substr(i));
+                if(iter!=s.end()) s.erase(iter);
+            }
+        }
+        int ans=0;
+        for(string word:s){
+            ans+=word.length()+1;
+        }
+        return ans;
+    }
+};
+```
+**字典树**
+```cpp
+class Solution {
+public:
+    struct Node{
+        int len;
+        bool wordEnd;
+        Node* next[26];
+        Node(){}
+    };
+    Node* newNode(){
+        Node* node=new Node();
+        node->len=0;
+        node->wordEnd=false;
+        for(int i=0;i<26;i++) node->next[i]=NULL;
+        return node;
+    }
+    void create(Node* root, string str){
+        int idx=0;
+        int len=str.length();
+        Node* node=root;
+        while(idx<len){
+            if(node->next[str[idx]-'a']==NULL){
+                Node* tmp=newNode();
+                node->next[str[idx]-'a']=tmp;
+            }
+            //node->wordEnd=false; //覆盖
+            node=node->next[str[idx]-'a'];
+            if(idx==len-1){
+                node->wordEnd=true;
+                node->len=len;
+            }
+            idx++;
+        }
+    }
+    bool judge(Node* root){
+        for(int i=0;i<26;i++){
+            if(root->next[i]!=NULL) return false;
+        }
+        return true;
+    }
+    int calResult(Node* root){
+        queue<Node*> q;
+        q.push(root);
+        int result=0;
+        while(!q.empty()){
+            Node* node=q.front();
+            q.pop();
+            if(node->wordEnd&&judge(node)) result+=node->len+1;
+            for(int i=0;i<26;i++){
+                if(node->next[i]!=NULL){
+                    q.push(node->next[i]);
+                }
+            }
+        }
+        return result;
+    }
+    static bool cmp(string a, string b){
+        return a.length()<b.length();
+    }
+    int minimumLengthEncoding(vector<string>& words) {
+        Node* root=newNode();
+        for(int i=0;i<words.size();i++){
+            reverse(words[i].begin(), words[i].end());
+            create(root, words[i]);
+        }
+        // sort(words.begin(),words.end(), cmp);
+        // for(int i=0;i<words.size();i++){ //从长度短的开始建字典树，更长的可以覆盖更短的。
+        //     create(root, words[i]);
+        // }
+        return calResult(root);
+    }
+};
+## 417. 太平洋大西洋水流问题
+**Description**
+给定一个 m x n 的非负整数矩阵来表示一片大陆上各个单元格的高度。“太平洋”处于大陆的左边界和上边界，而“大西洋”处于大陆的右边界和下边界。
+规定水流只能按照上、下、左、右四个方向流动，且只能从高到低或者在同等高度上流动。
+请找出那些水流既可以流动到“太平洋”，又能流动到“大西洋”的陆地单元的坐标。
+提示：
+输出坐标的顺序不重要
+m 和 n 都小于150
+**Example**
+示例：
+给定下面的 5x5 矩阵:
+```
+  太平洋 ~   ~   ~   ~   ~
+       ~  1   2   2   3  (5) *
+       ~  3   2   3  (4) (4) *
+       ~  2   4  (5)  3   1  *
+       ~ (6) (7)  1   4   5  *
+       ~ (5)  1   1   2   4  *
+          *   *   *   *   * 大西洋
+```
+返回:
+[[0, 4], [1, 3], [1, 4], [2, 2], [3, 0], [3, 1], [4, 0]] (上图中带括号的单元).
+
+**Program**
+从外围开始反向搜索，高或相等的海拔可以流过！还能避免重复计算。
+```cpp
+class Solution {
+public:
+    struct Node{
+        int i,j;
+        Node(){}
+        Node(int I,int J):i(I),j(J){}
+    };
+    int step[4][2]={
+        -1, 0,
+        1, 0,
+        0, -1,
+        0, 1
+    };
+    bool vis[151][151][3]={false};
+    int m, n;
+    bool judge(int i,int j){
+        if(i>=0&&i<m&&j>=0&&j<n) return true;
+        return false;
+    }
+    vector<vector<int>> result;
+    void BFS(int i, int j, int visIdx, vector<vector<int>>& matrix){
+        vis[i][j][visIdx]=true;
+        queue<Node> q;
+        q.push(Node(i, j));
+        while(!q.empty()){
+            Node now=q.front();
+            if(vis[now.i][now.j][1-visIdx]&&!vis[now.i][now.j][2]){
+                result.push_back({now.i, now.j});
+                vis[now.i][now.j][2]=true;//加入结果
+            }
+            q.pop();
+            for(int k=0;k<4;k++){
+                int x=now.i+step[k][0];
+                int y=now.j+step[k][1];
+                if(judge(x, y)&&!vis[x][y][visIdx]&&matrix[now.i][now.j]<=matrix[x][y]){
+                    vis[x][y][visIdx]=true;
+                    q.push(Node(x,y));
+                }
+            }
+        }
+    }
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& matrix) {
+        if(matrix.size()==0) return {};
+        m=matrix.size();
+        n=matrix[0].size();
+        for(int i=0;i<n;i++){
+            BFS(0, i, 0, matrix);
+            BFS(m-1, i, 1, matrix);
+        }
+        for(int i=0;i<m;i++){
+            BFS(i,0,0,matrix);
+            BFS(i,n-1,1,matrix);
+        }
+        // for(int i=0;i<m;i++){
+        //     for(int j=0;j<n;j++){
+        //         if(vis[i][j][0]&&vis[i][j][1]) result.push_back({i, j});
+        //     }
+        // }
+        return result;
+    }
+};
+```
+vis[i][j]值为0,1,2,3,4时，分别表示未计算、太平洋、大西洋、已加入结果集合。
+```cpp
+class Solution {
+public:
+    struct Node{
+        int i,j;
+        Node(){}
+        Node(int I,int J):i(I),j(J){}
+    };
+    int step[4][2]={
+        -1, 0,
+        1, 0,
+        0, -1,
+        0, 1
+    };
+    int vis[151][151]={0};
+    int m, n;
+    bool judge(int i,int j){
+        if(i>=0&&i<m&&j>=0&&j<n) return true;
+        return false;
+    }
+    vector<vector<int>> result;
+    void BFS(int i, int j, int visIdx, vector<vector<int>>& matrix){
+        vis[i][j] |= (visIdx+1);
+        queue<Node> q;
+        q.push(Node(i, j));
+        while(!q.empty()){
+            Node now=q.front();
+            if(vis[now.i][now.j]==3){
+                result.push_back({now.i, now.j});
+                vis[now.i][now.j] |= 4;
+            }
+            q.pop();
+            for(int k=0;k<4;k++){
+                int x=now.i+step[k][0];
+                int y=now.j+step[k][1];
+                if(judge(x, y)&&(vis[x][y]&(visIdx+1))==0&&matrix[now.i][now.j]<=matrix[x][y]){
+                    vis[x][y] |= visIdx+1;
+                    q.push(Node(x,y));
+                }
+            }
+        }
+    }
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& matrix) {
+        if(matrix.size()==0) return {};
+        m=matrix.size();
+        n=matrix[0].size();
+        for(int i=0;i<n;i++){
+            BFS(0, i, 0, matrix);
+            BFS(m-1, i, 1, matrix);
+        }
+        for(int i=0;i<m;i++){
+            BFS(i,0,0,matrix);
+            BFS(i,n-1,1,matrix);
+        }
+        // for(int i=0;i<m;i++){
+        //     for(int j=0;j<n;j++){
+        //         if(vis[i][j][0]&&vis[i][j][1]) result.push_back({i, j});
+        //     }
+        // }
+        return result;
+    }
+};
+```
+## 1162. 地图分析
+**Description**
+你现在手里有一份大小为 N x N 的『地图』（网格） grid，上面的每个『区域』（单元格）都用 0 和 1 标记好了。其中 0 代表海洋，1 代表陆地，你知道距离陆地区域最远的海洋区域是是哪一个吗？请返回该海洋区域到离它最近的陆地区域的距离。
+我们这里说的距离是『曼哈顿距离』（ Manhattan Distance）：(x0, y0) 和 (x1, y1) 这两个区域之间的距离是 |x0 - x1| + |y0 - y1| 。
+如果我们的地图上只有陆地或者海洋，请返回 -1。
+**Example**
+示例 1：
+输入：[[1,0,1],[0,0,0],[1,0,1]]
+输出：2
+解释：
+海洋区域 (1, 1) 和所有陆地区域之间的距离都达到最大，最大距离为 2。
+
+示例 2：
+输入：[[1,0,0],[0,0,0],[0,0,0]]
+输出：4
+解释：
+海洋区域 (2, 2) 和所有陆地区域之间的距离都达到最大，最大距离为 4。
+ 
+提示：
+1 <= grid.length == grid[0].length <= 100
+grid[i][j] 不是 0 就是 1
+**Program**
+**超时**
+最暴力的方法，嘿嘿话说O(5000*5000)貌似不超时啊，卡时间哦。。
+```cpp
+class Solution {
+public:
+    vector<pair<int,int>> A,B;
+    vector<int> minD;
+    const int inf=0x3f3f3f3f;
+    int maxDistance(vector<vector<int>>& grid) {
+        for(int i=0;i<grid.size();i++){
+            for(int j=0;j<grid[0].size();j++){
+                if(grid[i][j]==0) A.push_back({i, j});
+                else B.push_back({i,j});
+            }
+        }
+        if(A.size()==0||B.size()==0) return -1;
+        minD.resize(A.size(), inf);
+        int idx=0;
+        int mx=0;
+        for(int i=0;i<A.size();i++){
+            for(int j=0;j<B.size();j++){
+                int dis=abs(A[i].first-B[j].first)+abs(A[i].second-B[j].second);
+                minD[i]=min(minD[i],dis);
+            }
+            if(mx<minD[i]){
+                mx=minD[i];
+                idx=i;
+            }
+        }
+        return minD[idx];
+    }
+};
+```
+**DP**
+考虑优化方法二中的「把陆地区域作为源点集、海洋区域作为目标点集，求最短路」的过程。我们知道对于每个海洋区域 (x, y)(x,y)，离它最近的陆地区域到它的路径要么从上方或者左方来，要么从右方或者下方来。考虑做两次动态规划，第一次从左上到右下，第二次从右下到左上，记 f(x, y)f(x,y) 为 (x, y)(x,y) 距离最近的陆地区域的曼哈顿距离，则我们可以推出这样的转移方程：
+第一阶段
+当(x,y)为海洋，f(x,y)=min(f(x-1,y),f(x,y-1))+1；否则f(x,y)=0
+第二阶段
+当(x,y)为海洋，f(x,y)=min(f(x+1,y),f(x,y+1))+1；否则f(x,y)=0
+我们初始化的时候把陆地的 f 值全部预置为 0，海洋的 f 全部预置为 INF，做完两个阶段的动态规划后，我们在所有的不为零的 f[i][j] 中比一个最大值即可，如果最终比较出的最大值为 INF，就返回 -1。
+思考：如果用 f(x, y)f(x,y) 记录左上方的 DP 结果，g(x, y)g(x,y) 记录右下方的DP结果可行吗？ 答案是不可行。因为考虑距离点 (x, y)(x,y) 最近的点可能既不来自左上方，也不来自右下方，比如它来自右上方，这个时候，第二阶段我们就需要用到第一阶段的计算结果。
+```cpp
+class Solution {
+public:
+    static constexpr int MAX_N = 100 + 5;
+    static constexpr int INF = int(1E6);
+
+    int f[MAX_N][MAX_N];
+    int n;
+
+    int maxDistance(vector<vector<int>>& grid) {
+        this->n = grid.size();
+        vector<vector<int>>& a = grid;
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                f[i][j] = (a[i][j] ? 0 : INF);
+            }
+        }
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (a[i][j]) continue;
+                if(i-1>=0&&j-1>=0) f[i][j]=min(f[i-1][j], f[i][j-1])+1;
+                else if(i-1>=0) f[i][j]=f[i-1][j]+1;
+                else if(j-1>=0) f[i][j]=f[i][j-1]+1;
+            }
+        }
+
+        for (int i = n - 1; i >= 0; --i) {
+            for (int j = n - 1; j >= 0; --j) {
+                if (a[i][j]) continue;
+                if(i+1<n&&j+1<n) f[i][j]=min(f[i][j],min(f[i+1][j],f[i][j+1])+1);
+                else if(i+1<n) f[i][j]=min(f[i][j],f[i+1][j]+1);
+                else if(j+1<n) f[i][j]=min(f[i][j],f[i][j+1]+1);
+            }
+        }
+
+        int ans = -1;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (!a[i][j]) {
+                    ans = max(ans, f[i][j]);
+                }
+            }
+        }
+
+        if (ans >= INF) return -1;
+        else return ans;
+    }
+};
+```
+**广搜**
+$O(n^4)$
+```cpp
+class Solution {
+public:
+    static constexpr int dx[4] = {-1, 0, 1, 0}, dy[4] = {0, 1, 0, -1};
+    static constexpr int MAX_N = 100 + 5;
+
+    struct Coordinate {
+        int x, y, step;
+    };
+
+    int n, m;
+    vector<vector<int>> a;
+
+    bool vis[MAX_N][MAX_N];
+
+    int findNearestLand(int x, int y) {
+        memset(vis, 0, sizeof vis);
+        queue <Coordinate> q;
+        q.push({x, y, 0});
+        vis[x][y] = 1;
+        while (!q.empty()) {
+            auto f = q.front(); q.pop();
+            for (int i = 0; i < 4; ++i) {
+                int nx = f.x + dx[i], ny = f.y + dy[i];
+                if (!(nx >= 0 && nx <= n - 1 && ny >= 0 && ny <= m - 1)) continue;
+                if (!vis[nx][ny]) {
+                    q.push({nx, ny, f.step + 1});
+                    vis[nx][ny] = 1;
+                    if (a[nx][ny]) return f.step + 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    int maxDistance(vector<vector<int>>& grid) {
+        this->n = grid.size();
+        this->m = grid.at(0).size();
+        a = grid;
+        int ans = -1;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                if (!a[i][j]) {
+                    ans = max(ans, findNearestLand(i, j));
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+**广搜+填充法**
+由陆地开始广搜，已经计算过的都不用重复计算，因为广搜的性质，一定是最短距离！所以只要所有点都计算完毕就出结果了！
+$O(n^2)$
+```cpp
+class Solution {
+public:
+    const int steps[4][2]={
+        0,  1,
+        0, -1,
+        1,  0,
+        -1, 0
+    };
+    struct Node{
+        int i, j, step;
+        Node(){}
+        Node(int I,int J,int Step):i(I),j(J),step(Step){}
+    };
+    int n;
+    const int inf=0x3f3f3f3f;
+    bool judge(int i,int j){
+        if(i>=0&&i<n&&j>=0&&j<n) return true;
+        return false;
+    }
+    int maxDistance(vector<vector<int>>& grid) {
+        n=grid.size();
+        queue<Node> q;
+        int nCount=0;
+        int ans=-1;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==0) grid[i][j]=inf;
+                else{
+                    q.push(Node(i, j, 0));
+                    nCount++;
+                }
+            }
+        }
+        while(nCount<n*n&&!q.empty()){
+            Node node=q.front();
+            q.pop();
+            for(int k=0;k<4;k++){
+                int x=node.i+steps[k][0];
+                int y=node.j+steps[k][1];
+                if(judge(x, y)&&grid[x][y]==inf){
+                    grid[x][y]=node.step+1;
+                    q.push(Node(x, y, node.step+1));
+                    nCount++;
+                    ans=max(ans, grid[x][y]);
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+## 面试题62. 圆圈中最后剩下的数字
+**Description**
+0,1,,n-1这n个数字排成一个圆圈，从数字0开始，每次从这个圆圈里删除第m个数字。求出这个圆圈里剩下的最后一个数字。
+例如，0、1、2、3、4这5个数字组成一个圆圈，从数字0开始每次删除第3个数字，则删除的前4个数字依次是2、0、4、1，因此最后剩下的数字是3。
+**Example**
+示例 1：
+输入: n = 5, m = 3
+输出: 3
+
+示例 2：
+输入: n = 10, m = 17
+输出: 2
+ 
+限制：
+1 <= n <= 10^5
+1 <= m <= 10^6
+**Program**
+**暴力超时**
+```cpp
+class Solution {
+public:
+    int lastRemaining(int n, int m) {
+        int len=n;
+        int pre=-1;
+        vector<bool> vis(n,false);
+        while(n>1){
+            int tmp=0;
+            int i;
+            for(i=pre+1;tmp<m;i++){
+                if(i==len) i=0;
+                if(!vis[i]) tmp++;
+            }
+            i-=1;
+            vis[i]=true;
+            pre=i;
+            //cout<<i<<endl;
+            n--;
+        }
+        for(int i=0;i<len;i++){
+            if(!vis[i]) return i;
+        }
+        return 0;
+    }
+};
+```
+**数学+迭代**
+**参考：** [约瑟夫环](https://blog.csdn.net/weixin_42659809/article/details/82596676)
+简单来说，例如N=10, M=3,如下：
+
+|N\index|0|1|2|3|4|5|6|7|8|9|逆推公式|
+|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|10|0|1|√|**3**|4|5|6|7|8|9|f(10,3)=(f(9,3)+3)%10=3|
+|9|7|8|×|**0**|1|√|3|4|5|6|f(9,3)=(f(8,3)+3)%9=0|
+|8|4|5|×|**6**|7|×|0|1|√|3|f(8,3)=(f(7,3)+3)%8=6|
+|7|1|√|×|**3**|4|×|5|6|×|0|f(7,3)=(f(6,3)+3)%7=3|
+|6|5|×|×|**0**|1|×|√|3|×|4|f(6,3)=(f(5,3)+3)%6=0|
+|5|√|×|×|**3**|4|×|×|0|×|1|f(5,3)=(f(4,3)+3)%5=3|
+|4|×|×|×|**0**|1|×|×|√|×|3|f(4,3)=(f(3,3)+3)%4=0|
+|3|×|×|×|**1**|√|×|×|×|×|0|f(3,3)=(f(2,3)+3)%3=1|
+|2|×|×|×|**1**|×|×|×|×|×|√|f(2,3)=(f(1,3)+3)%2=1|
+|1|×|×|×|**√**|×|×|×|×|×|×|f(1,3)=0|
+
+每次新环从上一轮杀死的下一个元素从0开始计数，所以之后每一轮都是杀死第m个元素
+这里逆推：下一轮出局的元素在上一轮的位置，old_index=(new_index+M)%old_N;详见最后一列，从下往上递推！
+```cpp
+class Solution {
+public:
+    int lastRemaining(int n, int m) {
+        int f = 0;
+        for (int i = 2; i != n + 1; ++i)
+            f = (m + f) % i;
+        return f;
+    }
+};
+
 ```
