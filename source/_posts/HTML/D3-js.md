@@ -5,6 +5,7 @@ date: 2020-03-03 00:08:17
 toc: true
 tags:
   - HTML
+  - js
 ---
 研究生可视化课程期末项目，只得学习一下[D3.js](https://d3js.org/)了，参考[精通D3.js交互式数据可视化高级编程](/assets/files/D3_js_programming.pdf)。
 
@@ -3519,3 +3520,459 @@ index.html:56 This is a text file.
 
 ```
 ![image](/assets/img/D3js/pack_graph.png)
+
+> # 友好交互
+
+## 提示框
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试</title>
+    <script src="./d3/d3.js" charset="utf-8"></script>
+    <!--    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>-->
+    <script type="text/css">
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis text{
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .time{
+            font-family: Cursive;
+            font-size: 40px;
+            stroke: black;
+            stroke-width: 2;
+        }
+        .tooltip{
+          postition: absolute;
+          width: 50px;
+          height: 50px;
+          font-family: simsun;
+          font-size: 14px;
+          text-align: center;
+          color: white;
+          background-color: black;
+          border-width: 2px solid black;
+          border-radius: 5px;
+        }
+        .tooltip:after{
+          content: '';
+          position: absolute;
+          bottom: 100%;
+          left: 20%;
+          margin-left: -8px;
+          width: 0;
+          height: 0;
+          border-bottom: 12px solid #000000;
+          border-right: 12px solid #000000;
+          border-left: 12px solid #000000;
+          border-top: 12px solid #000000;
+        }
+
+    </script>
+</head>
+<body>
+
+  <script>
+      var width = 500;
+      var height = 500;
+      var svg = d3.select('body')
+                  .append('svg')
+                  .attr('width', width)
+                  .attr('height', height);
+
+      var dataset = [['小米', 60.8], ['三星', 58.4],  ['联想', 47.3],
+                     ['苹果', 46.6], ['华为', 41.3], ['酷派', 40.1], ['其他', 111.5]];
+      var pie = d3.pie()
+                  .startAngle(Math.PI*0.2)
+                  .endAngle(Math.PI*1.5)
+                  .value(function(d){return d[1];});
+      var piedata = pie(dataset);
+      console.log(piedata);
+
+      var outerRadius = width / 3;
+      var innerRadius = 0;
+
+
+      var arc = d3.arc()
+                  .innerRadius(innerRadius)
+                  .outerRadius(outerRadius);
+
+      var colors = d3.schemeCategory10;
+      var arcs = svg.selectAll('g')
+                    .data(piedata)
+                    .enter()
+                    .append('g')
+                    .attr('transform', 'translate('+(width/2)+','+(height/2)+')');
+      // 绘制
+      arcs.append('path')
+          .attr('fill', function(d, i){
+              return colors[i%10];
+          })
+          .attr('d', function(d){
+              return arc(d);
+          });
+      // 文字
+      arcs.append('text')
+          .attr('transform', function(d){
+              var x = arc.centroid(d)[0] * 1.4; //文字横坐标
+              var y = arc.centroid(d)[1] * 1.4; //文字纵坐标，相对于圆心
+              console.log(x)
+              return 'translate('+x+','+y+')';
+          })
+          .attr('text-anchor', 'middle')
+          .text(function(d){
+              var percent = Number(d.value)/d3.sum(dataset, function(d){return d[1];})*100;
+
+              return percent.toFixed(1) +'%';
+          });
+      //添加链接弧外文字的直线元素
+      arcs.append('line')
+          .attr('stroke', 'black')
+          .attr('x1', d => {return arc.centroid(d)[0]*2})
+          .attr('y1', d => {return arc.centroid(d)[1]*2})
+          .attr('x2', d => {return arc.centroid(d)[0]*2.2;})
+          .attr('y2', d => {return arc.centroid(d)[1]*2.2});
+      //添加弧外的文字元素
+      arcs.append('text')
+          .attr('transform', d => {
+              var x = arc.centroid(d)[0]*2.5;
+              var y = arc.centroid(d)[1]*2.5;
+              return 'translate('+x+','+y+')';
+          })
+          .attr('text-anchor', 'middle')
+          .text(d => {return d.data[0];});
+      var tooltip = d3.select('body')
+                      .append('div')
+                      .attr('class', 'tooltip')
+                      .style('width', '100px')
+                      .style('height', '50px')
+                      .style('opacity', 0.0);
+      arcs.on('mouseover', (d,i) => {
+        tooltip.html(d.data[0]+'的出货量'+'<br>'+d.data[1]+' 百万台')
+               .style('left', (d3.event.pageX)+'px')
+               .style('top', (d3.event.pageY+20)+'px')
+               .style('opacity', 1.0);
+
+        tooltip.style('box-shadow', '2px 2px 2px '+colors[i%10]);
+      }).on('mousemove', d => {
+        tooltip.style('left', (d3.event.pageX)+'px')
+                .style('top', (d3.event.pageY+20)+'px');
+      }).on('mouseout', d => {
+        tooltip.style('opacity',0.0);
+      })
+  </script>
+<!-- <button type="button", onclick="chart()">Replay</button> -->
+</body>
+</html>
+
+```
+![image](/assets/img/D3js/pie_tooltip.png)
+## 折线图提示
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试</title>
+    <script src="./d3/d3.js" charset="utf-8"></script>
+    <!--    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>-->
+    <style type="text/css">
+        .axis path,
+        .axis line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .line{
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+        .axis text{
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .time{
+            font-family: Cursive;
+            font-size: 40px;
+            stroke: black;
+            stroke-width: 2;
+        }
+         .tooltip{
+           postition: absolute;
+           width: auto;
+           height: auto;
+           font-family: simsun;
+           font-size: 14px;
+           text-align: center;
+           color: white;
+
+           border-width: 2px solid black;
+           border-radius: 5px;
+           z-index: 10;
+         }
+         .tooltip:after{
+           content: '';
+           position: absolute;
+           bottom: 100%;
+           left: 20%;
+           margin-left: -8px;
+           width: 0;
+           height: 0;
+           border-bottom: 12px solid #000000;
+           border-right: 12px solid #000000;
+           border-left: 12px solid #000000;
+           border-top: 12px solid #000000;
+         }
+        .overlay{
+          fill: none;
+          pointer-events: all;
+        }
+        .tooltip .title{
+          border-bottom: 1px solid #000;
+          text-align: center;
+        }
+        .tooltip .desColor{
+          width: 10px;
+          height: 10px;
+          float: left;
+          margin: 9px 8px 1px 8px;
+        }
+        .tooltip .desText{
+          display: inline;
+        }
+    </style>
+</head>
+<body>
+  <script>
+      var width = 500;
+      var height = 500;
+      var padding = {top:50, right:50, bottom:50, left:50};
+      var dataset =[
+          {
+              Country:'China',
+              GDP:[[2000, 11920], [2001, 13170], [2002, 14550],
+                   [2003, 16500], [2004, 19440], [2005, 22870],
+                   [2006, 27930], [2007, 35040], [2008, 45470],
+                   [2009, 51050], [2010, 59490], [2011, 73140],
+                   [2012, 83860], [2013, 103550]]
+          },
+          {
+              Country:'Japan',
+              GDP:[[2000, 47310], [2001, 41590], [2002, 39800],
+                   [2003, 43020], [2004, 46550], [2005, 45710],
+                   [2006, 43560], [2007, 43560], [2008, 48490],
+                   [2009, 50350], [2010, 54950], [2011, 59050],
+                   [2012, 59370], [2013, 48980]]
+          }
+      ];
+
+      var gdpmax=0;
+      for(var i=0;i<dataset.length;i++){
+          var currGdp = d3.max(dataset[i].GDP, d => {return d[1]});
+          gdpmax = d3.max([gdpmax, currGdp]);
+      }
+
+      var xScale = d3.scaleLinear()
+                     .domain([2000, 2013])
+                     .range([0, width - padding.left - padding.right]);
+      var yScale = d3.scaleLinear()
+                     .domain([0, gdpmax*1.1])
+                     .range([height - padding.top-padding.bottom, 0]);
+
+      var linePath = d3.line()
+                       .x(d => {return xScale(d[0])})
+                       .y(d => {return yScale(d[1])});
+
+      var colors = [d3.rgb(0,255,0), d3.rgb(0,0,255)];
+
+      var svg = d3.select('body')
+                  .append('svg')
+                  .attr('width', width)
+                  .attr('height', height);
+
+
+      svg.selectAll('path')
+         .data(dataset)
+         .enter()
+         .append('path')
+         .attr('transform', 'translate('+padding.left+','+padding.top+')')
+         .attr('d', d => {return linePath(d.GDP)})
+         .attr('fill', 'none')
+         .attr('stroke-width', 3)
+         .attr('stroke', (d, i) => {return colors[i];});
+
+      var xAxis = d3.axisBottom()
+                    .scale(xScale)
+                    .ticks(5)
+                    .tickFormat(d3.format('d'));
+      var yAxis = d3.axisLeft()
+                    .scale(yScale);
+
+      svg.append('g')
+         //.attr('class', 'axis')
+         .attr('transform', 'translate('+padding.left+','+(height-padding.bottom)+')')
+         .call(xAxis);
+      svg.append('g')
+         .attr('class', 'axis')
+          .attr('transform', 'translate('+padding.left+','+padding.top+')')
+          .call(yAxis);
+      var symbols = [{
+          size: 144,
+          type: d3.symbolSquare
+      },{
+          size: 144,
+          type: d3.symbolSquare
+      }];
+      var symbol = d3.symbol()
+                     .size(d => {return d.size;})
+                     .type(d => {return d.type;});
+
+
+      svg.selectAll('.symbolPath')
+         .data(symbols)
+         .enter()
+         .append('path')
+         .attr('d', d => {return symbol(d);})
+         .attr('transform', (d, i) => {return 'translate('+(padding.left+i*50)+','+(height - padding.bottom/3)+')'})
+         .attr('fill', (d, i) => {return colors[i];});
+      console.log(dataset[0].Country);
+
+      svg.selectAll('.mytext')
+         .data(dataset)
+         .enter()
+         .append('text')
+         .attr('text-anchor', 'middle')
+         .attr('font-size', '12px')
+         .attr('dy', '0.4em')
+         .attr('transform', (d, i) => {return 'translate('+(padding.left+i*50+25)+','+(height - padding.bottom/3)+')'})
+         .attr('fill', 'black')
+         .text(d => {console.log(d.Country); return d.Country;});
+
+      //设置焦点提示
+      var focusCircle = svg.append('g')
+         .attr('class', 'focusCircle')
+         .style('display', 'none');
+      focusCircle.append('circle')
+         .attr('r', 4.5);
+      focusCircle.append('text')
+         .attr('dx', 10)
+         .attr('dy', '1em');
+
+      var focusLine = svg.append('g')
+         .attr('class', 'focusLine')
+         .style('display', 'none');
+      var vLine = focusLine.append('line')
+        .style('stroke', 'black')
+        .style('stroke-dasharray', '1 2');
+      var hLine = focusLine.append('line').style('stroke', 'black')
+        .style('stroke-dasharray', '1 2');
+
+
+      var tooltip = d3.select('body').append('div')
+         .attr('class', 'tooltip')
+         .style('opacity', 0.0);
+
+      var title = tooltip.append('div')
+         .attr('class', 'title');
+
+      var des = tooltip.selectAll('.des')
+         .data(dataset)
+         .enter()
+         .append('div');
+
+      var desColor = des.append('div')
+         .attr('class', 'desColor');
+
+      var desText = des.append('div')
+         .attr('class', 'desText');
+
+      svg.append('rect')
+         .attr('class', 'overlay')
+         .attr('x', padding.left)
+         .attr('y', padding.top)
+         //.style('fill', 'none')
+         //.style('pointer-events', 'all')
+         .attr('width', width-padding.left-padding.right)
+         .attr('height', height-padding.top-padding.bottom)
+         .on('mouseover', function(){
+           console.log('over');
+           focusCircle.style('display', null);
+           focusLine.style('display', null);
+           tooltip.style('left', (d3.event.pangeX)+'px')
+                  .style('top', (d3.event.pageY+20)+'px')
+                  .style('background-color', 'black')
+                  .style('opacity', 1.0);
+         })
+         .on('mouseout', function(){
+           console.log('out');
+           focusCircle.style('display', 'none');
+           focusLine.style('display', 'none');
+           tooltip.style('opacity', 0.0);
+         })
+         .on('mousemove',function(){
+           console.log('move');
+           //折线的源数组
+           var data = dataset[0].GDP;
+
+           var mouseX = d3.mouse(this)[0]-padding.left;
+           var mouseY = d3.mouse(this)[1]-padding.top;
+
+           //通过比例尺反函数计算原数据中的值
+           var x0 = xScale.invert(mouseX);
+           var y0 = yScale.invert(mouseY);
+
+           x0 = Math.round(x0);
+
+           var bisect = d3.bisector(d => d[0]).left;
+           var index = bisect(data, x0);
+
+           var x1 = data[index][0];
+           var y1 = data[index][1];
+
+           var focusX = xScale(x1) + padding.left;
+           var focusY = yScale(y1) + padding.top;
+
+           focusCircle.attr('transform', 'translate('+focusX+','+focusY+')');
+           focusCircle.select('text').text(x1+'年的GDP: '+y1+'亿美元');
+
+           vLine.attr('x1', focusX)
+            .attr('y1', focusY)
+            .attr('x2', focusX)
+            .attr('y2', height-padding.bottom);
+
+           hLine.attr('x1', focusX)
+            .attr('y1', focusY)
+            .attr('x2', padding.left)
+            .attr('y2', focusY);
+
+           var year = x0;
+           var gdp = [];
+           for(var k=0;k<dataset.length;k++){
+             gdp[k] = {country: dataset[k].Country,
+                       value: dataset[k].GDP[index][1]};
+           }
+           title.html('<strong>'+year+'年</strong>');
+           desColor.style('background-color', (d,i) => {colors[i%10]});
+           desText.html((d,i) => {
+             return gdp[i].country+'\t'+'<strong>'+gdp[i].value+'</strong>';
+           });
+           tooltip.style('left', (d3.event.pageX)+'px')
+                  .style('top', (d3.event.pageY+20)+'px');
+
+
+         });
+
+  </script>
+</body>
+</html>
+
+```
+![image](/assets/img/D3js/Broken_line_tooltip.png)

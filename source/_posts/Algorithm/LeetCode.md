@@ -134,6 +134,7 @@ toc: true
 |416. 分割等和子集|Medium|动态规划|
 |417. 太平洋大西洋水流问题|Medium|广搜|
 |421. 数组中两个数的最大异或值|Medium|位运算|
+|429. N叉树的层序遍历|Medium|广搜|
 |461. 汉明距离|Easy|位运算|
 |464. 我能赢吗|Medium|动态规划|
 |467. 环绕字符串中唯一的子字符串|Medium|动态规划|
@@ -141,9 +142,14 @@ toc: true
 |476. 数字的补数|Easy|位运算|
 |477. 汉明距离总和|Medium|位运算|
 |486. 预测赢家|Medium|动态规划|
+|513. 找树左下角的值|Medium|广搜|
+|515. 在每个树行中找最大值|Medium|广搜|
 |516. 最长回文子序列|Medium|动态规划|
 |523. 连续的子数组和|Medium|动态规划|
+|529. 扫雷游戏|Medium|广搜|
+|542. 01 矩阵|Medium|广搜|
 |547. 朋友圈|Medium|并查集|
+|559. N叉树的最大深度|Easy|广搜|
 |576. 出界的路径数|Medium|动态规划|
 |638. 大礼包|Medium|动态规划|
 |646. 最长数对链|Medium|动态规划|
@@ -152,6 +158,7 @@ toc: true
 |673. 最长递增子序列的个数|Medium|动态规划|
 |684. 冗余连接|Medium|并查集|
 |688. “马”在棋盘上的概率|Medium|动态规划|
+|690. 员工的重要性|Easy|广搜|
 |693. 交替位二进制数|Easy|位运算|
 |698. 划分为k个相等的子集|Medium|动态规划|
 |712. 两个字符串的最小ASCII删除和|Medium|动态规划|
@@ -159,10 +166,13 @@ toc: true
 |718. 最长重复子数组|Medium|动态规划|
 |721. 账户合并|Medium|并查集+Hash|
 |740. 删除与获得点数|Medium|动态规划|
+|743. 网络延迟时间|Medium|最短路径|
+|752. 打开转盘锁|Medium|广搜|
 |756. 金字塔转换矩阵|Medium|位运算+深搜|
 |762. 二进制表示中质数个计算置位|Easy|位运算|
 |764. 最大加号标志|Medium|动态规划|
 |784. 字母大小写全排列|Easy|位运算|
+|785. 判断二分图|Medium|广搜、并查集|
 |787. K 站中转内最便宜的航班|Medium|动态规划|
 |790. 多米诺和托米诺平铺|Medium|动态规划|
 |801. 使序列递增的最小交换次数|Medium|动态规划|
@@ -10890,4 +10900,725 @@ public:
     }
 };
 
+```
+## 513. 找树左下角的值
+**Description**
+给定一个二叉树，在树的最后一行找到最左边的值。
+**Example**
+示例 1:
+输入:
+```
+    2
+   / \
+  1   3
+```
+输出:
+1
+ 
+示例 2:
+输入:
+```
+        1
+       / \
+      2   3
+     /   / \
+    4   5   6
+       /
+      7
+```
+输出:
+7
+ 
+注意: 您可以假设树（即给定的根节点）不为 NULL。
+**Program**
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    struct Node{
+        TreeNode* node;
+        int level;
+        Node(){}
+        Node(TreeNode* Node, int Level){
+            node=Node;
+            level=Level;
+        }
+    };
+    queue<Node> q;
+    pair<int, int> dst;
+    int findBottomLeftValue(TreeNode* root) {
+        dst.first=-1;
+        dst.second=0;
+        q.push(Node(root, 0));
+        while(!q.empty()){
+            Node now=q.front();
+            q.pop();
+            TreeNode* node=now.node;
+            int level=now.level;
+            if(node->left!=NULL) q.push(Node(node->left, level+1));
+            if(node->right!=NULL) q.push(Node(node->right, level+1));
+            if(node->left==NULL&&node->right==NULL){
+                if(level+1>dst.first){
+                    dst.first=level+1;
+                    dst.second=node->val;
+                }
+            }
+        }
+        return dst.second;
+    }
+};
+```
+## 515. 在每个树行中找最大值
+**Description**
+您需要在二叉树的每一行中找到最大的值。
+**Example**
+示例：
+输入:
+```
+          1
+         / \
+        3   2
+       / \   \  
+      5   3   9
+```
+输出: [1, 3, 9]
+**Program**
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    const int inf=0x3f3f3f3f;
+    vector<int> largestValues(TreeNode* root) {
+        if(root==NULL) return {};
+        int front, end;
+        front=end=0;
+        vector<int> result;
+        vector<TreeNode*> mQueue;
+        mQueue.push_back(root);
+        int ans=-inf;
+        while(front<=end){
+            TreeNode* now=mQueue[front];
+            if(ans==-inf) ans=now->val;
+            else ans=max(ans, now->val);
+            if(now->left!=NULL) mQueue.push_back(now->left);
+            if(now->right!=NULL) mQueue.push_back(now->right);
+            if(front==end){
+                result.push_back(ans);
+                ans=-inf;
+                end=mQueue.size()-1;
+            }
+            front++;
+        }
+        return result;
+    }
+};
+```
+## 529. 扫雷游戏
+**Description**
+让我们一起来玩扫雷游戏！
+给定一个代表游戏板的二维字符矩阵。 'M' 代表一个未挖出的地雷，'E' 代表一个未挖出的空方块，'B' 代表没有相邻（上，下，左，右，和所有4个对角线）地雷的已挖出的空白方块，数字（'1' 到 '8'）表示有多少地雷与这块已挖出的方块相邻，'X' 则表示一个已挖出的地雷。
+现在给出在所有未挖出的方块中（'M'或者'E'）的下一个点击位置（行和列索引），根据以下规则，返回相应位置被点击后对应的面板：
+如果一个地雷（'M'）被挖出，游戏就结束了- 把它改为 'X'。
+如果一个没有相邻地雷的空方块（'E'）被挖出，修改它为（'B'），并且所有和其相邻的方块都应该被递归地揭露。
+如果一个至少与一个地雷相邻的空方块（'E'）被挖出，修改它为数字（'1'到'8'），表示相邻地雷的数量。
+如果在此次点击中，若无更多方块可被揭露，则返回面板。
+**Example**
+示例 1：
+输入:
+[['E', 'E', 'E', 'E', 'E'],
+ ['E', 'E', 'M', 'E', 'E'],
+ ['E', 'E', 'E', 'E', 'E'],
+ ['E', 'E', 'E', 'E', 'E']]
+Click : [3,0]
+输出:
+[['B', '1', 'E', '1', 'B'],
+ ['B', '1', 'M', '1', 'B'],
+ ['B', '1', '1', '1', 'B'],
+ ['B', 'B', 'B', 'B', 'B']]
+解释:
+![image](/assets/img/algorithm/minesweeper_example_1.png)
+示例 2：
+输入:
+[['B', '1', 'E', '1', 'B'],
+ ['B', '1', 'M', '1', 'B'],
+ ['B', '1', '1', '1', 'B'],
+ ['B', 'B', 'B', 'B', 'B']]
+Click : [1,2]
+输出:
+[['B', '1', 'E', '1', 'B'],
+ ['B', '1', 'X', '1', 'B'],
+ ['B', '1', '1', '1', 'B'],
+ ['B', 'B', 'B', 'B', 'B']]
+解释:
+![image](/assets/img/algorithm/minesweeper_example_2.png)
+注意：
+输入矩阵的宽和高的范围为 [1,50]。
+点击的位置只能是未被挖出的方块 ('M' 或者 'E')，这也意味着面板至少包含一个可点击的方块。
+输入面板不会是游戏结束的状态（即有地雷已被挖出）。
+简单起见，未提及的规则在这个问题中可被忽略。例如，当游戏结束时你不需要挖出所有地雷，考虑所有你可能赢得游戏或标记方块的情况。
+**Program**
+**广搜**
+注意如果相邻位置有地雷，没有要求递归揭露！也就是说，这种情况直接停止搜索。
+```cpp
+class Solution {
+public:
+    const int steps[8][2]={
+        -1, 0,
+        1,0,
+        0,-1,
+        0,1,
+        -1,-1,
+        -1,1,
+        1,-1,
+        1,1
+    };
+    int m,n;
+    bool vis[51][51]={false}; //防止重复加入队列
+    bool judge(int x,int y){
+        if(x>=0&&x<m&&y>=0&&y<n) return true;
+        return false;
+    }
+    int calMine(int x,int y, const vector<vector<char>>& board){
+        int ans=0;
+        for(int i=0;i<8;i++){
+            int new_x=x+steps[i][0];
+            int new_y=y+steps[i][1];
+            if(judge(new_x, new_y)&&board[new_x][new_y]=='M') ans++;
+        }
+        return ans;
+    }
+    vector<vector<char>> updateBoard(vector<vector<char>>& board, vector<int>& click) {
+        m=board.size();
+        n=board[0].size();
+        if(board[click[0]][click[1]]=='M'){
+            board[click[0]][click[1]]='X';
+            return board;
+        }
+        if(board[click[0]][click[1]]!='E') return board;
+        queue<pair<int,int>> q;
+        q.push({click[0], click[1]});
+        vis[click[0]][click[1]]=true;
+        while(!q.empty()){
+            pair<int, int> now=q.front();
+            q.pop();
+            int ans=calMine(now.first, now.second, board);
+            if(ans>0){
+                board[now.first][now.second]='0'+ans;
+                continue;
+            }
+            board[now.first][now.second]='B';
+            for(int i=0;i<8;i++){
+                int new_x=now.first+steps[i][0];
+                int new_y=now.second+steps[i][1];
+                if(judge(new_x, new_y)&&board[new_x][new_y]=='E'&&!vis[new_x][new_y]){
+                    q.push({new_x, new_y});
+                    vis[new_x][new_y]=true;
+                }
+            }
+        }
+        return board;
+    }
+};
+```
+## 542. 01 矩阵
+**Description**
+给定一个由 0 和 1 组成的矩阵，找出每个元素到最近的 0 的距离。
+两个相邻元素间的距离为 1 。
+**Example**
+示例 1:
+输入:
+0 0 0
+0 1 0
+0 0 0
+输出:
+0 0 0
+0 1 0
+0 0 0
+
+示例 2:
+输入:
+0 0 0
+0 1 0
+1 1 1
+输出:
+0 0 0
+0 1 0
+1 2 1
+注意:
+给定矩阵的元素个数不超过 10000。
+给定矩阵中至少有一个元素是 0。
+矩阵中的元素只在四个方向上相邻: 上、下、左、右。
+**Program**
+```cpp
+class Solution {
+public:
+    const int inf=0x3f3f3f3f;
+    const int steps[4][2]={
+        -1,0,
+        1,0,
+        0,-1,
+        0,1
+    };
+    struct Node{
+        int x,y;
+        int step;
+        Node(){}
+        Node(int xx, int yy, int ss){
+            x=xx;
+            y=yy;
+            step=ss;
+        }
+    };
+    int m,n;
+    bool judge(int x, int y){
+        if(x>=0&&x<m&&y>=0&&y<n) return true;
+        return false;
+    }
+
+    vector<vector<int>> updateMatrix(vector<vector<int>>& matrix) {
+        m=matrix.size();
+        n=matrix[0].size();
+        queue<Node> q;
+        int nCount=0;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(matrix[i][j]==1) matrix[i][j]=inf;
+                else{
+                    q.push(Node(i,j,0));
+                    nCount++;
+                }
+            }
+        }
+        while(nCount<m*n&&!q.empty()){
+            Node now=q.front();
+            q.pop();
+            for(int i=0;i<4;i++){
+                int new_x=now.x+steps[i][0];
+                int new_y=now.y+steps[i][1];
+                if(judge(new_x, new_y)&&matrix[new_x][new_y]==inf){
+                    matrix[new_x][new_y]=now.step+1;
+                    q.push(Node(new_x, new_y, now.step+1));
+                    nCount++;
+                }
+            }
+        }
+        return matrix;
+    }
+};
+```
+## 690. 员工的重要性
+**Description**
+给定一个保存员工信息的数据结构，它包含了员工唯一的id，重要度 和 直系下属的id。
+比如，员工1是员工2的领导，员工2是员工3的领导。他们相应的重要度为15, 10, 5。那么员工1的数据结构是[1, 15, [2]]，员工2的数据结构是[2, 10, [3]]，员工3的数据结构是[3, 5, []]。注意虽然员工3也是员工1的一个下属，但是由于并不是直系下属，因此没有体现在员工1的数据结构中。
+现在输入一个公司的所有员工信息，以及单个员工id，返回这个员工和他所有下属的重要度之和。
+**Example**
+示例 1:
+输入: [[1, 5, [2, 3]], [2, 3, []], [3, 3, []]], 1
+输出: 11
+解释:
+员工1自身的重要度是5，他有两个直系下属2和3，而且2和3的重要度均为3。因此员工1的总重要度是 5 + 3 + 3 = 11。
+注意:
+一个员工最多有一个直系领导，但是可以有多个直系下属
+员工数量不超过2000。
+**Program**
+```cpp
+/*
+// Employee info
+class Employee {
+public:
+    // It's the unique ID of each node.
+    // unique id of this employee
+    int id;
+    // the importance value of this employee
+    int importance;
+    // the id of direct subordinates
+    vector<int> subordinates;
+};
+*/
+
+class Solution {
+public:
+
+    int getImportance(vector<Employee*> employees, int id) {
+        unordered_map<int,int> id_to_idx;
+        for(int i=0;i<employees.size();i++){
+            id_to_idx[employees[i]->id]=i;
+        }
+        queue<Employee*> q;
+        q.push(employees[id_to_idx[id]]);
+        int ans=0;
+        while(!q.empty()){
+            Employee* now=q.front();
+            q.pop();
+            ans+=now->importance;
+            for(int i=0;i<now->subordinates.size();i++){
+                int next_id=now->subordinates[i];
+                q.push(employees[id_to_idx[next_id]]);
+            }
+        }
+        return ans;
+    }
+};
+```
+## 743. 网络延迟时间
+**Description**
+有 N 个网络节点，标记为 1 到 N。
+给定一个列表 times，表示信号经过有向边的传递时间。 times[i] = (u, v, w)，其中 u 是源节点，v 是目标节点， w 是一个信号从源节点传递到目标节点的时间。
+现在，我们从某个节点 K 发出一个信号。需要多久才能使所有节点都收到信号？如果不能使所有节点收到信号，返回 -1。
+**Example**
+示例：
+![image](/assets/img/algorithm/931_example_1.png)
+输入：times = [[2,1,1],[2,3,1],[3,4,1]], N = 4, K = 2
+输出：2
+ 
+注意:
+N 的范围在 [1, 100] 之间。
+K 的范围在 [1, N] 之间。
+times 的长度在 [1, 6000] 之间。
+所有的边 times[i] = (u, v, w) 都有 1 <= u, v <= N 且 0 <= w <= 100。
+**Program**
+```cpp
+class Solution {
+public:
+    const int inf=0x3f3f3f3f;
+    struct Cmp{
+        bool operator () (const pair<int,int>& a, const pair<int, int>& b) const{
+            return a.second>b.second;
+        }
+    };
+    int networkDelayTime(vector<vector<int>>& times, int N, int K) {
+        vector<vector<pair<int,int>>> Adj(N+1);
+        vector<bool> vis(N+1, false);
+        vector<int> dist(N+1, inf);
+        for(int i=0;i<times.size();i++){
+            int u=times[i][0];
+            int v=times[i][1];
+            int w=times[i][2];
+            Adj[u].push_back({v, w});
+        }
+        int nCount=0;
+        priority_queue<pair<int,int>, vector<pair<int,int>>, Cmp> pq;
+        pq.push({K, 0});
+        dist[K]=0;
+        int ans=0;
+        while(nCount<N&&!pq.empty()){
+            pair<int, int> now=pq.top();
+            pq.pop();
+            if(vis[now.first]) continue;
+            else{
+                nCount++;
+                vis[now.first]=true;
+            }
+            if(nCount==N) break;
+            for(int i=0;i<Adj[now.first].size();i++){
+                int u=now.first;
+                int v=Adj[u][i].first;
+                int w=Adj[u][i].second+now.second;
+                if(!vis[v]&&w<dist[v]){
+                    dist[v]=w;
+                    pq.push({v, w});
+                }
+            }
+        }
+        if(nCount<N) return -1;
+        for(int i=1;i<=N;i++) ans=max(ans, dist[i]);
+        return ans;
+    }
+};
+```
+## 752. 打开转盘锁
+**Description**
+你有一个带有四个圆形拨轮的转盘锁。每个拨轮都有10个数字： '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' 。每个拨轮可以自由旋转：例如把 '9' 变为  '0'，'0' 变为 '9' 。每次旋转都只能旋转一个拨轮的一位数字。
+锁的初始数字为 '0000' ，一个代表四个拨轮的数字的字符串。
+列表 deadends 包含了一组死亡数字，一旦拨轮的数字和列表里的任何一个元素相同，这个锁将会被永久锁定，无法再被旋转。
+字符串 target 代表可以解锁的数字，你需要给出最小的旋转次数，如果无论如何不能解锁，返回 -1。
+**Example**
+示例 1:
+输入：deadends = ["0201","0101","0102","1212","2002"], target = "0202"
+输出：6
+解释：
+可能的移动序列为 "0000" -> "1000" -> "1100" -> "1200" -> "1201" -> "1202" -> "0202"。
+注意 "0000" -> "0001" -> "0002" -> "0102" -> "0202" 这样的序列是不能解锁的，
+因为当拨动到 "0102" 时这个锁就会被锁定。
+
+示例 2:
+输入: deadends = ["8888"], target = "0009"
+输出：1
+解释：
+把最后一位反向旋转一次即可 "0000" -> "0009"。
+
+示例 3:
+输入: deadends = ["8887","8889","8878","8898","8788","8988","7888","9888"], target = "8888"
+输出：-1
+解释：
+无法旋转到目标数字且不被锁定。
+
+示例 4:
+输入: deadends = ["0000"], target = "8888"
+输出：-1
+ 
+提示：
+死亡列表 deadends 的长度范围为 [1, 500]。
+目标数字 target 不会在 deadends 之中。
+每个 deadends 和 target 中的字符串的数字会在 10,000 个可能的情况 '0000' 到 '9999' 中产生。
+**Program**
+```cpp
+class Solution {
+public:
+    bool vis[10000]={false};
+    int strToInt(string str){
+        int ans=0;
+        for(int i=0;i<str.length();i++){
+            ans=ans*10+str[i]-'0';
+        }
+        return ans;
+    }
+    int openLock(vector<string>& deadends, string target) {
+        queue<pair<string,int>> q;
+        fill(vis, vis+10000, false);
+        for(int i=0;i<deadends.size();i++) vis[strToInt(deadends[i])]=true;
+        if(!vis[0]){
+            q.push({"0000", 0});
+            vis[0]=true;
+        }
+        while(!q.empty()){
+            pair<string, int> now=q.front();
+            q.pop();
+            for(int i=0;i<4;i++){
+                int nowDigit=now.first[i]-'0';
+                int a=(nowDigit+10-1)%10;
+                int b=(nowDigit+1)%10;
+                string s1=now.first;
+                s1[i]=a+'0';
+                string s2=now.first;
+                s2[i]=b+'0';
+                //cout<<now.first<<" ";
+                if(s1==target||s2==target) return now.second+1;
+                if(!vis[strToInt(s1)]){
+                    q.push({s1, now.second+1});
+                    vis[strToInt(s1)]=true;
+                    //cout<<s1<<" ";
+                }
+                if(!vis[strToInt(s2)]){
+                    q.push({s2, now.second+1});
+                    vis[strToInt(s2)]=true;
+                    //cout<<s2;
+                }
+                //cout<<endl;
+            }
+        }
+        return -1;
+    }
+};
+```
+## 429. N叉树的层序遍历
+**Description**
+给定一个 N 叉树，返回其节点值的层序遍历。 (即从左到右，逐层遍历)。
+**Example**
+例如，给定一个 3叉树 :
+![image](/assets/img/narytreeexample.png)
+返回其层序遍历:
+```
+[
+     [1],
+     [3,2,4],
+     [5,6]
+]
+```
+
+说明:
+树的深度不会超过 1000。
+树的节点总数不会超过 5000。
+**Program**
+```cpp
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> children;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+    }
+
+    Node(int _val, vector<Node*> _children) {
+        val = _val;
+        children = _children;
+    }
+};
+*/
+
+class Solution {
+public:
+    vector<vector<int>> levelOrder(Node* root) {
+        if(root==NULL) return {};
+        vector<vector<int>> result;
+        int front, end;
+        front=end=0;
+        vector<Node*> q;
+        q.push_back(root);
+        end++;
+        vector<int> vec;
+        while(front<end){
+            Node* now=q[front++];
+            vec.push_back(now->val);
+            for(int i=0;i<now->children.size();i++){
+                q.push_back(now->children[i]);
+            }
+            if(front==end){
+                end=q.size();
+                result.push_back(vec);
+                vec.clear();
+            }
+        }
+        return result;
+    }
+};
+```
+## 559. N叉树的最大深度
+**Description**
+给定一个 N 叉树，找到其最大深度。
+最大深度是指从根节点到最远叶子节点的最长路径上的节点总数。
+**Example**
+例如，给定一个 3叉树 :
+![image](/assets/img/narytreeexample.png)
+我们应返回其最大深度，3。
+说明:
+树的深度不会超过 1000。
+树的节点总不会超过 5000。
+**Program**
+```cpp
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> children;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+    }
+
+    Node(int _val, vector<Node*> _children) {
+        val = _val;
+        children = _children;
+    }
+};
+*/
+
+class Solution {
+public:
+    int maxDepth(Node* root) {
+        if(root==NULL) return 0;
+        queue<pair<Node*,int>> q;
+        q.push({root, 1});
+        int ans=1;
+        while(!q.empty()){
+            pair<Node*, int> now=q.front();
+            q.pop();
+            ans=max(ans, now.second);
+            for(int i=0;i<now.first->children.size();i++){
+                q.push({now.first->children[i], now.second+1});
+            }
+        }
+        return ans;
+    }
+};
+```
+## 785. 判断二分图
+**Description**
+给定一个无向图graph，当这个图为二分图时返回true。
+如果我们能将一个图的节点集合分割成两个独立的子集A和B，并使图中的每一条边的两个节点一个来自A集合，一个来自B集合，我们就将这个图称为二分图。
+graph将会以邻接表方式给出，graph[i]表示图中与节点i相连的所有节点。每个节点都是一个在0到graph.length-1之间的整数。这图中没有自环和平行边： graph[i] 中不存在i，并且graph[i]中没有重复的值。
+**Example**
+示例 1:
+输入: [[1,3], [0,2], [1,3], [0,2]]
+输出: true
+解释:
+无向图如下:
+```
+0----1
+|    |
+|    |
+3----2
+```
+我们可以将节点分成两组: {0, 2} 和 {1, 3}。
+
+示例 2:
+输入: [[1,2,3], [0,2], [0,1,3], [0,2]]
+输出: false
+解释:
+无向图如下:
+```
+0----1
+| \  |
+|  \ |
+3----2
+```
+我们不能将节点分割成两个独立的子集。
+注意:
+graph 的长度范围为 [1, 100]。
+graph[i] 中的元素的范围为 [0, graph.length - 1]。
+graph[i] 不会包含 i 或者有重复的值。
+图是无向的: 如果j 在 graph[i]里边, 那么 i 也会在 graph[j]里边。
+**Program**
+```cpp
+class Solution {
+public:
+    vector<bool> vis[2];
+    bool BFS(vector<vector<int>>& graph, int u){
+        queue<pair<int,int>> q;
+        q.push({u, 0});
+        vis[0][u]=true;
+        while(!q.empty()){
+            pair<int,int> now=q.front();
+            int u=now.first;
+            int visIdx=now.second;
+            q.pop();
+            for(int i=0;i<graph[u].size();i++){
+                int v=graph[u][i];
+                if(vis[visIdx][v]) return false;
+                if(!vis[1-visIdx][v]){
+                    q.push({v, 1-visIdx});
+                    vis[1-visIdx][v]=true;
+                }
+            }
+        }
+        return true;
+    }
+    bool isBipartite(vector<vector<int>>& graph) {
+        int n=graph.size();
+
+        vis[0].resize(n,false);
+        vis[1].resize(n,false);
+
+        for(int i=0;i<n;i++){
+            if(!vis[0][i]&&!vis[1][i]){
+                if(!BFS(graph, i)) return false;
+            }
+        }
+        return true;
+    }
+};
 ```
