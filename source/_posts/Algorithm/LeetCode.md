@@ -178,19 +178,32 @@ toc: true
 |801. 使序列递增的最小交换次数|Medium|动态规划|
 |808. 分汤|Medium|动态规划|
 |820. 单词的压缩编码|Medium|后缀+字典树|
+|863. 二叉树中所有距离为 K 的结点|Medium|坐标化|
 |898. 子数组按位或操作|Medium|位运算+unordered_set|
+|909. 蛇梯棋|Medium|广搜|
 |914. 卡牌分组|Easy|最大公约数|
+|934. 最短的桥|Medium|广搜|
 |947. 移除最多的同行或同列石头|Medium|并查集+Hash|
 |959. 由斜杠划分区域|Medium|并查集|
 |990. 等式方程的可满足性|Medium|并查集|
+|993. 二叉树的堂兄弟节点|Easy|坐标化|
+|994. 腐烂的橘子|Medium|广搜|
+|1091. 二进制矩阵中的最短路径|Medium|广搜|
+|1129. 颜色交替的最短路径|Medium|广搜|
 |1131. 绝对值表达式的最大值|Medium|位运算+数学|
 |1202. 交换字符串中的元素|Medium|并查集|
 |1239. 串联字符串的最大长度|Medium|位运算+暴力|
 |1290. 二进制链表转整数|Easy|位运算|
 |1297. 子串的最大出现次数|Medium|位运算|
+|1306. 跳跃游戏 III|Medium|广搜|
 |1310. 子数组异或查询|Medium|位运算+前缀和|
+|1311. 获取你好友已观看的视频|Medium|广搜|
 |1318. 或运算的最小翻转次数|Medium|位运算|
 |1319. 连通网络的操作次数|Medium|并查集|
+|面试题 04.03. 特定深度节点链表|Medium|广搜+链表|
+|面试题32 - I. 从上到下打印二叉树 II|Medium|广搜|
+|面试题32 - II. 从上到下打印二叉树 II|Easy|广搜|
+|面试题32 - III. 从上到下打印二叉树 III|Medium|广搜|
 
 ## 1.两数之和
 **Description**
@@ -11619,6 +11632,970 @@ public:
             }
         }
         return true;
+    }
+};
+```
+## 863. 二叉树中所有距离为 K 的结点
+**Description**
+给定一个二叉树（具有根结点 root）， 一个目标结点 target ，和一个整数值 K 。
+返回到目标结点 target 距离为 K 的所有结点的值的列表。 答案可以以任何顺序返回。
+**Example**
+示例 1：
+输入：root = [3,5,1,6,2,0,8,null,null,7,4], target = 5, K = 2
+输出：[7,4,1]
+解释：
+所求结点为与目标结点（值为 5）距离为 2 的结点，
+值分别为 7，4，以及 1
+![image](/assets/img/algorithm/sketch0.png)
+注意，输入的 "root" 和 "target" 实际上是树上的结点。
+上面的输入仅仅是对这些对象进行了序列化描述。
+提示：
+给定的树是非空的，且最多有 K 个结点。
+树上的每个结点都具有唯一的值 0 <= node.val <= 500 。
+目标结点 target 是树上的结点。
+0 <= K <= 1000.
+**Program**
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    unordered_map<TreeNode*, int> m;
+    void dfs(TreeNode* root, int n){
+        if(root==NULL) return;
+        m[root]=n;
+        dfs(root->left, 2*n+1);
+        dfs(root->right, 2*n+2);
+    }
+    int dis(int x, int y){
+        int res=0;
+        while(x!=y){
+            if(x>y) x=(x-1)/2;
+            else y=(y-1)/2;
+            res++;
+        }
+        return res;
+    }
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int K) {
+        dfs(root, 0);  //坐标化
+        int t=m[target];
+        vector<int> result;
+        for(pair<TreeNode*, int> p:m){
+            //cout<<p.first<<" "<<p.second<<endl;
+            if(dis(p.second, t)==K) result.push_back(p.first->val);
+        }
+        return result;
+    }
+};
+```
+## 909. 蛇梯棋
+**Description**
+在一块 N x N 的棋盘 board 上，从棋盘的左下角开始，每一行交替方向，按从 1 到 N*N 的数字给方格编号。例如，对于一块 6 x 6 大小的棋盘，可以编号如下：
+![image](/assets/img/algorithm/snakes.png)
+玩家从棋盘上的方格 1 （总是在最后一行、第一列）开始出发。
+每一次从方格 x 起始的移动都由以下部分组成：
+你选择一个目标方块 S，它的编号是 x+1，x+2，x+3，x+4，x+5，或者 x+6，只要这个数字 <= N*N。
+如果 S 有一个蛇或梯子，你就移动到那个蛇或梯子的目的地。否则，你会移动到 S。 
+在 r 行 c 列上的方格里有 “蛇” 或 “梯子”；如果 board[r][c] != -1，那个蛇或梯子的目的地将会是 board[r][c]。
+注意，你每次移动最多只能爬过蛇或梯子一次：就算目的地是另一条蛇或梯子的起点，你也不会继续移动。
+返回达到方格 N*N 所需的最少移动次数，如果不可能，则返回 -1。
+**Example**
+示例：
+输入：
+```
+[[-1,-1,-1,-1,-1,-1],
+[-1,-1,-1,-1,-1,-1],
+[-1,-1,-1,-1,-1,-1],
+[-1,35,-1,-1,13,-1],
+[-1,-1,-1,-1,-1,-1],
+[-1,15,-1,-1,-1,-1]]
+````
+输出：4
+解释：
+首先，从方格 1 [第 5 行，第 0 列] 开始。
+你决定移动到方格 2，并必须爬过梯子移动到到方格 15。
+然后你决定移动到方格 17 [第 3 行，第 5 列]，必须爬过蛇到方格 13。
+然后你决定移动到方格 14，且必须通过梯子移动到方格 35。
+然后你决定移动到方格 36, 游戏结束。
+可以证明你需要至少 4 次移动才能到达第 N*N 个方格，所以答案是 4。
+
+提示：
+2 <= board.length = board[0].length <= 20
+board[i][j] 介于 1 和 N*N 之间或者等于 -1。
+编号为 1 的方格上没有蛇或梯子。
+编号为 N*N 的方格上没有蛇或梯子。
+**Program**
+坑点就是一条捷径的终点如果又是另一条捷径的起点，那么走了前一条捷径到达该捷径的终点后，不能走该捷径终点作为另一条捷径起点的那条捷径了！
+```cpp
+class Solution {
+public:
+    int n;
+    pair<int,int> calRC(int x){
+        int row=(x-1)/n;
+        int col=0;
+        if(row%2==0) col=x-row*n-1;
+        else col=n-(x-row*n);
+        //cout<<n-row-1<<" "<<col<<endl;
+        return {n-row-1, col};
+    }
+    int snakesAndLadders(vector<vector<int>>& board) {
+        n=board.size();
+        vector<bool> vis(n*n+1, false);
+        queue<pair<int,int>> q;
+        q.push({1, 0});
+        vis[1]=true;
+        while(!q.empty()){
+            pair<int,int> now=q.front();
+            q.pop();
+            if(now.first==n*n) return now.second;
+            for(int i=1;i<=6;i++){ //每次可走步数
+                int dst=now.first+i;
+                if(dst>n*n) break;
+                if(!vis[dst]){
+                    pair<int,int> p=calRC(dst);
+                    int tmp=board[p.first][p.second];
+                    if(tmp!=-1){
+                        q.push({tmp, now.second+1});
+                        //vis[tmp]=true; //不能被标记，因为如果该点又是另一条捷径的起点，那么可能通过该起点的路径最短，因为该点作为某次移动的捷径终点时不能使用其作为另一条捷径的起点了！可走步数只能严格x+i，i<=6
+                    }else q.push({dst, now.second+1});
+                    vis[dst]=true;
+                }
+            }
+        }
+        return -1;
+    }
+};
+```
+## 934. 最短的桥
+**Description**
+在给定的二维二进制数组 A 中，存在两座岛。（岛是由四面相连的 1 形成的一个最大组。）
+现在，我们可以将 0 变为 1，以使两座岛连接起来，变成一座岛。
+返回必须翻转的 0 的最小数目。（可以保证答案至少是 1。）
+**Example**
+示例 1：
+输入：[[0,1],[1,0]]
+输出：1
+示例 2：
+输入：[[0,1,0],[0,0,0],[0,0,1]]
+输出：2
+示例 3：
+输入：[[1,1,1,1,1],[1,0,0,0,1],[1,0,1,0,1],[1,0,0,0,1],[1,1,1,1,1]]
+输出：1
+ 
+提示：
+1 <= A.length = A[0].length <= 100
+A[i][j] == 0 或 A[i][j] == 1
+**Program**
+先通过DFS标记一个岛，之后将另一个岛的坐标加入队列，最后广搜即可。
+```cpp
+class Solution {
+public:
+    const int steps[4][2]={
+        1,0,
+        -1,0,
+        0,1,
+        0,-1
+    };
+    void dfs(vector<vector<int>>& A, int x, int y, int mark){
+        int rows=A.size();
+        int cols=A[0].size();
+        A[x][y]=mark;
+        for(int i=0;i<4;i++){
+            int new_x=x+steps[i][0];
+            int new_y=y+steps[i][1];
+            if(new_x>=0&&new_x<rows&&new_y>=0&&new_y<cols&&A[new_x][new_y]==1){
+                dfs(A, new_x, new_y, mark);
+            }
+        }
+    }
+    int shortestBridge(vector<vector<int>>& A) {
+        queue<pair<pair<int,int>,int>> q;
+        int rows=A.size();
+        int cols=A[0].size();
+        bool bFirst=true;
+        for(int i=0;i<rows;i++){
+            for(int j=0;j<cols;j++){
+                if(A[i][j]==1){
+                    if(bFirst){
+                        dfs(A,i,j,2);
+                        bFirst=false;
+                    }else{
+                        q.push({{i, j},0});
+                        A[i][j]=-1;
+                    }
+                }
+            }
+        }
+        while(!q.empty()){
+            pair<pair<int,int>, int> now=q.front();
+            int x=now.first.first;
+            int y=now.first.second;
+            int s=now.second;
+            q.pop();
+            for(int i=0;i<4;i++){
+                int new_x=x+steps[i][0];
+                int new_y=y+steps[i][1];
+                if(new_x>=0&&new_x<rows&&new_y>=0&&new_y<cols){
+                    if(A[new_x][new_y]==2) return s;
+                    if(A[new_x][new_y]==0){
+                        q.push({{new_x,new_y},s+1});
+                        A[new_x][new_y]=-1; //标记
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+};
+```
+## 993. 二叉树的堂兄弟节点
+**Description**
+在二叉树中，根节点位于深度 0 处，每个深度为 k 的节点的子节点位于深度 k+1 处。
+如果二叉树的两个节点深度相同，但父节点不同，则它们是一对堂兄弟节点。
+我们给出了具有唯一值的二叉树的根节点 root，以及树中两个不同节点的值 x 和 y。
+只有与值 x 和 y 对应的节点是堂兄弟节点时，才返回 true。否则，返回 false。
+**Example**
+示例 1：
+![image](/assets/img/algorithm/q1248-01.png)
+输入：root = [1,2,3,4], x = 4, y = 3
+输出：false
+示例 2：
+![image](/assets/img/algorithm/q1248-02.png)
+输入：root = [1,2,3,null,4,null,5], x = 5, y = 4
+输出：true
+示例 3：
+![image](/assets/img/algorithm/q1248-03.png)
+输入：root = [1,2,3,null,4], x = 2, y = 3
+输出：false
+提示：
+二叉树的节点数介于 2 到 100 之间。
+每个节点的值都是唯一的、范围为 1 到 100 的整数。
+**Program**
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    unordered_map<TreeNode*,int> m;
+    unordered_map<int, TreeNode*> valToNode;
+    void dfs(TreeNode* root, int n){
+        if(root==NULL) return;
+        m[root]=n;
+        valToNode[root->val]=root;
+        dfs(root->left, 2*n+1);
+        dfs(root->right, 2*n+2);
+    }
+    bool judge(int x, int y){
+        int s1,s2;
+        s1=s2=0;
+        while(x!=y){
+            if(x>y){
+                x=(x-1)/2;
+                s1++;
+            }else{
+                y=(y-1)/2;
+                s2++;
+            }
+        }
+        return (s1==s2)&&(s1>=2);
+    }
+    bool isCousins(TreeNode* root, int x, int y) {
+        dfs(root, 0);
+        return judge(m[valToNode[x]],m[valToNode[y]]);
+    }
+};
+```
+## 1091. 二进制矩阵中的最短路径
+**Description**
+在一个 N × N 的方形网格中，每个单元格有两种状态：空（0）或者阻塞（1）。
+一条从左上角到右下角、长度为 k 的畅通路径，由满足下述条件的单元格 C_1, C_2, ..., C_k 组成：
+相邻单元格 C_i 和 C_{i+1} 在八个方向之一上连通（此时，C_i 和 C_{i+1} 不同且共享边或角）
+C_1 位于 (0, 0)（即，值为 grid[0][0]）
+C_k 位于 (N-1, N-1)（即，值为 grid[N-1][N-1]）
+如果 C_i 位于 (r, c)，则 grid[r][c] 为空（即，grid[r][c] == 0）
+返回这条从左上角到右下角的最短畅通路径的长度。如果不存在这样的路径，返回 -1 。
+**Example**
+示例 1：
+输入：[[0,1],[1,0]]
+输出：2
+
+示例 2：
+输入：[[0,0,0],[1,1,0],[1,1,0]]
+输出：4
+
+提示：
+1 <= grid.length == grid[0].length <= 100
+grid[i][j] 为 0 或 1
+**Program**
+```cpp
+class Solution {
+public:
+    const int steps[8][2]={
+        -1, 0,
+        -1, -1,
+        -1, 1,
+        0, -1,
+        0, 1,
+        1, -1,
+        1, 0,
+        1, 1
+    };
+    bool judge(int x,int y, int n){
+        if(x>=0&&x<n&&y>=0&&y<n) return true;
+        return false;
+    }
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        int n = grid.size();
+        if(grid[0][0]!=0||grid[n-1][n-1]!=0) return -1;
+        queue<pair<pair<int,int>,int>> q;
+        q.push({{0, 0}, 1});
+        grid[0][0]=-1;
+        while(!q.empty()){
+            pair<pair<int,int>,int> now=q.front();
+            int x=now.first.first;
+            int y=now.first.second;
+            int s=now.second;
+            q.pop();
+            if(x==n-1&&y==n-1) return s;
+            for(int i=0;i<8;i++){
+                int new_x=x+steps[i][0];
+                int new_y=y+steps[i][1];
+                if(judge(new_x,new_y,n)&&grid[new_x][new_y]==0){
+                    q.push({{new_x, new_y}, s+1});
+                    grid[new_x][new_y]=-1;
+                }
+            }
+        }
+        return -1;
+    }
+};
+```
+## 994. 腐烂的橘子
+**Description**
+在给定的网格中，每个单元格可以有以下三个值之一：
+值 0 代表空单元格；
+值 1 代表新鲜橘子；
+值 2 代表腐烂的橘子。
+每分钟，任何与腐烂的橘子（在 4 个正方向上）相邻的新鲜橘子都会腐烂。
+返回直到单元格中没有新鲜橘子为止所必须经过的最小分钟数。如果不可能，返回 -1。
+**Example**
+示例 1：
+输入：[[2,1,1],[1,1,0],[0,1,1]]
+输出：4
+
+示例 2：
+输入：[[2,1,1],[0,1,1],[1,0,1]]
+输出：-1
+解释：左下角的橘子（第 2 行， 第 0 列）永远不会腐烂，因为腐烂只会发生在 4 个正向上。
+
+示例 3：
+输入：[[0,2]]
+输出：0
+解释：因为 0 分钟时已经没有新鲜橘子了，所以答案就是 0 。
+ 
+提示：
+1 <= grid.length <= 10
+1 <= grid[0].length <= 10
+grid[i][j] 仅为 0、1 或 2
+
+**Program**
+```cpp
+class Solution {
+public:
+    const int steps[4][2]={
+        0, -1,
+        0, 1,
+        -1, 0,
+        1, 0
+    };
+    bool judge(int x, int y,int m,int n){
+        if(x>=0&&x<m&&y>=0&&y<n) return true;
+        return false;
+    }
+    int orangesRotting(vector<vector<int>>& grid) {
+        int m=grid.size();
+        int n=grid[0].size();
+        queue<pair<pair<int,int>,int>> q;
+        int nCount=0;
+        int ans=-1;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==2) q.push({{i,j},0});
+                else if(grid[i][j]==1) nCount++;
+            }
+        }
+        if(q.empty()&&nCount==0) return 0;
+        while(!q.empty()){
+            pair<pair<int,int>,int> now=q.front();
+            q.pop();
+            int x=now.first.first;
+            int y=now.first.second;
+            int time=now.second;
+            ans=max(ans, time);
+            for(int i=0;i<4;i++){
+                int new_x=x+steps[i][0];
+                int new_y=y+steps[i][1];
+                if(judge(new_x,new_y,m,n)&&grid[new_x][new_y]==1){
+                    q.push({{new_x, new_y}, time+1});
+                    grid[new_x][new_y]=2;
+                    nCount--;
+                }
+            }
+        }
+        if(nCount!=0) return -1;
+        return ans;
+    }
+};
+```
+## 面试题 04.03. 特定深度节点链表
+**Description**
+给定一棵二叉树，设计一个算法，创建含有某一深度上所有节点的链表（比如，若一棵树的深度为 D，则会创建出 D 个链表）。返回一个包含所有深度的链表的数组。
+**Example**
+示例：
+输入：[1,2,3,4,5,null,7,8]
+```
+        1
+       /  \
+      2    3
+     / \    \
+    4   5    7
+   /
+  8
+```
+输出：[[1],[2,3],[4,5,7],[8]]
+**Program**
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<ListNode*> listOfDepth(TreeNode* tree) {
+        if(tree==NULL) return {};
+        vector<TreeNode*> vec;
+        int front, end;
+        front=end=0;
+        vec.push_back(tree);
+        end++;
+        ListNode* tmp;
+        vector<ListNode*> result;
+        int preEnd=0;
+        while(front<end){
+            TreeNode* now=vec[front];
+            if(front==preEnd){
+                tmp=new ListNode(now->val);
+                result.push_back(tmp);
+            }else{
+                tmp->next=new ListNode(now->val);
+                tmp=tmp->next;
+            }
+            if(now->left!=NULL) vec.push_back(now->left);
+            if(now->right!=NULL) vec.push_back(now->right);
+            front++;
+            if(front==end){
+                preEnd=end;
+                end=vec.size();
+            }
+        }
+        return result;
+    }
+};
+```
+## 建设道路
+**Description**
+牛牛国有 nn 个城市，编号为 1...n，第 i 个城市有一个价值$a_i$，牛国的国王牛阔落特别喜欢在牛牛国旅游，并且他不想每次旅游的时候都计算一遍走哪条路最短，于是他决定在任意两个城市之间建立一条双向道路，在第$i$座城市和第$j$座城市之间建立双向道路的代价是 $(a_i-a_j)^2$，牛阔落希望你能算出这项工程的花费。由于答案太大，你只需要输出答案模 $1e9+7$ 的余数
+**Example**
+输入描述:
+第一行一个整数 n，表示城市的数量。
+第二行 n 以空格分隔的整数 a1,a2,...,an，表示第i座城市的价值。
+输出描述:
+输出一行一个数字，表示工程的花费模 1e9+7的余数
+示例1
+输入
+复制
+3
+1 2 3
+输出
+复制
+6
+说明
+城市1到城市2的道路价值是(2 - 1)^ 2 = 1
+城市2到城市3的道路价值是(3 - 2)^ 2 = 1
+城市1到城市3的道路价值是(3 - 1)^ 2 = 4
+总的花费 = 1 + 1 + 4 = 6
+备注:
+$1≤n≤5e5,1e91≤ai≤1e9$
+建议使用`scanf`读入
+**Program**
+![image](/assets/img/algorithm/square_sum.png)
+```cpp
+#include<iostream>
+#include<algorithm>
+using namespace std;
+const int mod=1e9+7;
+int main(){
+    int n;
+    cin>>n;
+    vector<long long> a(n+1,0),sum1(n+1,0),sum2(n+1,0);
+    for(int i=1;i<=n;i++){
+        cin>>a[i];
+        sum1[i]=(sum1[i-1]+a[i])%mod;
+        sum2[i]=(sum2[i-1]+(a[i]*a[i]%mod))%mod;
+    }
+    long long result=0;
+    for(int i=1;i<=n;i++){
+        result=(result+((n-i)*(a[i]*a[i]%mod))%mod)%mod;
+        result=(result-(2*(a[i]*((sum1[n]-sum1[i]+mod)%mod))%mod)%mod)%mod;
+        result=(result+(sum2[n]-sum2[i]+mod)%mod+mod)%mod;
+        //long long x1=((n-i)*(a[i]*a[i]%mod))%mod;
+        //long long x2=(2*(a[i]*((sum1[n]-sum1[i])%mod))%mod)%mod;
+        //long long x3=(sum2[n]-sum2[i]+mod)%mod;
+        //long long x=(x1-x2+x3+mod)%mod;
+        //result=(result+x)%mod;
+    }
+    cout<<result<<endl;
+    return 0;
+}
+```
+## 1129. 颜色交替的最短路径
+**Description**
+在一个有向图中，节点分别标记为 0, 1, ..., n-1。这个图中的每条边不是红色就是蓝色，且存在自环或平行边。
+red_edges 中的每一个 [i, j] 对表示从节点 i 到节点 j 的红色有向边。类似地，blue_edges 中的每一个 [i, j] 对表示从节点 i 到节点 j 的蓝色有向边。
+返回长度为 n 的数组 answer，其中 answer[X] 是从节点 0 到节点 X 的最短路径的长度，且路径上红色边和蓝色边交替出现。如果不存在这样的路径，那么 answer[x] = -1。
+**Example**
+示例 1：
+输入：n = 3, red_edges = [[0,1],[1,2]], blue_edges = []
+输出：[0,1,-1]
+
+示例 2：
+输入：n = 3, red_edges = [[0,1]], blue_edges = [[2,1]]
+输出：[0,1,-1]
+
+示例 3：
+输入：n = 3, red_edges = [[1,0]], blue_edges = [[2,1]]
+输出：[0,-1,-1]
+
+示例 4：
+输入：n = 3, red_edges = [[0,1]], blue_edges = [[1,2]]
+输出：[0,1,2]
+
+示例 5：
+输入：n = 3, red_edges = [[0,1],[0,2]], blue_edges = [[1,0]]
+输出：[0,1,1]
+ 
+提示：
+1 <= n <= 100
+red_edges.length <= 400
+blue_edges.length <= 400
+red_edges[i].length == blue_edges[i].length == 2
+0 <= red_edges[i][j], blue_edges[i][j] < n
+**Program**
+```cpp
+class Solution {
+public:
+    struct Node{
+        int v;
+        int color;
+        int step;
+        Node(){}
+        Node(int V,int C, int S):v(V),color(C),step(S){}
+    };
+    vector<int> shortestAlternatingPaths(int n, vector<vector<int>>& red_edges, vector<vector<int>>& blue_edges) {
+        vector<vector<pair<int,int>>> Adj(n);
+        vector<int> result(n, -1);
+        vector<vector<vector<bool>>> vis(2, vector<vector<bool>>(n,vector<bool>(n, false)));
+
+        for(int i=0;i<red_edges.size();i++){
+            int u=red_edges[i][0];
+            int v=red_edges[i][1];
+            Adj[u].push_back({v, 0});
+        }
+        for(int i=0;i<blue_edges.size();i++){
+            int u=blue_edges[i][0];
+            int v=blue_edges[i][1];
+            Adj[u].push_back({v, 1});
+        }
+        queue<Node> q;
+        q.push(Node(0, -1, 0));
+        while(!q.empty()){
+            Node now=q.front();
+            q.pop();
+            if(result[now.v]==-1){
+                result[now.v]=now.step;
+            }
+            for(int i=0;i<Adj[now.v].size();i++){
+                int v=Adj[now.v][i].first;
+                int color=Adj[now.v][i].second;
+                if(!vis[color][now.v][v]){
+                    if(now.color==-1){
+                        q.push(Node(v, color, now.step+1));
+                        vis[color][now.v][v]=true;
+                    }
+
+                    if(now.color==0&&color==1){
+                        q.push(Node(v, color, now.step+1));
+                        vis[color][now.v][v]=true;
+                    }
+                    if(now.color==1&&color==0){
+                        q.push(Node(v, color, now.step+1));
+                        vis[color][now.v][v]=true;
+                    }
+                }  
+            }
+        }
+        return result;
+    }
+};
+```
+## 1306. 跳跃游戏 III
+**Description**
+这里有一个非负整数数组 arr，你最开始位于该数组的起始下标 start 处。当你位于下标 i 处时，你可以跳到 i + arr[i] 或者 i - arr[i]。
+请你判断自己是否能够跳到对应元素值为 0 的 任意 下标处。
+注意，不管是什么情况下，你都无法跳到数组之外。
+**Example**
+示例 1：
+输入：arr = [4,2,3,0,3,1,2], start = 5
+输出：true
+解释：
+到达值为 0 的下标 3 有以下可能方案：
+下标 5 -> 下标 4 -> 下标 1 -> 下标 3
+下标 5 -> 下标 6 -> 下标 4 -> 下标 1 -> 下标 3
+
+示例 2：
+输入：arr = [4,2,3,0,3,1,2], start = 0
+输出：true
+解释：
+到达值为 0 的下标 3 有以下可能方案：
+下标 0 -> 下标 4 -> 下标 1 -> 下标 3
+
+示例 3：
+输入：arr = [3,0,2,1,2], start = 2
+输出：false
+解释：无法到达值为 0 的下标 1 处。
+ 
+提示：
+```
+1 <= arr.length <= 5 * 10^4
+0 <= arr[i] < arr.length
+0 <= start < arr.length
+```
+**Program**
+```cpp
+class Solution {
+public:
+    bool canReach(vector<int>& arr, int start) {
+        int n=arr.size();
+        vector<bool> vis(n,false);
+        queue<int> q;
+        q.push(start);
+        vis[start]=true;
+        while(!q.empty()){
+            int idx=q.front();
+            q.pop();
+            if(arr[idx]==0) return true;
+            if(idx+arr[idx]>=0&&idx+arr[idx]<n&&!vis[idx+arr[idx]]){
+                q.push(idx+arr[idx]);
+                vis[idx+arr[idx]]=true;
+            }
+            if(idx-arr[idx]>=0&&idx-arr[idx]<n&&!vis[idx-arr[idx]]){
+                q.push(idx-arr[idx]);
+                vis[idx-arr[idx]]=true;
+            }
+        }
+        return false;
+    }
+};
+```
+## 1311. 获取你好友已观看的视频
+**Description**
+有 n 个人，每个人都有一个  0 到 n-1 的唯一 id 。
+给你数组 watchedVideos  和 friends ，其中 watchedVideos[i]  和 friends[i] 分别表示 id = i 的人观看过的视频列表和他的好友列表。
+Level 1 的视频包含所有你好友观看过的视频，level 2 的视频包含所有你好友的好友观看过的视频，以此类推。一般的，Level 为 k 的视频包含所有从你出发，最短距离为 k 的好友观看过的视频。
+给定你的 id  和一个 level 值，请你找出所有指定 level 的视频，并将它们按观看频率升序返回。如果有频率相同的视频，请将它们按字母顺序从小到大排列。
+**Example**
+示例 1：
+![image](/assets/img/algorithm/leetcode_friends_1.png)
+输入：watchedVideos = [["A","B"],["C"],["B","C"],["D"]], friends = [[1,2],[0,3],[0,3],[1,2]], id = 0, level = 1
+输出：["B","C"]
+解释：
+你的 id 为 0（绿色），你的朋友包括（黄色）：
+id 为 1 -> watchedVideos = ["C"] 
+id 为 2 -> watchedVideos = ["B","C"] 
+你朋友观看过视频的频率为：
+B -> 1 
+C -> 2
+
+示例 2：
+![image](/assets/img/algorithm/leetcode_friends_2.png)
+输入：watchedVideos = [["A","B"],["C"],["B","C"],["D"]], friends = [[1,2],[0,3],[0,3],[1,2]], id = 0, level = 2
+输出：["D"]
+解释：
+你的 id 为 0（绿色），你朋友的朋友只有一个人，他的 id 为 3（黄色）。
+
+提示：
+```
+n == watchedVideos.length == friends.length
+2 <= n <= 100
+1 <= watchedVideos[i].length <= 100
+1 <= watchedVideos[i][j].length <= 8
+0 <= friends[i].length < n
+0 <= friends[i][j] < n
+0 <= id < n
+1 <= level < n
+如果 friends[i] 包含 j ，那么 friends[j] 包含 i
+```
+**Program**
+```cpp
+class Solution {
+public:
+    static bool cmp(pair<string,int> &a, pair<string,int> &b){
+        if(a.second!=b.second){
+            return a.second<b.second;
+        }
+        return a.first<b.first;
+    }
+    vector<string> watchedVideosByFriends(vector<vector<string>>& watchedVideos, vector<vector<int>>& friends, int id, int level) {
+        int n=watchedVideos.size();
+        vector<vector<int>> Adj(n);
+        for(int i=0;i<n;i++){
+            for(int j=0;j<friends[i].size();j++){
+                int v=friends[i][j];
+                Adj[i].push_back(v);
+                Adj[v].push_back(i);
+            }
+        }
+        unordered_map<string,int> m;
+        vector<bool> vis(n, false);
+        queue<pair<int,int>> q;
+        q.push({id,0});
+        vis[id]=true;
+        while(!q.empty()){
+            pair<int,int> now=q.front();
+            q.pop();
+            if(now.second==level){
+                for(int i=0;i<watchedVideos[now.first].size();i++){
+                    if(m.find(watchedVideos[now.first][i])==m.end()) m[watchedVideos[now.first][i]]=1;
+                    else m[watchedVideos[now.first][i]]++;
+                }   
+                continue;
+            }
+            for(int i=0;i<Adj[now.first].size();i++){
+                int v=Adj[now.first][i];
+                if(!vis[v]){
+                    vis[v]=true;
+                    q.push({v, now.second+1});
+                }
+            }
+        }
+        vector<pair<string,int>> result;
+        for(auto& now:m){
+            result.push_back({now.first,now.second});
+            //cout<<now.first<<" "<<now.second<<endl;
+        }
+        sort(result.begin(), result.end(),cmp);
+        vector<string> res;
+        for(auto& now:result) res.push_back(now.first);
+        return res;
+    }
+};
+```
+## 面试题32 - I. 从上到下打印二叉树
+**Description**
+从上到下打印出二叉树的每个节点，同一层的节点按照从左到右的顺序打印。
+**Example**
+例如:
+给定二叉树: [3,9,20,null,null,15,7],
+···
+    3
+   / \
+  9  20
+    /  \
+   15   7
+···
+返回：
+[3,9,20,15,7]
+ 
+提示：
+节点总数 <= 1000
+**Program**
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> levelOrder(TreeNode* root) {
+        if(root==NULL) return {};
+        queue<TreeNode*> q;
+        q.push(root);
+        vector<int> res;
+        while(!q.empty()){
+            TreeNode* now=q.front();
+            res.push_back(now->val);
+            q.pop();
+            if(now->left!=NULL) q.push(now->left);
+            if(now->right!=NULL) q.push(now->right);
+        }
+        return res;
+    }
+};
+```
+## 面试题32 - II. 从上到下打印二叉树 II
+**Description**
+从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
+**Example**
+例如:
+给定二叉树: [3,9,20,null,null,15,7],
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+返回其层次遍历结果：
+```
+[
+  [3],
+  [9,20],
+  [15,7]
+]
+```
+提示：
+节点总数 <= 1000
+**Program**
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        if(root==NULL) return {};
+        vector<TreeNode*> q;
+        int front,end;
+        front=end=0;
+        q.push_back(root);
+        end++;
+        vector<vector<int>> res;
+        vector<int> vec;
+        while(front<end){
+            TreeNode* now=q[front];
+            vec.push_back(now->val);
+            front++;
+            if(now->left!=NULL) q.push_back(now->left);
+            if(now->right!=NULL) q.push_back(now->right);
+            if(front==end){
+                res.push_back(vec);
+                vec.clear();
+                end=q.size();
+            }  
+        }
+        return res;
+    }
+};
+```
+## 面试题32 - III. 从上到下打印二叉树 III
+**Description**
+请实现一个函数按照之字形顺序打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右到左的顺序打印，第三行再按照从左到右的顺序打印，其他行以此类推。
+**Example**
+例如:
+给定二叉树: [3,9,20,null,null,15,7],
+```
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+返回其层次遍历结果：
+```
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+```
+提示：
+节点总数 <= 1000
+**Program**
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        if(root==NULL) return {};
+        vector<TreeNode*> q;
+        int front,end;
+        front=end=0;
+        q.push_back(root);
+        end++;
+        vector<vector<int>> res;
+        vector<int> vec;
+        while(front<end){
+            TreeNode* now=q[front];
+            vec.push_back(now->val);
+            front++;
+            if(now->left!=NULL) q.push_back(now->left);
+            if(now->right!=NULL) q.push_back(now->right);
+            if(front==end){
+                res.push_back(vec);
+                vec.clear();
+                end=q.size();
+            }  
+        }
+        for(int i=0;i<res.size();i++){
+            if(i%2!=0) reverse(res[i].begin(),res[i].end());
+        }
+        return res;
     }
 };
 ```
