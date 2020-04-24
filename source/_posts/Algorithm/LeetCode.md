@@ -64,7 +64,7 @@ toc: true
 |122. 买卖股票的最佳时机 II|Easy|动态规划|
 |123. 买卖股票的最佳时机 III|Hard|动态规划|
 |125. 验证回文串|Easy|字符串|
-|127. 单词接龙|Medium|广搜|
+|127. 单词接龙|Medium|双向广搜|
 |129. 求根到叶子节点数字之和|Medium|二叉树遍历|
 |130. 被围绕的区域|Medium|并查集|
 |133. 克隆图|Medium|BFS+Map|
@@ -204,6 +204,9 @@ toc: true
 |面试题32 - I. 从上到下打印二叉树 II|Medium|广搜|
 |面试题32 - II. 从上到下打印二叉树 II|Easy|广搜|
 |面试题32 - III. 从上到下打印二叉树 III|Medium|广搜|
+|面试题 16.19. 水域大小|Medium|广搜|
+|面试题 17.22. 单词转换|Medium|双向广搜|
+|面试题 17.07. 婴儿名字|Medium|并查集|
 
 ## 1.两数之和
 **Description**
@@ -12595,6 +12598,406 @@ public:
         for(int i=0;i<res.size();i++){
             if(i%2!=0) reverse(res[i].begin(),res[i].end());
         }
+        return res;
+    }
+};
+```
+## 面试题 16.19. 水域大小
+**Description**
+你有一个用于表示一片土地的整数矩阵land，该矩阵中每个点的值代表对应地点的海拔高度。若值为0则表示水域。由垂直、水平或对角连接的水域为池塘。池塘的大小是指相连接的水域的个数。编写一个方法来计算矩阵中所有池塘的大小，返回值需要从小到大排序。
+**Example**
+示例：
+输入：
+```
+[
+  [0,2,1,0],
+  [0,1,0,1],
+  [1,1,0,1],
+  [0,1,0,1]
+]
+```
+输出： [1,2,4]
+提示：
+```
+0 < len(land) <= 1000
+0 < len(land[i]) <= 1000
+```
+**Program**
+```cpp
+class Solution {
+public:
+    const int steps[8][2]={
+        -1,0,
+        -1, -1,
+        -1, 1,
+        0,-1,
+        0,1,
+        1,-1,
+        1,0,
+        1,1
+    };
+    int rows, cols;
+    bool judge(int x, int y){
+        if(x>=0&&x<rows&&y>=0&&y<cols) return true;
+        return false;
+    }
+    int bfs(vector<vector<int>>& land, int x, int y){
+        queue<pair<int,int>> q;
+        q.push({x,y});
+        land[x][y]=-1;
+        int ans=1;
+        while(!q.empty()){
+            pair<int,int> now=q.front();
+            q.pop();
+            for(int i=0;i<8;i++){
+                int new_x=now.first+steps[i][0];
+                int new_y=now.second+steps[i][1];
+                if(judge(new_x, new_y)&&land[new_x][new_y]==0){
+                    ans++;
+                    land[new_x][new_y]=-1;
+                    q.push({new_x, new_y});
+                }
+            }
+        }
+        return ans;
+    }
+    vector<int> pondSizes(vector<vector<int>>& land) {
+        rows=land.size();
+        cols=land[0].size();
+        vector<int> res;
+        for(int i=0;i<rows;i++){
+            for(int j=0;j<cols;j++){
+                if(land[i][j]==0){
+                    res.push_back(bfs(land, i, j));
+                }
+            }
+        }
+        sort(res.begin(), res.end());
+        return res;
+    }
+};
+```
+## 面试题 17.22. 单词转换
+**Description**
+给定字典中的两个词，长度相等。写一个方法，把一个词转换成另一个词， 但是一次只能改变一个字符。每一步得到的新词都必须能在字典中找到。
+编写一个程序，返回一个可能的转换序列。如有多个可能的转换序列，你可以返回任何一个。
+**Example**
+示例 1:
+输入:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+输出:
+["hit","hot","dot","lot","log","cog"]
+
+示例 2:
+输入:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log"]
+输出: []
+
+解释: endWord "cog" 不在字典中，所以不存在符合要求的转换序列。
+**Program**
+```cpp
+class Solution {
+public:
+    struct Node{
+        int idx;
+        int father;
+        int q_idx;
+        Node(){}
+        Node(int Idx, int Father, int Q_idx):idx(Idx),father(Father),q_idx(Q_idx){}
+    };
+    vector<Node> mQueue[2];
+    vector<bool> vis[2];
+    unordered_map<string, int> m;
+    int qHead[2],qTail[2];
+    int n;
+    int matching_qNo,matching_idx, matching_q_idx;
+    bool DBFS(string beginWord, string endWord,vector<string>& wordList){
+        vis[0].resize(n, false);
+        vis[1].resize(n ,false);
+
+        mQueue[0].resize(n);
+        mQueue[1].resize(n);
+
+        qHead[0]=qHead[1]=0;
+        qTail[0]=qTail[1]=0;
+
+        mQueue[0][qTail[0]++]=Node(m[beginWord],-1,0);
+        mQueue[1][qTail[1]++]=Node(m[endWord],-1,0);
+
+        vis[0][m[beginWord]]=true;
+        vis[1][m[endWord]]=true;
+        while(qHead[0]!=qTail[0]&&qHead[1]!=qTail[1]){
+            int qNo=0;
+            if(qHead[0]==qTail[0]) qNo=1;
+            else if(qHead[1]==qTail[1]) qNo=0;
+            else if(qTail[0]-qHead[0]>qTail[1]-qHead[1]){ //选择更新的队列
+                qNo=1;
+            }
+            Node node=mQueue[qNo][qHead[qNo]++];
+            string str=wordList[node.idx]; //队列头元素
+            for(int i=0;i<str.length();i++){
+                for(char ch='a';ch<='z';ch++){
+                    string tmp=str;
+                    tmp[i]=ch;
+                    if(tmp==str) continue;
+                    if(m.find(tmp)!=m.end()){
+                        if(vis[1-qNo][m[tmp]]){ //在另一个队列中出现，说明找到路径
+                            matching_qNo=qNo;
+                            matching_idx=m[tmp];
+                            matching_q_idx=node.q_idx;
+                            return true;
+                        }
+                        if(!vis[qNo][m[tmp]]){
+                            mQueue[qNo][qTail[qNo]]=Node(m[tmp],node.q_idx, qTail[qNo]);
+                            vis[qNo][m[tmp]]=true;
+                            qTail[qNo]++;
+                        }   
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    vector<string> path(vector<string>& wordList, int qNo, int q_idx){
+        vector<string> res;
+        while(q_idx!=-1){
+            string str=wordList[mQueue[qNo][q_idx].idx];
+            res.push_back(str);
+            q_idx=mQueue[qNo][q_idx].father;
+        }
+        return res;
+    }
+    vector<string> findLadders(string beginWord, string endWord, vector<string>& wordList) {     
+        wordList.push_back(beginWord);
+        n=wordList.size();
+        for(int i=0;i<n;i++) m[wordList[i]]=i;
+        if(m.find(endWord)==m.end()) return {};
+        bool isMatch=DBFS(beginWord, endWord, wordList);
+        if(!isMatch) return {};
+        vector<string> res1=path(wordList, matching_qNo, matching_q_idx);
+
+        for(int i=qHead[1-matching_qNo];i<=qTail[1-matching_qNo];i++){
+            Node node=mQueue[1-matching_qNo][i];
+            if(node.idx==matching_idx){
+                matching_q_idx=i;
+            }
+        }
+        vector<string> res2=path(wordList, 1-matching_qNo, matching_q_idx);
+        vector<string> result;
+        if(matching_qNo==0){
+            reverse(res1.begin(), res1.end());
+            for(string x:res1) result.push_back(x);
+            for(string x:res2) result.push_back(x);
+        }else{
+            reverse(res2.begin(), res2.end());
+            for(string x:res2) result.push_back(x);
+            for(string x:res1) result.push_back(x);
+        }
+        return result;
+    }
+};
+```
+## 面试题 17.07. 婴儿名字
+**Description**
+每年，政府都会公布一万个最常见的婴儿名字和它们出现的频率，也就是同名婴儿的数量。有些名字有多种拼法，例如，John 和 Jon 本质上是相同的名字，但被当成了两个名字公布出来。给定两个列表，一个是名字及对应的频率，另一个是本质相同的名字对。设计一个算法打印出每个真实名字的实际频率。注意，如果 John 和 Jon 是相同的，并且 Jon 和 Johnny 相同，则 John 与 Johnny 也相同，即它们有传递和对称性。
+在结果列表中，选择字典序最小的名字作为真实名字。
+**Example**
+示例：
+输入：names = ["John(15)","Jon(12)","Chris(13)","Kris(4)","Christopher(19)"], synonyms = ["(Jon,John)","(John,Johnny)","(Chris,Kris)","(Chris,Christopher)"]
+输出：["John(27)","Chris(36)"]
+提示：
+names.length <= 100000
+**Program**
+```cpp
+class Solution {
+public:
+    vector<string> resName;
+    vector<int> father;
+    unordered_map<string, int> sToc,sToi;
+    vector<int> result;
+    int findFather(int x){
+        if(father[x]!=x){
+            father[x]=findFather(father[x]);
+        }
+        return father[x];
+    }
+    void unionSet(int x,int y){
+        int fa=findFather(x);
+        int fb=findFather(y);
+        if(fa!=fb){
+            father[fa]=fb;
+        }
+    }
+    pair<string, int> processName(string name){
+        int left=name.find('(');
+        string res=name.substr(0,left);
+        int right=name.find(')');
+        string num=name.substr(left+1,right-left-1);
+        //cout<<res<<" "<<num<<endl;
+        int count=0;
+        for(int i=0;i<num.length();i++){
+            count=count*10+num[i]-'0';
+        }
+        return {res, count};
+    }
+    pair<string,string> processSynonym(string synonym){
+        int idx=synonym.find(',');
+        string name1=synonym.substr(1,idx-1);
+        string name2=synonym.substr(idx+1, synonym.length()-1-idx-1);
+        //cout<<name1<<" "<<name2<<endl;
+        return {name1,name2};
+    }
+    static bool cmp(pair<string, int> a, pair<string,int> b){
+        return a.second<b.second;
+    }
+    string processResult(string name, int count){
+        string res=name+'(';
+        string num;
+        vector<int>vec;
+        while(count!=0){
+            vec.push_back(count%10);
+            count/=10;
+        }
+        reverse(vec.begin(), vec.end());
+        for(int i=0;i<vec.size();i++){
+            num+=vec[i]+'0';
+        }
+        num+=')';
+        return res+num;
+    }
+    vector<string> trulyMostPopular(vector<string>& names, vector<string>& synonyms) {
+        int n=names.size();
+        father.resize(n);
+        resName.resize(n, "-1");
+        result.resize(n,0);
+        for(int i=0;i<n;i++) father[i]=i;
+        for(int i=0;i<n;i++){
+            pair<string,int> res=processName(names[i]);
+            sToc[res.first]=res.second;
+            sToi[res.first]=i;
+            names[i]=res.first;
+        }
+        for(string synonym:synonyms){
+            pair<string,string> res=processSynonym(synonym);
+            if(sToi.find(res.first)==sToi.end()
+               ||sToi.find(res.second)==sToi.end()) continue;
+            unionSet(sToi[res.first], sToi[res.second]);
+        }
+        // for(int i=0;i<n;i++){
+        //     cout<<"father "<<findFather(father[i])<<endl;
+        // }
+        for(int i=0;i<n;i++){
+            int fa=findFather(sToi[names[i]]);
+            result[fa]+=sToc[names[i]];
+            if(resName[fa]=="-1") resName[fa]=names[i];
+            else if(resName[fa]>names[i]){
+                resName[fa]=names[i];
+            }
+        }
+        // for(int i=0;i<n;i++){
+        //     cout<<resName[i]<<" "<<result[i]<<endl;
+        // }
+        vector<pair<string,int>> vec;
+        for(int i=0;i<n;i++){
+            if(resName[i]!="-1"){
+                vec.push_back({resName[i], result[i]});
+            }
+        }
+        sort(vec.begin(), vec.end(), cmp);
+        vector<string> res;
+        for(int i=0;i<vec.size();i++){
+            res.push_back(processResult(vec[i].first, vec[i].second));
+        }
+        return res;
+    }
+};
+```
+```cpp
+class Solution {
+public:
+    vector<int> father;
+    unordered_map<string, int> sToi;
+    vector<int> result;
+    int findFather(int x){
+        if(father[x]!=x){
+            father[x]=findFather(father[x]);
+        }
+        return father[x];
+    }
+    void unionSet(vector<string>& names,int x,int y){
+        int fa=findFather(x);
+        int fb=findFather(y);
+        if(fa!=fb){
+            if(names[fa]<names[fb]){
+                father[fb]=fa;
+                result[fa]+=result[fb];
+            }else{
+                father[fa]=fb;
+                result[fb]+=result[fa];
+            }
+        }
+    }
+    pair<string, int> processName(string name){
+        int left=name.find('(');
+        string res=name.substr(0,left);
+        int right=name.find(')');
+        string num=name.substr(left+1,right-left-1);
+        //cout<<res<<" "<<num<<endl;
+        int count=0;
+        for(int i=0;i<num.length();i++){
+            count=count*10+num[i]-'0';
+        }
+        return {res, count};
+    }
+    pair<string,string> processSynonym(string synonym){
+        int idx=synonym.find(',');
+        string name1=synonym.substr(1,idx-1);
+        string name2=synonym.substr(idx+1, synonym.length()-1-idx-1);
+        //cout<<name1<<" "<<name2<<endl;
+        return {name1,name2};
+    }
+    string processResult(string name, int count){
+        string res=name+'(';
+        string num;
+        vector<int>vec;
+        while(count!=0){
+            vec.push_back(count%10);
+            count/=10;
+        }
+        reverse(vec.begin(), vec.end());
+        for(int i=0;i<vec.size();i++){
+            num+=vec[i]+'0';
+        }
+        num+=')';
+        return res+num;
+    }
+    vector<string> trulyMostPopular(vector<string>& names, vector<string>& synonyms) {
+        int n=names.size();
+        father.resize(n);
+        result.resize(n,0);
+        for(int i=0;i<n;i++) father[i]=i;
+        for(int i=0;i<n;i++){
+            pair<string,int> res=processName(names[i]);
+            sToi[res.first]=i;
+            names[i]=res.first;
+            result[i]=res.second;
+        }
+        for(string synonym:synonyms){
+            pair<string,string> res=processSynonym(synonym);
+            if(sToi.find(res.first)==sToi.end()
+               ||sToi.find(res.second)==sToi.end()) continue;
+            unionSet(names, sToi[res.first], sToi[res.second]);
+        }
+        vector<string> res;
+        for(int i=0;i<n;i++){
+            if(father[i]!=i) continue;
+            res.push_back(processResult(names[i], result[i]));
+        }
+
         return res;
     }
 };
