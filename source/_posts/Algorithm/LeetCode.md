@@ -200,6 +200,7 @@ toc: true
 |1311. 获取你好友已观看的视频|Medium|广搜|
 |1318. 或运算的最小翻转次数|Medium|位运算|
 |1319. 连通网络的操作次数|Medium|并查集|
+|1391. 检查网格中是否存在有效路径|Medium|广搜|
 |面试题 04.03. 特定深度节点链表|Medium|广搜+链表|
 |面试题32 - I. 从上到下打印二叉树 II|Medium|广搜|
 |面试题32 - II. 从上到下打印二叉树 II|Easy|广搜|
@@ -12999,6 +13000,145 @@ public:
         }
 
         return res;
+    }
+};
+```
+## 1391. 检查网格中是否存在有效路径
+**Description**
+给你一个 m x n 的网格 grid。网格里的每个单元都代表一条街道。grid[i][j] 的街道可以是：
+1 表示连接左单元格和右单元格的街道。
+2 表示连接上单元格和下单元格的街道。
+3 表示连接左单元格和下单元格的街道。
+4 表示连接右单元格和下单元格的街道。
+5 表示连接左单元格和上单元格的街道。
+6 表示连接右单元格和上单元格的街道。
+你最开始从左上角的单元格 (0,0) 开始出发，网格中的「有效路径」是指从左上方的单元格 (0,0) 开始、一直到右下方的 (m-1,n-1) 结束的路径。该路径必须只沿着街道走。
+注意：你不能变更街道。
+如果网格中存在有效的路径，则返回 true，否则返回 false 。
+**Example**
+示例 1：
+输入：grid = [[2,4,3],[6,5,2]]
+输出：true
+解释：如图所示，你可以从 (0, 0) 开始，访问网格中的所有单元格并到达 (m - 1, n - 1) 。
+
+示例 2：
+输入：grid = [[1,2,1],[1,2,1]]
+输出：false
+解释：如图所示，单元格 (0, 0) 上的街道没有与任何其他单元格上的街道相连，你只会停在 (0, 0) 处。
+
+示例 3：
+输入：grid = [[1,1,2]]
+输出：false
+解释：你会停在 (0, 1)，而且无法到达 (0, 2) 。
+
+示例 4：
+输入：grid = [[1,1,1,1,1,1,3]]
+输出：true
+
+示例 5：
+输入：grid = [[2],[2],[2],[2],[2],[2],[6]]
+输出：true
+ 
+提示：
+m == grid.length
+n == grid[i].length
+1 <= m, n <= 300
+1 <= grid[i][j] <= 6
+**Program**
+```cpp
+class Solution {
+public:
+    const int steps[12][2]={
+        0, 1,
+        0, -1,
+        -1, 0,
+        1, 0,
+        1, 0,
+        0, -1,
+        1, 0,
+        0, 1,
+        0, -1,
+        -1, 0,
+        -1, 0,
+        0, 1
+    };
+    int m,n;
+    bool judge(int x, int y){
+        if(x>=0&&x<m&&y>=0&&y<n) return true;
+        return false;
+    }
+    bool hasValidPath(vector<vector<int>>& grid) {
+        m=grid.size();
+        n=grid[0].size();
+        queue<pair<pair<int,int>, int>> q;
+        q.push({{0, 0},grid[0][0]});
+        grid[0][0]=-1;
+        while(!q.empty()){
+            pair<pair<int,int>,int> now=q.front();
+            int x=now.first.first;
+            int y=now.first.second;
+            int s=now.second;
+            if(x==m-1&&y==n-1) return true;
+            q.pop();
+            for(int i=2*s-2;i<2*s;i++){
+                int new_x=x+steps[i][0];
+                int new_y=y+steps[i][1];
+                if(judge(new_x, new_y)&&grid[new_x][new_y]!=-1){
+                    if((s==1&&i==2*s-2&&
+                        (grid[new_x][new_y]==3
+                        ||grid[new_x][new_y]==5
+                        ||grid[new_x][new_y]==1))
+                      ||(s==1&&i==2*s-1&&
+                        (grid[new_x][new_y]==4
+                        ||grid[new_x][new_y]==6
+                        ||grid[new_x][new_y]==1))
+                      ||(s==2&&i==2*s-2&&
+                        (grid[new_x][new_y]==3
+                        ||grid[new_x][new_y]==4
+                        ||grid[new_x][new_y]==2))
+                      ||(s==2&&i==2*s-1&&
+                        (grid[new_x][new_y]==5
+                        ||grid[new_x][new_y]==6
+                        ||grid[new_x][new_y]==2))
+                      ||(s==3&&i==2*s-2&&
+                        (grid[new_x][new_y]==5
+                        ||grid[new_x][new_y]==6
+                        ||grid[new_x][new_y]==2))
+                      ||(s==3&&i==2*s-1&&
+                        (grid[new_x][new_y]==4
+                        ||grid[new_x][new_y]==6
+                        ||grid[new_x][new_y]==1))
+                      ||(s==4&&i==2*s-2&&
+                        (grid[new_x][new_y]==5
+                        ||grid[new_x][new_y]==6
+                        ||grid[new_x][new_y]==2))
+                      ||(s==4&&i==2*s-1&&
+                        (grid[new_x][new_y]==1
+                        ||grid[new_x][new_y]==3
+                        ||grid[new_x][new_y]==5))
+                      ||(s==5&&i==2*s-2&&
+                        (grid[new_x][new_y]==1
+                        ||grid[new_x][new_y]==4
+                        ||grid[new_x][new_y]==6))
+                      ||(s==5&&i==2*s-1&&
+                        (grid[new_x][new_y]==2
+                        ||grid[new_x][new_y]==3
+                        ||grid[new_x][new_y]==4))
+                      ||(s==6&&i==2*s-2&&
+                        (grid[new_x][new_y]==2
+                        ||grid[new_x][new_y]==3
+                        ||grid[new_x][new_y]==4))
+                      ||(s==6&&i==2*s-1&&
+                        (grid[new_x][new_y]==1
+                        ||grid[new_x][new_y]==3
+                        ||grid[new_x][new_y]==5))){
+                            q.push({{new_x, new_y}, grid[new_x][new_y]});
+                            grid[new_x][new_y]=-1;
+                    }
+                }
+            }
+        }
+        return false;
     }
 };
 ```
