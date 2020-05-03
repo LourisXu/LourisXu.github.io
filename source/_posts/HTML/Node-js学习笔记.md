@@ -400,6 +400,45 @@ I execute first
 I execute next.
 I execute last.
 ```
+#### Nimble流程控制工具实现并行
+```js
+var flow = require('nimble')
+var exec = require('child_process').exec;
+
+function downloadNodeVersion(version ,destination, callback){
+  var url = 'http://nodejs.org/dist/node-v' + version + '.tar.gz';
+  var filePath = destination + '/' + version + '.tgz';
+  exec('curl ' + url +' >' + filePath, callback);
+}
+
+flow.series([
+  function(callback){
+    flow.parallel([
+      function(callback){
+        console.log('Downloading Node v0.4.6...');
+        downloadNodeVersion('0.4.6', './tmp', callback);
+      },
+      function(callback){
+        console.log('Downloading Node v0.4.7...');
+        downloadNodeVersion('0.4.7', './tmp', callback);
+      }
+    ], callback);
+  },
+  function(callback){
+    console.log('Creating archive of downloaded files...');
+    exec(
+      'tar cvf node_distros.tar ./tmp/0.4.6.tgz ./tmp/0.4.7.tgz',
+      function(error, stdout, stderr){
+        if(error) throw error;
+        if(stderr) throw stderr;
+        console.log('All done!');
+        callback();
+      }
+    );
+  }
+])
+
+```
 ### 实现串行化流程控制
 为了演示如何实现串行化流程控制，我们准备做个小程序，让它从一个随机选择的[RSS](https://www.runoob.com/rss/rss-tutorial.html)预订
 源中获取一篇文章的标题和URL，并显示出来。
@@ -481,4 +520,288 @@ $ node random_story.js
 [ 'http://dave.smallpict.com/rss.xml' ]
 undefined
 http://scripting.com/2020/04/15.html#a201829
+```
+### 实现并行化流程控制
+```js
+var fs = require('fs');
+var completedTasks = 0;
+var tasks = [];
+var wordCounts = {};
+var filesDir = './text';
+
+function checkIfComplete(){
+  completedTasks++;
+  if(completedTasks == tasks.length){
+    for(var index in wordCounts){
+      console.log(index + ': ' + wordCounts[index]);
+    }
+  }
+}
+
+function countWordsInText(text){
+  var words = text
+    .toString()
+    .toLowerCase()
+    .split(/\W+/)
+    .sort();
+  //console.log('words', words);
+  for(var index in words){
+    var word = words[index];
+    //console.log('word', word);
+    if(word){
+      wordCounts[word] = (wordCounts[word])?wordCounts[word] + 1 : 1;
+    }
+  }
+}
+
+fs.readdir(filesDir, function(err, files){
+  if(err) throw err;
+  for(var index in files){
+    var task = (function(file){
+      return function(){
+        fs.readFile(file, function(err, text){
+          if(err) throw err;
+          countWordsInText(text);
+          checkIfComplete();
+        });
+      }
+    })(filesDir + '/' + files[index]);
+    tasks.push(task);
+  }
+  for(var task in tasks){
+    tasks[task]();
+  }
+});
+
+```
+> # 构建Node Web程序
+
+## HTTP服务器基础知识
+### HTTP请求
+```js
+var url = 'http://google.com'
+var body = '<p>Redirecting to <a href="' + url + '">' + url + '</a></p>';
+res.setHeader('Location', url);
+res.setHeader('Content-Length', body.length);
+res.setHeader('Content-Type', 'text/html');
+res.statusCode = 302;
+res.end(body);ar http = require('http');
+var server = http.createServer((req, res) => {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('Hello World\n');  //结束响应
+}).listen(3000);
+console.log('Server running at http://localhost:3000');
+```
+### 读取请求头及设定响应头
+添加和移除响应头的顺序可以随意，但一定要在调用res.write()或 res.end()之前。
+```js
+res.setHeader(filed, value);
+res.getHeader(field);
+res.removeHeader(field);
+```
+```js
+var body = 'Hello World';
+res.setHeader('Content-Length', body.length);
+res.setHeader('Content-Type', 'text/plain');
+res.end(body);
+```
+这要设定res.statusCode属性。在程序响应期间可以随时给这个属性赋值，只要是在第一次调用res.write()或res.end()之前就行。
+```js
+var url = 'http://google.com'
+var body = '<p>Redirecting to <a href="' + url + '">' + url + '</a></p>';
+res.setHeader('Location', url);
+res.setHeader('Content-Length', body.length);
+res.setHeader('Content-Type', 'text/html');
+res.statusCode = 302;
+res.end(body);
+```
+## 构建RESTful Web服务
+**HTTP谓词**
+- POST 向待办事项清单中添加事项
+- GET 显示当前事项列表、或者显示某一事项的详情
+- DELETE 从待办事项清单中移出事项
+- PUT 修改已有事项
+```js
+var http = require('http');
+var server = http.createServer(function(req, res){
+  req.setEncoding('utf8');        //对于文本格式的待办事项而言，不需要二进制数据，所以最好将流编码设定为ascii或utf8
+  req.on('data', function(chunk){ //只要读入新的数据块，就出发data事件
+    console.log('parsed', chunk); //数据块默认是个Buffer读想（字节数组）
+  });
+  req.on('end', function(){    //数据全部读完之后出发end事件
+    console.log('done parsing');
+    res.end();
+  });
+});
+```
+**POST**
+`curl -d 'buy groceries' http://localhost:3000`
+`curl -d 'buy node in action' http://localhost:3000`
+```
+OK
+OK
+```
+**GET**
+`curl http://localhost:3000`
+```
+0) buy groceries
+1) buy node in action
+```
+```
+$ node
+Welcome to Node.js v12.14.0.
+Type ".help" for more information.
+SyntaxError: missing ) after argument list
+> require('url').parse('http://localhost:3000/1?api-key=foobar')
+Url {
+  protocol: 'http:',
+  slashes: true,
+  auth: null,
+  host: 'localhost:3000',
+  port: '3000',
+  hostname: 'localhost',
+  hash: null,
+  search: '?api-key=foobar',
+  query: 'api-key=foobar',
+  pathname: '/1',
+  path: '/1?api-key=foobar',
+  href: 'http://localhost:3000/1?api-key=foobar'
+}
+```
+**DELETE**
+`curl -X DELETE http://localhost:3000/0`删除第0个元素
+```
+0) buy node in action
+```
+**PUT**
+`curl -X PUT -d 'ddd' http://localhost:3000/0`更新第0个元素
+```
+0) ddd
+```
+```js
+var http = require('http');
+var url = require('url');
+var items = [];
+
+var server = http.createServer(function(req, res){
+  switch(req.method){
+    case 'POST':{
+      var item = '';
+      req.setEncoding('utf8');
+      req.on('data', function(chunk){
+        item += chunk;
+      });
+      req.on('end', function(){
+        items.push(item);
+        res.end('\nOK\n');
+      });
+      break;
+    }
+    case 'GET':{
+      // items.forEach(function(item, i){
+      //   res.write('\n' + i + ')' + item + '\n');
+      // });
+      // res.end();
+      var body = items.map(function(item, i){
+        return i + ')' + item;
+      }).join('\n');
+      body = '\n' + body;
+      res.setHeader('Content-Length', Buffer.byteLength(body));
+      res.setHeader('Content-Type', 'text/plain; charset="utf-8"');
+      res.end(body);
+      break;
+    }
+    case 'DELETE':{
+      var path = url.parse(req.url).pathname;
+      var i = parseInt(path.slice(1), 10);
+
+      if(isNaN(i)){
+        res.statusCode = 400;
+        res.end('\nInvalid item id');
+      }else if(!items[i]){
+        res.statusCode = 404;
+        res.end('\nItem not found');
+      }else{
+        items.splice(i, 1);
+        res.end('\nOK\n');
+      }
+      break;
+    }
+    case 'PUT':{
+      var path = url.parse(req.url).pathname;
+      var i = parseInt(path.slice(1), 10);
+
+      if(isNaN(i)){
+        res.statusCode = 400;
+        res.end('\nInvalid item id');
+      }else if(!items[i]){
+        res.statusCode = 404;
+        res.end('\nItem not found');
+      }else{
+        var item = '';
+        req.setEncoding('utf8');
+        req.on('data', function(chunk){
+          item += chunk;
+        });
+        req.on('end', function(){
+          items.push(item);
+          items[i] = item;
+          res.end('\nOK\n');
+        });
+      }
+      break;
+    }
+  }
+});
+server.listen(3000);
+
+```
+## 提供静态文件服务
+- `__dirname` 在Node中是一个神奇的变量，它的值是该文件所在目录的路径。`__dirname`的神奇之处就在于，它在同一个程序中可以有不同的值，如果你有分散在不同目录中的文件的话。在这个例子中，服务器会将这个脚本所在的目录作为静态文件的根目录，但实际上你可以将根目录配置为任意的目录路径。
+- 下一步是得到URL的pathname，以确定被请求文件的路径。如果URL的pathname是`/index.html`，并且你的根目录是`/var/www/example.com/public`，用path模块的.join()方法把这些联接起来就能得到绝对路径/`var/www/example.com/public/index.html`。
+- 因为传输的文件是静态的，所以我们可以用stat()系统调用获取文件的相关信息，比如修改时间、字节数等。在提供条件式GET支持时，这些信息特别重要，浏览器可以发起请求检查它的缓存是否过期了。
+- **fs.stat()实现先发之人的错误处理**：以下代码调用了fs.stat()用于得到文件的相关信息，比如它的大小，或者得到错误码。如果文件不存在，`fs.stat()`会在`err.code`中放入`ENOENT`作为响应，然后你可以返回错误码404，向客户端表明文件未找到。如果fs.stat()返回了其他错误码，你可以返回通用的错误码500。
+`curl http://localhost:3000/index.html`
+```js
+var http = require('http');
+var parse = require('url').parse;
+var join = require('path').join;
+var fs = require('fs');
+
+var root = __dirname;    //本代码文件所在路径
+
+var server = http.createServer(function(req, res){
+  var url = parse(req.url);
+  var path = join(root, url.pathname);  //联结完整静态文件路径
+
+  fs.stat(path, function(err, stat){
+    if(err){
+      if('ENOENT' == err.code){
+        res.statusCode = 404;
+        res.end('Not Found');
+      }else{
+        res.statusCode = 500;
+        res.end('Internal Server Error');
+      }else{
+        res.setHeader('Content-Length', stat.size);
+        var stream = fs.createReadStream(path);
+        // stream.on('data', function(chunk){
+        //   res.write(chunk); //将文件数据写到响应中
+        // });
+        // stream.on('end', function(){
+        //   res.end();
+        // });
+        stream.pipe(res);  //res.end()会在stream.pipe()内部调用
+        stream.on('error', function(err){  //访问不存在或不允许访问的文件或其他与文件I/O有关的错误
+          res.statusCode = 500;
+          res.end('Internal Server Error');
+        });
+      }
+    }
+  });
+
+});
+
+server.listen(3000);
+
 ```

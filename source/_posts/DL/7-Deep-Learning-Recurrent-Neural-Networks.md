@@ -2460,9 +2460,7 @@ num_hiddens = 256
 num_steps = 35
 # rnn_layer = rnn.RNN(num_hiddens)
 # rnn_layer.initialize()
-rnn_layers = rnn.SequentialRNNCell()
-rnn_layers.add(rnn.RNN(num_hiddens))
-rnn_layers.add(rnn.RNN(num_hiddens))
+rnn_layers = rnn.RNN(num_hiddens, num_layers=3)
 model = RNNModel(rnn_layers, vocab_size)
 model.initialize(force_reinit=True, ctx=ctx)
 
