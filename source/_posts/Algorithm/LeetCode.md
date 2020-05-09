@@ -24,6 +24,7 @@ toc: true
 |35. 搜索插入位置|Easy|二分查找|
 |38. 报数|Easy|字符串|
 |53. 最大子序和|Easy|动态规划|
+|55. 跳跃游戏|Medium|贪心|
 |58. 最后一个单词的长度|Easy|字符串|
 |62. 不同路径|Medium|动态规划|
 |面试题62. 圆圈中最后剩下的数字|Easy|数学+迭代|
@@ -151,6 +152,7 @@ toc: true
 |547. 朋友圈|Medium|并查集|
 |559. N叉树的最大深度|Easy|广搜|
 |576. 出界的路径数|Medium|动态规划|
+|621. 任务调度器|Medium|贪心|
 |638. 大礼包|Medium|动态规划|
 |646. 最长数对链|Medium|动态规划|
 |647. 回文子串|Medium|动态规划|
@@ -188,13 +190,20 @@ toc: true
 |990. 等式方程的可满足性|Medium|并查集|
 |993. 二叉树的堂兄弟节点|Easy|坐标化|
 |994. 腐烂的橘子|Medium|广搜|
+|1029. 两地调度|Easy|贪心|
+|1046. 最后一块石头的重量|Easy|贪心|
+|1053. 交换一次的先前排列|Medium|贪心|
+|1090. 受标签影响的最大值|Medium|贪心|
 |1091. 二进制矩阵中的最短路径|Medium|广搜|
+|1094. 拼车|Medium|贪心|
 |1129. 颜色交替的最短路径|Medium|广搜|
 |1131. 绝对值表达式的最大值|Medium|位运算+数学|
 |1202. 交换字符串中的元素|Medium|并查集|
 |1239. 串联字符串的最大长度|Medium|位运算+暴力|
 |1290. 二进制链表转整数|Easy|位运算|
+|1296. 划分数组为连续数字的集合|Medium|贪心+Hash+模拟|
 |1297. 子串的最大出现次数|Medium|位运算|
+|1282. 用户分组|Medium|贪心|
 |1306. 跳跃游戏 III|Medium|广搜|
 |1310. 子数组异或查询|Medium|位运算+前缀和|
 |1311. 获取你好友已观看的视频|Medium|广搜|
@@ -13139,6 +13148,498 @@ public:
             }
         }
         return false;
+    }
+};
+```
+## 1282. 用户分组
+**Description**
+有 n 位用户参加活动，他们的 ID 从 0 到 n - 1，每位用户都 恰好 属于某一用户组。给你一个长度为 n 的数组 groupSizes，其中包含每位用户所处的用户组的大小，请你返回用户分组情况（存在的用户组以及每个组中用户的 ID）。
+你可以任何顺序返回解决方案，ID 的顺序也不受限制。此外，题目给出的数据保证至少存在一种解决方案。
+**Example**
+示例 1：
+输入：groupSizes = [3,3,3,3,3,1,3]
+输出：[[5],[0,1,2],[3,4,6]]
+解释：
+其他可能的解决方案有 [[2,1,6],[5],[0,4,3]] 和 [[5],[0,6,2],[4,3,1]]。
+
+示例 2：
+输入：groupSizes = [2,1,3,3,3,2]
+输出：[[1],[0,5],[2,3,4]]
+ 
+提示：
+groupSizes.length == n
+1 <= n <= 500
+1 <= groupSizes[i] <= n
+**Program**
+粗分组后细分组
+```cpp
+class Solution {
+public:
+    vector<vector<int>> groupThePeople(vector<int>& groupSizes) {
+        unordered_map<int,vector<int>> m;
+        for(int i=0;i<groupSizes.size();i++){
+            m[groupSizes[i]].push_back(i);
+        }
+        vector<vector<int>> result;
+        for(pair<int, vector<int>> now:m){
+            int n=now.first;
+            vector<int> vec=now.second;
+            for(int j=0;j<vec.size();j+=n){
+                result.push_back(vector<int>(vec.begin()+j, vec.begin()+j+n));
+            }
+        }
+        return result;
+    }
+};
+```
+## 1029. 两地调度
+**Description**
+公司计划面试 2N 人。第 i 人飞往 A 市的费用为 costs[i][0]，飞往 B 市的费用为 costs[i][1]。
+返回将每个人都飞到某座城市的最低费用，要求每个城市都有 N 人抵达。
+**Example**
+示例：
+输入：[[10,20],[30,200],[400,50],[30,20]]
+输出：110
+解释：
+第一个人去 A 市，费用为 10。
+第二个人去 A 市，费用为 30。
+第三个人去 B 市，费用为 50。
+第四个人去 B 市，费用为 20。
+最低总费用为 10 + 30 + 50 + 20 = 110，每个城市都有一半的人在面试。
+
+提示：
+1 <= costs.length <= 100
+costs.length 为偶数
+1 <= costs[i][0], costs[i][1] <= 1000
+**Program**
+$$min_{\lbrace x_i\rbrace}\sum_{i=1}^{2N}x_i c_{i_0} + \sum_{i=1}^{2N}(1-x_i)c_{i_1},\\\\
+\implies min_{\lbrace x_i \rbrace}\sum_{i=1}^{2N}c_{i_1}+\sum_{i=1}^{2N}x_i(c_{i_0}-c_{i_1})\\\\
+s.t. \sum_{i=1}^{2N}x_i = N, x_i \in \lbrace 0,1\rbrace, i=1,2,...,2N.
+$$
+```cpp
+class Solution {
+public:
+    int twoCitySchedCost(vector<vector<int>>& costs) {
+        vector<int> vec;
+        int n=costs.size()/2;
+        int ans=0;
+        for(int i=0;i<2*n;i++){
+            ans+=costs[i][1];
+            vec.push_back(costs[i][0]-costs[i][1]);
+        }
+        sort(vec.begin(), vec.end());
+        for(int i=0;i<n;i++){
+            ans+=vec[i];
+        }
+        return ans;
+    }
+};
+```
+## 55. 跳跃游戏
+**Description**
+给定一个非负整数数组，你最初位于数组的第一个位置。
+数组中的每个元素代表你在该位置可以跳跃的最大长度。
+判断你是否能够到达最后一个位置。
+**Example**
+示例 1:
+输入: [2,3,1,1,4]
+输出: true
+解释: 我们可以先跳 1 步，从位置 0 到达 位置 1, 然后再从位置 1 跳 3 步到达最后一个位置。
+
+示例 2:
+输入: [3,2,1,0,4]
+输出: false
+解释: 无论怎样，你总会到达索引为 3 的位置。但该位置的最大跳跃长度是 0 ， 所以你永远不可能到达最后一个位置。
+**Program**
+- 如果某一个作为 起跳点 的格子可以跳跃的距离是 3，那么表示后面 3 个格子都可以作为 起跳点。
+- 可以对每一个能作为 起跳点 的格子都尝试跳一次，把 能跳到最远的距离 不断更新。
+- 如果可以一直跳到最后，就成功了。
+```cpp
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int k=0;
+        for(int i=0;i<nums.size();i++){
+            if(i>k) return false;
+            k=max(k, i+nums[i]);
+            if(k>=nums.size()-1) return true;
+        }
+        return true;
+    }
+};
+```
+## 1046. 最后一块石头的重量
+**Description**
+有一堆石头，每块石头的重量都是正整数。
+每一回合，从中选出两块 最重的 石头，然后将它们一起粉碎。假设石头的重量分别为 x 和 y，且 x <= y。那么粉碎的可能结果如下：
+如果 x == y，那么两块石头都会被完全粉碎；
+如果 x != y，那么重量为 x 的石头将会完全粉碎，而重量为 y 的石头新重量为 y-x。
+最后，最多只会剩下一块石头。返回此石头的重量。如果没有石头剩下，就返回 0。
+**Example**
+示例：
+输入：[2,7,4,1,8,1]
+输出：1
+解释：
+先选出 7 和 8，得到 1，所以数组转换为 [2,4,1,1,1]，
+再选出 2 和 4，得到 2，所以数组转换为 [2,1,1,1]，
+接着是 2 和 1，得到 1，所以数组转换为 [1,1,1]，
+最后选出 1 和 1，得到 0，最终数组转换为 [1]，这就是最后剩下那块石头的重量。
+ 
+提示：
+1 <= stones.length <= 30
+1 <= stones[i] <= 1000
+**Program**
+```cpp
+class Solution {
+public:
+    struct Cmp{
+        bool operator()(const int& a, const int& b) const{
+            return a<b;
+        }
+    };
+    int lastStoneWeight(vector<int>& stones) {
+        priority_queue<int, vector<int>, Cmp> pq(stones.begin(), stones.end());
+        while(pq.size()>1){
+            int a=pq.top(); pq.pop();
+            int b=pq.top(); pq.pop();
+            if(a!=b){
+                if(a>b) pq.push(a-b);
+                else pq.push(b-1);
+            }else if(pq.size()==0) pq.push(0);
+        }
+        int res=pq.top(); pq.pop();
+        return res;
+    }
+};
+```
+## 1296. 划分数组为连续数字的集合
+**Description**
+给你一个整数数组 nums 和一个正整数 k，请你判断是否可以把这个数组划分成一些由 k 个连续数字组成的集合。
+如果可以，请返回 True；否则，返回 False。
+**Example**
+示例 1：
+输入：nums = [1,2,3,3,4,4,5,6], k = 4
+输出：true
+解释：数组可以分成 [1,2,3,4] 和 [3,4,5,6]。
+
+示例 2：
+输入：nums = [3,2,1,2,3,4,3,4,5,9,10,11], k = 3
+输出：true
+解释：数组可以分成 [1,2,3] , [2,3,4] , [3,4,5] 和 [9,10,11]。
+
+示例 3：
+输入：nums = [3,3,2,2,1,1], k = 3
+输出：true
+
+示例 4：
+输入：nums = [1,2,3,4], k = 3
+输出：false
+解释：数组不能分成几个大小为 3 的子数组。
+ 
+提示：
+1 <= nums.length <= 10^5
+1 <= nums[i] <= 10^9
+1 <= k <= nums.length
+**Program**
+```cpp
+class Solution {
+public:
+    bool isPossibleDivide(vector<int>& nums, int k) {
+        map<int,int> m;
+        for(int i=0;i<nums.size();i++) m[nums[i]]++;
+        for(map<int,int>::iterator it=m.begin();it!=m.end();it++){
+            int num=it->first;
+            int count=it->second;
+            it->second-=count;
+            if(count>0){
+                map<int,int>::iterator tmpIt = next(it);
+                for(int i=1;i<k;i++, tmpIt++){
+                    if(tmpIt!=m.end()&&tmpIt->first==num+i&&tmpIt->second>=count){
+                        tmpIt->second-=count;
+                    }else return false;
+                }
+            }
+        }
+        return true;
+    }
+};
+```
+## 1053. 交换一次的先前排列
+**Description**
+给你一个正整数的数组 A（其中的元素不一定完全不同），请你返回可在 一次交换（交换两数字 A[i] 和 A[j] 的位置）后得到的、按字典序排列小于 A 的最大可能排列。
+如果无法这么操作，就请返回原数组。
+**Example**
+示例 1：
+输入：[3,2,1]
+输出：[3,1,2]
+解释：
+交换 2 和 1
+ 
+示例 2：
+输入：[1,1,5]
+输出：[1,1,5]
+解释：
+这已经是最小排列
+ 
+示例 3：
+输入：[1,9,4,6,7]
+输出：[1,7,4,6,9]
+解释：
+交换 9 和 7
+ 
+示例 4：
+输入：[3,1,1,3]
+输出：[1,3,1,3]
+解释：
+交换 1 和 3
+
+提示：
+1 <= A.length <= 10000
+1 <= A[i] <= 10000
+**Program**
+从前往后查找，发现数据变小时记录下来left和right，后续如果有数据变大并且不大于left，更新right即可。示意如下：
+![image](/assets/img/algorithm/1053_example.png)
+```cpp
+class Solution {
+public:
+    vector<int> prevPermOpt1(vector<int>& A) {
+        int left, right;
+        left=right=0;
+        for(int i=0;i<A.size()-1;i++){
+            if(A[i]>A[i+1]){
+                left=i;
+                right=i+1;
+            }else if(A[i]<A[i+1]&&A[i+1]<A[left]){
+                right=i+1;
+            }
+        }
+        swap(A[left], A[right]);
+        return A;
+    }
+};
+```
+## 621. 任务调度器
+**Description**
+给定一个用字符数组表示的 CPU 需要执行的任务列表。其中包含使用大写的 A - Z 字母表示的26 种不同种类的任务。任务可以以任意顺序执行，并且每个任务都可以在 1 个单位时间内执行完。CPU 在任何一个单位时间内都可以执行一个任务，或者在待命状态。
+然而，两个相同种类的任务之间必须有长度为 n 的冷却时间，因此至少有连续 n 个单位时间内 CPU 在执行不同的任务，或者在待命状态。
+你需要计算完成所有任务所需要的最短时间。
+**Example**
+示例 ：
+输入：tasks = ["A","A","A","B","B","B"], n = 2
+输出：8
+解释：A -> B -> (待命) -> A -> B -> (待命) -> A -> B.
+     在本示例中，两个相同类型任务之间必须间隔长度为 n = 2 的冷却时间，而执行一个任务只需要一个单位时间，所以中间出现了（待命）状态。
+ 
+提示：
+任务的总个数为 [1, 10000]。
+n 的取值范围为 [0, 100]。
+**Program**
+**①排序**
+数量较多的优先执行，否则后面会出现大量待命状态。
+考虑到长度为n的冷却时间，故同种任务在n+1个单位时间内只能出现一次。故每n+1单位时间安排任务队列(当然也可以每个单位时间安排满足要求的任务执行，但时间复杂度更高，且实现复杂)，需要注意任务都执行完了的最后多余的待命状态。
+```cpp
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        vector<int> vec(26, 0);
+        for(char ch:tasks) vec[ch-'A']++;
+        sort(vec.begin(), vec.end(), greater<int>());
+        int time=0;
+        int nComplete=0;
+        int nCount=tasks.size();
+        while(vec[0]>0){
+            int i=0;
+            while(i<n+1&&nComplete<nCount){
+                if(i<26&&vec[i]>0){
+                    vec[i]--;
+                    nComplete++;
+                }
+                time++;
+                i++;
+            }
+            sort(vec.begin(), vec.end(), greater<int>());
+        }
+        return time;
+    }
+};
+```
+**②桶排序**
+建立大小为n+1的桶子，个数为任务数量最多的那个任务，比如下图，等待时间n=2，A任务个数6个，我们建立6个桶子，每个容量为3：
+我们可以把一个桶子看作一轮任务
+![image](/assets/img/algorithm/621_example_1.png)
+1.先从最简单的情况看起，现在就算没有其他任务，我们完成任务A所需的时间应该是`(6-1)*3+1=16`，因为最后一个桶子，不存在等待时间。
+![image](/assets/img/algorithm/621_example_2.png)
+2.接下来我们添加些其他任务
+![image](/assets/img/algorithm/621_example_3.png)
+可以看到C其实并没有对总体时间产生影响，因为它被安排在了其他任务的冷却期间；
+而B和A数量相同，这会导致最后一个桶子中，我们需要多执行一次B任务，现在我们需要的时间是‘6-1）*3+2=17
+**前面两种情况，总结起来：总排队时间 = (桶个数 - 1) * (n + 1) + 最后一桶的任务数**
+3.当冷却时间短，任务种类很多时
+![image](/assets/img/algorithm/621_example_4.png)
+比如上图，我们刚好排满了任务，此时所需时间还是17，如果现在我还要执行两次任务F，该怎么安排呢？
+![image](/assets/img/algorithm/621_example_5.png)
+此时我们可以临时扩充某些桶子的大小，插进任务F，对比一下插入前后的任务执行情况：
+插入前：ABC | ABC | ABD | ABD | ABD |AB
+插入后：ABCF | ABCF | ABD | ABD | ABD |AB
+我们在第一个、第二个桶子里插入了任务F，不难发现无论再继续插入多少任务，我们都可以类似处理，而且新插入元素肯定满足冷却要求
+
+**继续思考一下，这种情况下其实每个任务之间都不存在空余时间，冷却时间已经被完全填满了。
+也就是说，我们执行任务所需的时间，就是任务的数量**
+```
+这样剩下就很好处理了，我们只需要算两个数：
+1.记录最大任务数量N，看一下任务数量并列最多的任务有多少个，即最后一个桶子的任务数X，计算NUM1=（N-1）*（n+1）+x
+2.NUM2=tasks.size()
+输出其中较大值即可
+因为存在空闲时间时肯定是NUM1大，不存在空闲时间时肯定是NUM2>=NUM1
+```
+```cpp
+class Solution {
+public:
+    int leastInterval(vector<char>& tasks, int n) {
+        vector<int> vec(26, 0);
+        for(char ch:tasks) vec[ch-'A']++;
+        sort(vec.begin(), vec.end(), greater<int>());
+        int time=0;
+        int nCount=tasks.size();
+        time=(vec[0]-1)*(n+1)+1;
+        for(int i=1;i<26;i++){
+            if(vec[i]==vec[0]) time++;
+            else break;
+        }
+        return max(time, nCount);
+    }
+};
+```
+## 1090. 受标签影响的最大值
+**Description**
+我们有一个项的集合，其中第 i 项的值为 values[i]，标签为 labels[i]。
+我们从这些项中选出一个子集 S，这样一来：
+|S| <= num_wanted
+对于任意的标签 L，子集 S 中标签为 L 的项的数目总满足 <= use_limit。
+返回子集 S 的最大可能的 和。
+**Example**
+示例 1：
+输入：values = [5,4,3,2,1], labels = [1,1,2,2,3], num_wanted = 3, use_limit = 1
+输出：9
+解释：选出的子集是第一项，第三项和第五项。
+
+示例 2：
+输入：values = [5,4,3,2,1], labels = [1,3,3,3,2], num_wanted = 3, use_limit = 2
+输出：12
+解释：选出的子集是第一项，第二项和第三项。
+
+示例 3：
+输入：values = [9,8,8,7,6], labels = [0,0,0,1,1], num_wanted = 3, use_limit = 1
+输出：16
+解释：选出的子集是第一项和第四项。
+
+示例 4：
+输入：values = [9,8,8,7,6], labels = [0,0,0,1,1], num_wanted = 3, use_limit = 2
+输出：24
+解释：选出的子集是第一项，第二项和第四项。
+ 
+提示：
+1 <= values.length == labels.length <= 20000
+0 <= values[i], labels[i] <= 20000
+1 <= num_wanted, use_limit <= values.length
+**Program**
+```cpp
+class Solution {
+public:
+    static bool cmp(const pair<int,int>& a, const pair<int,int>& b){
+        return a.first>b.first;
+    }
+    int largestValsFromLabels(vector<int>& values, vector<int>& labels, int num_wanted, int use_limit) {
+        vector<pair<int,int>> vec;
+        for(int i=0;i<values.size();i++) vec.push_back({values[i], labels[i]});
+        sort(vec.begin(), vec.end(), cmp);
+        unordered_map<int,int> m;
+        int nCount=0;
+        int ans=0;
+        for(int i=0;i<vec.size();i++){
+            if(nCount==num_wanted) break;
+            int value=vec[i].first;
+            int label=vec[i].second;
+            if(m[label]<use_limit){
+                ans+=value;
+                m[label]++;
+                nCount++;
+            }
+        }
+        return ans;
+    }
+};
+```
+## 1094. 拼车
+**Description**
+假设你是一位顺风车司机，车上最初有 capacity 个空座位可以用来载客。由于道路的限制，车 只能 向一个方向行驶（也就是说，不允许掉头或改变方向，你可以将其想象为一个向量）。
+这儿有一份乘客行程计划表 trips[][]，其中 trips[i] = [num_passengers, start_location, end_location] 包含了第 i 组乘客的行程信息：
+必须接送的乘客数量；
+乘客的上车地点；
+以及乘客的下车地点。
+这些给出的地点位置是从你的 初始 出发位置向前行驶到这些地点所需的距离（它们一定在你的行驶方向上）。
+
+请你根据给出的行程计划表和车子的座位数，来判断你的车是否可以顺利完成接送所用乘客的任务（当且仅当你可以在所有给定的行程中接送所有乘客时，返回 true，否则请返回 false）。
+**Example**
+示例 1：
+输入：trips = [[2,1,5],[3,3,7]], capacity = 4
+输出：false
+
+示例 2：
+输入：trips = [[2,1,5],[3,3,7]], capacity = 5
+输出：true
+
+示例 3：
+输入：trips = [[2,1,5],[3,5,7]], capacity = 3
+输出：true
+
+示例 4：
+输入：trips = [[3,2,7],[3,7,9],[8,3,9]], capacity = 11
+输出：true
+ 
+提示：
+你可以假设乘客会自觉遵守 “先下后上” 的良好素质
+trips.length <= 1000
+trips[i].length == 3
+1 <= trips[i][0] <= 100
+0 <= trips[i][1] < trips[i][2] <= 1000
+1 <= capacity <= 100000
+**Program**
+路程长度就1000，
+思路就是根据每个开始和结束重新划分trips，然后合并相等的trip。但是题中路径最长就1000，所以开数组就可以了。
+```cpp
+class Solution {
+public:
+    bool carPooling(vector<vector<int>>& trips, int capacity) {
+        vector<int> vec(1001, 0);
+        for(int i=0;i<trips.size();i++){
+            vector<int>& tmp=trips[i];
+            for(int s=tmp[1]+1;s<=tmp[2];s++){
+                vec[s]+=tmp[0];
+            }
+        }
+        for(int i=0;i<1001;i++){
+            if(vec[i]>capacity) return false;
+        }
+        return true;
+    }
+};
+```
+进一步优化，最直接的想法就是模拟每个trip上下车，但是怎么记录车容量的变化是个问题。比如一个trip上车车容减小，瞎扯车容增大，而另一个trip同理，但是两个trip可能有重叠部分，如果按照trip的起始增序排列，遍历trip，就无法做到时序的上下车过程。也就是说模拟的话，需要按时序进行每个上下车过程，但每个trip的上下车时刻不是严格不重叠，有交叉，那么如何通过遍历trips模拟该过程？**见代码，只需考虑上下车时刻车容量的变化就能够免去重叠的问题**。
+```cpp
+class Solution {
+public:
+    bool carPooling(vector<vector<int>>& trips, int capacity) {
+        vector<int> nowCapacity(1001, 0);
+        for(int i=0;i<trips.size();i++){
+            nowCapacity[trips[i][1]]-=trips[i][0];  //上车容量减小
+            nowCapacity[trips[i][2]]+=trips[i][0];  //下车容量增大
+        }
+        for(int i=0;i<1001;i++){
+            capacity+=nowCapacity[i];
+            if(capacity<0) return false;
+        }
+        return true;
     }
 };
 ```

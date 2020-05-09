@@ -782,26 +782,285 @@ var server = http.createServer(function(req, res){
       }else{
         res.statusCode = 500;
         res.end('Internal Server Error');
-      }else{
-        res.setHeader('Content-Length', stat.size);
-        var stream = fs.createReadStream(path);
-        // stream.on('data', function(chunk){
-        //   res.write(chunk); //将文件数据写到响应中
-        // });
-        // stream.on('end', function(){
-        //   res.end();
-        // });
-        stream.pipe(res);  //res.end()会在stream.pipe()内部调用
-        stream.on('error', function(err){  //访问不存在或不允许访问的文件或其他与文件I/O有关的错误
-          res.statusCode = 500;
-          res.end('Internal Server Error');
-        });
       }
+    }else{
+      res.setHeader('Content-Length', stat.size);
+      var stream = fs.createReadStream(path);
+      // stream.on('data', function(chunk){
+      //   res.write(chunk); //将文件数据写到响应中
+      // });
+      // stream.on('end', function(){
+      //   res.end();
+      // });
+      stream.pipe(res);  //res.end()会在stream.pipe()内部调用
+      stream.on('error', function(err){  //访问不存在或不允许访问的文件或其他与文件I/O有关的错误
+        res.statusCode = 500;
+        res.end('Internal Server Error');
+      });
     }
   });
 
 });
 
 server.listen(3000);
+
+```
+## 从表单中接受用户输入
+表单提交请求带的Content-Type值通常有两种：
+- application/x-www-form-urlencoded：这是HTML表单的默认值；
+- multipart/form-data：在表单中含有文件或非ASCII或二进制数据时使用.
+### 处理提交的表单域
+**QueryString**
+```
+$ node
+Welcome to Node.js v12.14.0.
+Type ".help" for more information.
+> var qs = require('querystring');
+> qs.parse('item=xxx');
+[Object: null prototype] { item: 'xxx' }
+>
+```
+```js
+var http = require('http');
+var items = [];
+var qs = require('querystring');
+var server = http.createServer(function(req, res){
+  if('/' == req.url){
+    switch(req.method){
+      case 'GET':
+        show(res);
+        break;
+      case 'POST':
+        add(req, res);
+        break;
+      default:
+        badRequest(res);
+    }
+  }else{
+      notFound(res);
+  }
+});
+server.listen(3000);
+console.log('Server listening on port 3000.');
+
+function show(res){
+  var html = '<html><head><title>Todo List</title></head><body>'
+    + '<h1>Todo List</h1>'
+    + '<ul>'
+    + items.map(function(item){
+        return '<li>' + item + '</li>';
+      }).join('')
+    + '</ul>'
+    + '<form method="post" action="/"'
+    + '<p><input type="text" name="item" /></p>'
+    + '<p><input type="submit" value="Add Item" /></p>'
+    + '</form></body></html>';
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Content-Length', Buffer.byteLength(html));
+  res.end(html);
+}
+
+function notFound(res){
+  res.statusCode = 404;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Not Found');
+}
+
+function badRequest(res){
+  res.statusCode = 400;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Bad Request');
+}
+
+function add(req, res){
+  var body = '';
+  req.setEncoding('utf8');
+  req.on('data', function(chunk){
+    body += chunk;
+  });
+  req.on('end', function(){
+    var obj = qs.parse(body);
+    items.push(obj.item);
+    show(res);
+  });
+}
+
+```
+### 用formidable处理上传的文件
+```js
+var http = require('http');
+var formidable = require('formidable');
+var server = http.createServer(function(req, res){
+  switch(req.method){
+    case 'GET':
+      show(req, res);
+      break;
+    case 'POST':
+      upload(req, res);
+      break;
+  }
+});
+server.listen(3000);
+function show(req, res){
+  var html = ''
+    + '<form method="post" action="/" enctype="multipart/form-data">'
+    + '<p><input type="text" name="name" /></p>'
+    + '<p><input type="file" name="file" /></p>'
+    + '<p><input type="submit" value="Upload" /></p>'
+    + '</form>';
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Content-Length', Buffer.byteLength(html));
+  res.end(html);
+}
+
+function upload(req, res){
+  if(!isFormData(req)){
+    res.statusCode = 400;
+    res.end('Bad Request: expecting multipart/form-data');
+    return;
+  }
+  var form = new formidable.IncomingForm(); //默认上传文件流到/tmp目录下
+  form.uploadDir = './dir';  //设置上传目录
+  form.keepExtensions = true; //在文件上传目录中写入文件，并保存原始文件的拓展名
+  // form.on('field', function(field, value){ //formidable收完输入域后悔发出field事件
+  //   console.log(field);
+  //   console.log(value);
+  // });
+  // form.on('file', function(name, file){ //formidable在收到文件并处理好后悔发出file事件
+  //   console.log(name);
+  //   console.log(file);
+  // });
+  // form.on('end', function(){
+  //   res.end('upload complete!');
+  // });
+  // form.parse(req);
+  form.on('progress', function(bytesReceived, bytesExpected){ //计算上传进度。
+    var percent = Math.floor(bytesReceived / bytesExpected * 100);
+    console.log('Recevied ' + percent + '%');
+  });
+  form.parse(req, function(err, fields, files){
+    console.log(fields);
+    console.log(files);
+    res.end('upload complete!');
+  });
+
+}
+
+function isFormData(req){
+  var type = req.headers['content-type'] || '';
+  return 0 == type.indexOf('multipart/form-data');
+}
+
+```
+## 用HTTPS加强程序的安全性
+- 对于电子商务网站，以及那些会涉及到敏感数据的网站来说，一般都要求能够保证跟服务器往来的数据是私密的。在标准的HTTP会话中，客户端跟服务器端用未经加密的文本交换信息。这使得HTTP通信很容易被窃听。
+- 安全的超文本传输协议（HTTPS）提供了一种保证Web会话私密性的方法。HTTPS将HTTP和TLS/SSL传输层结合到一起。用HTTPS发送的数据是经过加密的，因此更难窃听。本节会介绍一些用HTTPS加强程序安全性的基础知识。
+- 如果你想在你的Node程序里使用HTTPS，第一件事就是取得一个私钥和一份证书。私钥本质上是个“秘钥”，可以用它来解密客户端发给服务器的数据。私钥保存在服务器上的一个文件里，放在一个不可信用户无法轻易访问到的地方。本节会教你如何生成一个自签发的证书。这种SSL证书不能用在正式网站上，因为当用户访问带有不可信证书的页面时，浏览器会显示警告信息，但对于开发和测试经过加密的通信而言，它很实用。
+密匙：`openssl genrsa 1024 > key.pem`
+证书：`openssl req -x509 -new -key.pem > key-cert.pem`
+**秘钥已经生成了，把它们放到一个安全的地方。在下面的代码清单中，我们引用的秘钥跟服务器脚本放在同一个目录下，但秘钥通常都是放在别处，一般是 ~/.ssh。**
+```js
+var https = require('https');
+var fs = require('fs');
+
+var options = {
+  key: fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./key-cert.pem')
+};
+
+https.createServer(options, function(req, res){
+  res.writeHead(200);
+  res.end('Hello World\n');
+}).listen(3000);
+
+```
+> # 存储Node程序中的数据
+
+- 几乎所有的程序，不管是不是基于Web的，都需要某种类型的数据存储机制，用Node构的程序也不例外。选择合适的存储机制取决于以下五个因素：
+   存储什么数据；
+   为了保证性能，要有多快的数据读取和写入速度；
+   有多少数据；
+   要怎么查询数据；
+   数据要保存多久，对可靠性有什么要求。
+- 存储数据的方法很多，从放在服务器内存中到连接一个完备的数据库管理系统（DBMS）不
+一而足，但所有的方法都有利有弊。
+- 有些机制支持结构复杂的数据的长期持久化，并且有强大的搜索功能，但要承担昂贵的性能成本，所以有时并不是最好的选择。同样，把数据放在服务器内存中能得到最好的性能，但可靠性不强，如果程序重启，或服务器断电，数据就会丢失。
+- 所以怎么为程序选择恰当的存储机制？在Node程序开发的世界中，经常会为不同的应用场景使用不同的存储机制。本章会讨论三种不同的选择：
+   存储数据而无需安装和配置DBMS；
+   用关系型数据库存储数据，具体说就是MySQL和PostgreSQL；
+   用NoSQL数据库存储数据，具体说就是Redis、MongoDB和Mongoose。
+## 无服务器的数据存储
+### 内存存储
+- 内存存储的理想用途是存放少量经常使用的数据。用来跟踪记录最近一次重启服务器后页面
+访问次数的计数器就是这样的应用场景。比如下面这段代码，它在8888端口启动了一个服务器，并对所有请求进行计数：
+```js
+var http = require('http');
+var counter = 0;
+var server = http.createServer(function(req, res){
+    counter++;
+    res.write('I have been accessed ' + counter + ' times.');
+    res.end();
+}).listen(3000);
+
+```
+### 基于文件的存储
+- 基于文件的存储，用文件系统存放数据。开发人员经常用这种存储方式保存程序的配置信息，但你也可以用它做数据的持久化保存，这些数据在程序和服务器重启后依然有效。
+`node cli_tasks.js list|add [taskDescription]`
+```js
+var fs = require('fs');
+var path = require('path');
+var args = process.argv.splice(2); //去掉'node cli_tasks.js'，只留下参数
+var command = args.shift();        //取出第一个参数(命令)
+var taskDescription = args.join(' '); //合并剩余的参数
+var file = path.join(process.cwd(), '/.tasks'); //根据当前的工作目录解析数据库的相对路径
+
+switch(command){
+  case 'list':
+    listTasks(file);
+    break;
+  case 'add':
+    addTask(file, taskDescription);
+    break;
+  default:
+    console.log('Usage: node cli_tasks.js list|add [taskDescription]'); //其他任何参数都会显示帮助
+}
+
+function loadOrInitializeTaskArray(file, cb){
+  fs.exists(file, function(exists){ //检查.tasks文件是否已经存在
+    var tasks = [];
+    if(exists){
+      fs.readFile(file, 'utf8', function(err, data){ //从.tasks文件中读取待办事项数据
+        if(err) throw err;
+        var data = data.toString();
+        var tasks = JSON.parse(data || '[]'); //把用JSON编码的待办事项数据解析到任务数组中。
+        cb(tasks);
+      })
+    }else{
+      cb([]); //如果.tasks文件不存在，则创建空的任务数组
+    }
+  });
+}
+
+function listTasks(file){
+  loadOrInitializeTaskArray(file, function(tasks){
+    for(var i in tasks){
+      console.log(tasks[i]);
+    }
+  });
+}
+
+function storeTasks(file, tasks){
+  fs.writeFile(file, JSON.stringify(tasks), 'utf8', function(err){
+    if(err) throw err;
+    console.log('Saved.');
+  });
+}
+
+function addTask(file, taskDescription){
+  loadOrInitializeTaskArray(file, function(tasks){
+    tasks.push(taskDescription);
+    storeTasks(file, tasks);
+  });
+}
 
 ```
