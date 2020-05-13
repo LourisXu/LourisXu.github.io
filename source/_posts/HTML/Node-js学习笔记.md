@@ -1064,3 +1064,316 @@ function addTask(file, taskDescription){
 }
 
 ```
+## 关系型数据库管理系统
+### MySQL
+`npm install mysql`
+**timetrack_server.js**
+```js
+var http = require('http');
+var work = require('./lib/timetrack');
+var mysql = require('mysql');
+var qs = require('querystring');
+
+var db = mysql.createConnection({  //链接MySQL
+  host: '127.0.0.1',
+  user: 'root',
+  password: '123456',
+  database: 'timetrack'
+});
+
+var server = http.createServer(function(req, res){
+  switch (req.method) {
+    case 'POST':
+        switch (req.url) {
+          case '/':
+            work.add(db, req, res);
+            break;
+          case '/archive':
+            work.archive(db, req, res);
+            break;
+          case '/delete':
+          work.delete(db, req, res);
+        }
+      break;
+    case 'GET':
+      switch (req.url) {
+        case '/':
+          work.show(db, res);
+          break;
+        case '/archived':
+          work.showArchived(db, res);
+          break;
+      }
+      break;
+  }
+})
+
+db.query(
+  "CREATE TABLE IF NOT EXISTS work ("   //建表SQL
+  +  "id INT(10) NOT NULL AUTO_INCREMENT, "
+  +  "hours DECIMAL(5,2) DEFAULT 0, "
+  +  "date DATE, "
+  +  "archived INT(1) DEFAULT 0, "
+  +  "description LONGTEXT,"
+  +  "PRIMARY KEY(id))",
+  function(err){
+    if(err) throw err;
+    console.log('Server started...');
+    server.listen(3000, '127.0.0.1');
+  }
+);
+
+exports.sendHtml = function(res, html){   //发送HTML相应
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Content-Length', Buffer.byteLength(html));
+  res.end(html);
+};
+
+exports.parseReceivedData = function(req, cb){  //解析HTTP POST数据
+  var body = '';
+  req.setEncoding('utf8');
+  req.on('data', function(chunk){body += chunk});
+  req.on('end', function(){
+    var data = qs.parse(body);
+    cb(data);
+  });
+};
+
+exports.actionForm = function(id, path, label){  //渲染简单的表单
+  var html = '<form method="POST" action="' + path + '">' +
+    '<input type="hidden" name="id" value="' + id +'">' +
+    '<input type="submit" value="' + label +'"/>' +
+    '</form>';
+  return html;
+};
+```
+**./lib/timetrack.js**
+```js
+exports.add = function(db, req, res){
+  exports.parseReceivedData(req, function(work){  //解析HTTP POST数据
+    db.query(
+      "INSERT INTO work (hours, date, description) " +  //添加工作记录的SQL
+      " VALUES (?, ?, ?)",
+      [work.hours, work.date, work.description],  //工作记录数据
+      function(err){
+        if(err) throw err;
+        exports.show(db, res);   //给用户显示工作记录表单
+      }
+    );
+  });
+};
+
+exports.delete = function(db, req, res){
+  exports.parseReceivedData(req, function(work){  //解析HTTP POST数据
+    db.query(
+        "DELETE FROM work WHERE id=?",  //删除工作记录的SQL
+        [work.id],      //工作记录ID
+        function(err){
+          if(err) throw err;
+          exports.show(db, res);  //给用户显示工作记录清单
+        }
+    );
+  });
+};
+
+exports.archive = function(db, req, res){
+  exports.parseReceivedData(req, function(work){
+    db.query(
+      "UPDATE work SET archived=1 WHERE id=?",
+      [work.id],
+      function(err){
+        if(err) throw err;
+        exports.show(db, res);
+      }
+    );
+  });
+};
+
+exports.show = function(db, res, showArchived){
+  var query = "SELECT * FROM work " +
+    "WHERE archived=? " +
+    "ORDER BY date DESC";
+  var archiveValue = (showArchived) ? 1 : 0;
+  db.query(
+    query,
+    [archiveValue],
+    function(err, rows){
+      if(err) throw err;
+      html = (showArchived)
+        ? ''
+        : '<a href="/archived">Archived Work</a><br/>';
+      html += exports.workHitlistHtml(rows);
+      html += exports.workFormHtml();
+      exports.sendHtml(res, html);
+    }
+  );
+};
+
+exports.showArchived = function(db, res){
+  exports.show(db, res, true);
+};
+
+exports.workHitlistHtml = function(rows){
+  var html = '<table>';
+  for(var i in rows){
+    html += '<tr>';
+    html += '<td>' + rows[i].date + '</td>';
+    html += '<td>' + rows[i].hours + '</td>';
+    html += '<td>' + rows[i].description +'</td>';
+    if(!rows[i].archived){
+      html += '<td>' + exports.workArchiveForm(rows[i].id) + '</td>';
+    }
+    html += '<td>' + exports.workDeleteForm(rows[i].id) + '</td>';
+    html += '</tr>';
+  }
+  html += '</table>';
+  return html;
+};
+
+exports.workFormHtml = function(){
+  var html = '<form method="POST" action="/">' +
+    '<p>Date (YYYY-MM-DD):</br><input name="date" type="text"></p>' +
+    '<p>Hours worked:</br><input name="hours" type="text"></p>' +
+    '<p>Description</br>' +
+    '<textarea name="description"></textarea></p>' +
+    '<input type="submit" value="Add" />'+
+    '</form>';
+  return html;
+};
+
+exports.workArchiveForm = function(id){
+  return exports.actionForm(id, '/archive', 'Archive');
+};
+
+exports.workDeleteForm = function(id){
+  return exports.actionForm(id, '/delete', 'Delete');
+};
+
+```
+### PostgreSQL
+`npm install pg`
+```js
+var pg = require('pg');
+var conString = "tcp://myuser:mypassword@localhost:5432/mydatabase";
+var client = new pg.Client(conString);
+client.connect();
+
+//插入记录
+client.query(
+  'INSERT INTO users ' +
+  "(name) VALUES ('Mike')"
+);
+client.query(
+  "INSERT INTO users " +
+  "(name, age) VALUES ($1, $2)",
+  ['Mike', 39]
+);
+client.query(
+  "INSERT INTO users " +
+  "(name, age) VALUES ($1, $2)",
+  "RETURNING id",  //插入一条记录后得到它的主键值, RETURNING 后加上列名返回对应列的值
+  ['Mike', 39],
+  function(err, result){
+    if(err) throw err;
+    console.log('Insert ID is ' + result.rows[0].id);
+  }
+);
+
+//创建返回结果的查询
+var query = client.query(
+  "SELECT * FROM users WHERE age > $1",
+  [40]
+);
+query.on('row', function(row){
+  console.log(row.name);
+});
+query.end('end'm function(){
+  client.end();  //关闭数据库或
+});
+```
+## NoSQL数据库
+### Redis
+`npm install redis`
+```js
+//连接Redis服务器
+var redis = require('redis');
+var client = redis.createClient(8000, 'localhost');
+
+client.on('error', function(err){
+  console.log('Error' + err);
+});
+//操作Redis中的数据，存储和获取键/值对
+client.set('color', 'red', redis.print);  //print函数输出操作的结果，或在出错时输出错误
+client.get('color', function(err, value){
+  if(err) throw err;
+  console.log('Got: ' + value);
+});
+//用哈希表存储和获取数据
+client.hmset('camping', { //设定哈希表元素
+  'shelter': '2-person tent',
+  'cooking': 'campstove'
+}, redis.print);
+client.hget('camping', 'cooking', function(err, value){
+  if(err) throw err;
+  console.log('Will be cooking with: ' + value);
+});
+client.hkeys('camping', function(err, keys){
+  if(err) throw err;
+  keys.forEach(function(key, i){
+    console.log(' ' + key);
+  });
+});
+//用链表存储和获取数据
+client.lpush('tasks', 'Paint the bikeshed red.', redis.print);
+client.lpush('tasks', 'Paint the bikeshed green.', redis.print);
+client.lrange('tasks', 0, -1, function(err, items){  //获取参数start和end范围内的链表元素，end=-1表示到链表中最后一个元素
+  if(err) throw err;
+  items.forEach(function(item, i){
+    console.log('  ' + item);
+  });
+});
+//用集合存储和获取数据,集合无序性、唯一性
+client.sadd('ip_addresses', '204.10.37.96', redis.print);
+client.sadd('ip_addresses', '204.10.37.96', redis.print);
+client.sadd('ip_addresses', '72.32.231.8', redis.print);
+client.smembers('ip_addresses', function(err, members){
+  if(err) throw err;
+  console.log(members);
+});
+```
+**用信道传递数据**
+```js
+var net = require('net');
+var redis = require('redis');
+
+var server = net.createServer(function(socket){ //为每个连接到聊天服务器上的用户定义设置逻辑
+  var subscriber;
+  var publisher;
+
+  socket.on('connect', function(){
+    subscriber = redis.createClient();   //为用户创建预定客户端
+    subscriber.subscribe('main_chat_room'); //预定信道
+
+    subscriber.on('message', function(channel, message){  //信道收到消息后把它发给用户
+      socket.write('Channel' + channel + ': ' + message);
+    });
+    publisher = redis.createClient();  //为用户创建发布客户端
+  });
+
+  socket.on('data', function(data){
+    publisher.publish('main_chat_room', data); //用户输入消息后发布它
+  });
+
+  socket.on('end', function(){
+    subscriber.unsubscribe('main_chat_room'); //如果用户断开连接，终止客户端连接
+    subscriber.end();
+    publisher.end();
+  });
+});
+
+```
+**NODE_REDIS性能最大化**
+在你准备把使用了node_redis API的Node.js程序部署到生产环境中时，可能要考虑下是否使用Pieter Noordhuis的hiredis模块（https://github.com/pietern/hiredis-node）。这个模块会显著提升Redis的性能，因为它充分利用了官方的hiredis C语言库。如果你装了hiredis，node_redis API会自动使用hiredis替代它的JavaScript实现。
+`npm install hiredis`
+注意，因为hiredis库是用C代码编译而成的，而Node的内部API偶尔会修改，所以在升级了Node.js后，你可能要重新编译hiredis。用下面的npm命令可以重建hiredis：
+`npm rebuild hiredis`

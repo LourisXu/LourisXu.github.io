@@ -69,6 +69,7 @@ toc: true
 |129. 求根到叶子节点数字之和|Medium|二叉树遍历|
 |130. 被围绕的区域|Medium|并查集|
 |133. 克隆图|Medium|BFS+Map|
+|134. 加油站|Medium|贪心|
 |136. 只出现一次的数字|Easy|逻辑|
 |139. 单词拆分|Medium|动态规划|
 |141. 环形链表|Easy|单链表，快慢指针|
@@ -156,7 +157,9 @@ toc: true
 |638. 大礼包|Medium|动态规划|
 |646. 最长数对链|Medium|动态规划|
 |647. 回文子串|Medium|动态规划|
+|649. Dota2 参议院|Medium|模拟+贪心|
 |650. 只有两个键的键盘|Medium|深搜+剪枝/数学|
+|659. 分割数组为连续子序列|Medium|贪心|
 |673. 最长递增子序列的个数|Medium|动态规划|
 |684. 冗余连接|Medium|并查集|
 |688. “马”在棋盘上的概率|Medium|动态规划|
@@ -167,12 +170,15 @@ toc: true
 |714. 买卖股票的最佳时机含手续费|Medium|动态规划|
 |718. 最长重复子数组|Medium|动态规划|
 |721. 账户合并|Medium|并查集+Hash|
+|738. 单调递增的数字|Medium|贪心|
 |740. 删除与获得点数|Medium|动态规划|
 |743. 网络延迟时间|Medium|最短路径|
 |752. 打开转盘锁|Medium|广搜|
 |756. 金字塔转换矩阵|Medium|位运算+深搜|
 |762. 二进制表示中质数个计算置位|Easy|位运算|
+|763. 划分字母区间|Medium|贪心|
 |764. 最大加号标志|Medium|动态规划|
+|767. 重构字符串|Medium|贪心+桶排序|
 |784. 字母大小写全排列|Easy|位运算|
 |785. 判断二分图|Medium|广搜、并查集|
 |787. K 站中转内最便宜的航班|Medium|动态规划|
@@ -196,6 +202,7 @@ toc: true
 |1090. 受标签影响的最大值|Medium|贪心|
 |1091. 二进制矩阵中的最短路径|Medium|广搜|
 |1094. 拼车|Medium|贪心|
+|1111. 有效括号的嵌套深度|Medium|贪心|
 |1129. 颜色交替的最短路径|Medium|广搜|
 |1131. 绝对值表达式的最大值|Medium|位运算+数学|
 |1202. 交换字符串中的元素|Medium|并查集|
@@ -209,6 +216,8 @@ toc: true
 |1311. 获取你好友已观看的视频|Medium|广搜|
 |1318. 或运算的最小翻转次数|Medium|位运算|
 |1319. 连通网络的操作次数|Medium|并查集|
+|1338. 数组大小减半|Medium|贪心|
+|1353. 最多可以参加的会议数目|Medium|贪心|
 |1391. 检查网格中是否存在有效路径|Medium|广搜|
 |面试题 04.03. 特定深度节点链表|Medium|广搜+链表|
 |面试题32 - I. 从上到下打印二叉树 II|Medium|广搜|
@@ -13642,4 +13651,637 @@ public:
         return true;
     }
 };
+```
+## 649. Dota2 参议院
+**Description**
+Dota2 的世界里有两个阵营：Radiant(天辉)和 Dire(夜魇)
+Dota2 参议院由来自两派的参议员组成。现在参议院希望对一个 Dota2 游戏里的改变作出决定。他们以一个基于轮为过程的投票进行。在每一轮中，每一位参议员都可以行使两项权利中的一项：
+1.禁止一名参议员的权利：
+- 参议员可以让另一位参议员在这一轮和随后的几轮中丧失所有的权利。
+2.宣布胜利：
+- 如果参议员发现有权利投票的参议员都是同一个阵营的，他可以宣布胜利并决定在游戏中的有关变化。
+
+给定一个字符串代表每个参议员的阵营。字母 “R” 和 “D” 分别代表了 Radiant（天辉）和 Dire（夜魇）。然后，如果有 n 个参议员，给定字符串的大小将是 n。
+以轮为基础的过程从给定顺序的第一个参议员开始到最后一个参议员结束。这一过程将持续到投票结束。所有失去权利的参议员将在过程中被跳过。
+假设每一位参议员都足够聪明，会为自己的政党做出最好的策略，你需要预测哪一方最终会宣布胜利并在 Dota2 游戏中决定改变。输出应该是 Radiant 或 Dire。
+**Example**
+示例 1:
+输入: "RD"
+输出: "Radiant"
+解释:  第一个参议员来自  Radiant 阵营并且他可以使用第一项权利让第二个参议员失去权力，因此第二个参议员将被跳过因为他没有任何权利。然后在第二轮的时候，第一个参议员可以宣布胜利，因为他是唯一一个有投票权的人
+
+示例 2:
+输入: "RDD"
+输出: "Dire"
+解释:
+第一轮中,第一个来自 Radiant 阵营的参议员可以使用第一项权利禁止第二个参议员的权利
+第二个来自 Dire 阵营的参议员会被跳过因为他的权利被禁止
+第三个来自 Dire 阵营的参议员可以使用他的第一项权利禁止第一个参议员的权利
+因此在第二轮只剩下第三个参议员拥有投票的权利,于是他可以宣布胜利
+ 
+注意:
+给定字符串的长度在 [1, 10,000] 之间.
+**Program**
+**模拟**
+```cpp
+class Solution {
+public:
+    string predictPartyVictory(string senate) {
+        vector<bool> pass(senate.length(), false); //是否被跳过
+        int nR,nD;
+        nR=nD=0;  //剩余R/D数量
+        int nBan_R, nBan_D;
+        nBan_R=nBan_D=0;  //当前被禁止的R/D数量
+        for(char ch:senate){
+            if(ch=='R') nR++;
+            else nD++;
+        }
+        //cout<<nR<<" "<<nD<<endl;
+        //cout<<"idx: idx R D"<<endl;
+        int idx=0;
+        while(nR!=0&&nD!=0){
+            if(pass[idx]){
+                idx++;
+                if(idx==senate.length()) idx=0;
+                continue;
+            }
+            if(senate[idx]=='R'){
+                if(nBan_R>0){
+                    pass[idx]=true;
+                    nBan_R--;
+                }else{
+                    nBan_D++;
+                    nD--;
+                }
+            }else{
+                if(nBan_D>0){
+                    pass[idx]=true;
+                    nBan_D--;
+                }else{
+                    nBan_R++;
+                    nR--;
+                }
+            }
+            //cout<<"idx: "<<idx<<" "<<nR<<" "<<nD<<endl;
+            idx++;
+            if(idx==senate.length()) idx=0;
+        }
+        return (nR>0)?"Radiant":"Dire";
+    }
+};
+```
+**贪心**
+```cpp
+class Solution {
+public:
+string predictPartyVictory(string senate) {
+	bool R = true, D = true;//R,D标记senate中是否还有R,D
+	int person = 0;//标记变量person,当person>0时，表示R方可以淘汰D方；person<0时，表示D方可以淘汰R方。
+	while (R&&D)//R\D标记本轮循环中，senate是否存在R\D.（且是淘汰前的序列中）
+	{
+		R = false;
+		D = false;
+		for (int i=0;i<senate.size();i++)
+		{
+			if (senate[i] == 'R')
+			{
+				R = true;
+				if (person < 0)//D方有权淘汰R方
+					senate[i] = '0';
+				person++;//无论有没有D淘汰掉R，person都++。cause有淘汰时，D的淘汰权用掉一次，person++；没有淘汰时，R的淘汰权增加1，person++.
+			}
+			else if (senate[i] == 'D')
+			{
+				D = true;
+				if (person > 0)
+					senate[i] = '0';
+				person--;
+			}
+		}
+	}
+	return person > 0 ? "Radiant" : "Dire";
+}
+};
+```
+## 134. 加油站
+**Description**
+在一条环路上有 N 个加油站，其中第 i 个加油站有汽油 gas[i] 升。
+你有一辆油箱容量无限的的汽车，从第 i 个加油站开往第 i+1 个加油站需要消耗汽油 cost[i] 升。你从其中的一个加油站出发，开始时油箱为空。
+如果你可以绕环路行驶一周，则返回出发时加油站的编号，否则返回 -1。
+
+说明: 
+如果题目有解，该答案即为唯一答案。
+输入数组均为非空数组，且长度相同。
+输入数组中的元素均为非负数。
+**Example**
+示例 1:
+输入:
+gas  = [1,2,3,4,5]
+cost = [3,4,5,1,2]
+输出: 3
+解释:
+从 3 号加油站(索引为 3 处)出发，可获得 4 升汽油。此时油箱有 = 0 + 4 = 4 升汽油
+开往 4 号加油站，此时油箱有 4 - 1 + 5 = 8 升汽油
+开往 0 号加油站，此时油箱有 8 - 2 + 1 = 7 升汽油
+开往 1 号加油站，此时油箱有 7 - 3 + 2 = 6 升汽油
+开往 2 号加油站，此时油箱有 6 - 4 + 3 = 5 升汽油
+开往 3 号加油站，你需要消耗 5 升汽油，正好足够你返回到 3 号加油站。
+因此，3 可为起始索引。
+
+示例 2:
+输入:
+gas  = [2,3,4]
+cost = [3,4,3]
+输出: -1
+
+解释:
+你不能从 0 号或 1 号加油站出发，因为没有足够的汽油可以让你行驶到下一个加油站。
+我们从 2 号加油站出发，可以获得 4 升汽油。 此时油箱有 = 0 + 4 = 4 升汽油
+开往 0 号加油站，此时油箱有 4 - 3 + 2 = 3 升汽油
+开往 1 号加油站，此时油箱有 3 - 3 + 3 = 3 升汽油
+你无法返回 2 号加油站，因为返程需要消耗 4 升汽油，但是你的油箱只有 3 升汽油。
+因此，无论怎样，你都不可能绕环路行驶一周。
+**Program**
+很直观的思路就是gas[i]-cost[i]，求和后若大于0则有解，否则无解。
+那么如何判断出发点呢？
+用res记录从i=0开始的剩余油量，最后如果res大于0则有解，否则无解。
+若最后res大于0，这里讨论res折线有小于0的情况(全程大于0全都是解，然而题目说了只有唯一解，那么必出现过程中res小于0的情况)，那么从过程中出现的
+res最低点到最后res大于0，**说明过程中的res最低点对应的下一个索引值开始到最后能够抵消res的最大负值！**
+![image](/assets/img/algorithm/134_example_1.png)
+柱状图
+绿色：可添加的汽油 gas[i]
+橙色：消耗的汽油 cost[i]
+
+折线图：
+虚线（蓝色）：当前加油站的可用值
+实线（黑色）：从0开始的总剩余汽油量
+```cpp
+class Solution {
+public:
+    const int inf=0x3f3f3f3f;
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+        int len=gas.size();
+        int res=0;
+        int minRes=inf;
+        int minIndex=0;
+        for(int i=0;i<len;i++){
+            res+=gas[i] - cost[i];
+            if(res<minRes){
+                minRes=res;
+                minIndex=i;
+            }
+        }
+        return res>=0?(minIndex+1)%len:-1;
+    }
+};
+```
+## 659. 分割数组为连续子序列
+**Description**
+输入一个按升序排序的整数数组（可能包含重复数字），你需要将它们分割成几个子序列，其中每个子序列至少包含三个连续整数。返回你是否能做出这样的分割？
+**Example**
+示例 1：
+输入: [1,2,3,3,4,5]
+输出: True
+解释:
+你可以分割出这样两个连续子序列 :
+1, 2, 3
+3, 4, 5
+ 
+示例 2：
+输入: [1,2,3,3,4,4,5,5]
+输出: True
+解释:
+你可以分割出这样两个连续子序列 :
+1, 2, 3, 4, 5
+3, 4, 5
+ 
+示例 3：
+输入: [1,2,3,4,4,5]
+输出: False
+ 
+提示：
+输入的数组长度范围为 [1, 10000]
+**Program**
+**贪心**
+我们把 3 个或更多的连续数字称作 chain。
+我们从左到右考虑每一个数字 x，如果 x 可以被添加到当前的 chain 中，我们将 x 添加到 chain 中，这一定会比创建一个新的 chain 要更好。
+为什么呢？如果我们以 x 为起点新创建一个 chain ，这条新创建更短的链是可以接在之前的链上的，这可能会帮助我们避免创建一个从 x 开始的长度为 1 或者 2 的短链。
+算法：
+我们将每个数字的出现次数统计好，**记 tails[x] 是恰好在 x 之前结束的链的数目。**
+现在我们逐一考虑每个数字，如果有一个链恰好在 x 之前结束，我们将 x 加入此链中。否则，如果我们可以新建立一条链就新建。
+```cpp
+class Solution {
+public:
+    bool isPossible(vector<int>& nums) {
+        unordered_map<int,int> m, tail;
+        for(int x:nums)m[x]++;
+        for(int x:nums){
+            if(m[x]==0) continue;
+            else if(tail[x]>0){   //之前有链，x加在其之后
+                m[x]--;
+                tail[x]--;
+                tail[x+1]++;
+            }else if(m[x+1]>0&&m[x+2]>0){ //之前没链，重新新建一条链。
+                m[x]--;
+                m[x+1]--;
+                m[x+2]--;
+                tail[x+3]++;
+            }else return false;
+        }
+        return true;
+    }
+};
+```
+## 1111. 有效括号的嵌套深度
+**Description**
+有效括号字符串 定义：对于每个左括号，都能找到与之对应的右括号，反之亦然。详情参见题末「有效括号字符串」部分。
+嵌套深度 depth 定义：即有效括号字符串嵌套的层数，depth(A) 表示有效括号字符串 A 的嵌套深度。详情参见题末「嵌套深度」部分。
+![image](/assets/img/algorithm/1111_example_1.png)
+给你一个「有效括号字符串」 seq，请你将其分成两个不相交的有效括号字符串，A 和 B，并使这两个字符串的深度最小。
+
+不相交：每个 seq[i] 只能分给 A 和 B 二者中的一个，不能既属于 A 也属于 B 。
+A 或 B 中的元素在原字符串中可以不连续。
+A.length + B.length = seq.length
+深度最小：max(depth(A), depth(B)) 的可能取值最小。 
+划分方案用一个长度为 seq.length 的答案数组 answer 表示，编码规则如下：
+
+answer[i] = 0，seq[i] 分给 A 。
+answer[i] = 1，seq[i] 分给 B 。
+如果存在多个满足要求的答案，只需返回其中任意 一个 即可。
+
+**Example**
+示例 1：
+输入：seq = "(()())"
+输出：[0,1,1,1,1,0]
+
+示例 2：
+输入：seq = "()(())()"
+输出：[0,0,0,1,1,0,1,1]
+解释：本示例答案不唯一。
+按此输出 A = "()()", B = "()()", max(depth(A), depth(B)) = 1，它们的深度最小。
+像 [1,1,1,0,0,1,1,1]，也是正确结果，其中 A = "()()()", B = "()", max(depth(A), depth(B)) = 1 。
+ 
+提示：
+$1 < seq.size <= 10000$
+
+**有效括号字符串：**
+仅由 "(" 和 ")" 构成的字符串，对于每个左括号，都能找到与之对应的右括号，反之亦然。
+下述几种情况同样属于有效括号字符串：
+  1. 空字符串
+  2. 连接，可以记作 AB（A 与 B 连接），其中 A 和 B 都是有效括号字符串
+  3. 嵌套，可以记作 (A)，其中 A 是有效括号字符串
+**嵌套深度：**
+类似地，我们可以定义任意有效括号字符串 s 的 嵌套深度 depth(S)：
+  1. s 为空时，depth("") = 0
+  2. s 为 A 与 B 连接时，depth(A + B) = max(depth(A), depth(B))，其中 A 和 B 都是有效括号字符串
+  3. s 为嵌套情况，depth("(" + A + ")") = 1 + depth(A)，其中 A 是有效括号字符串
+例如：""，"()()"，和 "()(()())" 都是有效括号字符串，嵌套深度分别为 0，1，2，而 ")(" 和 "(()" 都不是有效括号字符串。
+**Program**
+思路：栈 创建一个栈，遍历seq，遇到'('入栈，遇到')'弹出。在这样的规则下，'('入栈时栈的深度就对应着当前括号对的嵌套深度深度。将奇数深度的括号分成一组，将偶数深度的括号分成一组，分别用0和1标记即可。
+例如：
+括号序列   ( ( ) ( ( ) ) ( ) )
+下标编号   0 1 2 3 4 5 6 7 8 9
+嵌套深度   1 2 2 2 3 3 2 2 2 1
+将奇数深度的分一组用0标记，将偶数深度的括号分一组用1标记。
+标记结果   0 1 1 1 0 0 1 1 1 0
+
+```cpp
+class Solution {
+public:
+    vector<int> maxDepthAfterSplit(string seq) {
+        int n=seq.length();
+        vector<int> res(n);
+        int depth=0;
+        for(int i=0;i<n;i++){
+            if(seq[i]=='('){  //入栈
+                res[i]=++depth%2;
+            }else{    //出栈
+                res[i]=depth--%2;
+            }
+        }
+        return res;
+    }
+};
+```
+## 1338. 数组大小减半
+**Description**
+给你一个整数数组 arr。你可以从中选出一个整数集合，并删除这些整数在数组中的每次出现。
+返回 至少 能删除数组中的一半整数的整数集合的最小大小。
+**Example**
+示例 1：
+输入：arr = [3,3,3,3,5,5,5,2,2,7]
+输出：2
+解释：选择 {3,7} 使得结果数组为 [5,5,5,2,2]、长度为 5（原数组长度的一半）。
+大小为 2 的可行集合有 {3,5},{3,2},{5,2}。
+选择 {2,7} 是不可行的，它的结果数组为 [3,3,3,3,5,5,5]，新数组长度大于原数组的二分之一。
+
+示例 2：
+输入：arr = [7,7,7,7,7,7]
+输出：1
+解释：我们只能选择集合 {7}，结果数组为空。
+
+示例 3：
+输入：arr = [1,9]
+输出：1
+
+示例 4：
+输入：arr = [1000,1000,3,7]
+输出：1
+
+示例 5：
+输入：arr = [1,2,3,4,5,6,7,8,9,10]
+输出：5
+ 
+
+提示：
+1 <= arr.length <= 10^5
+arr.length 为偶数
+1 <= arr[i] <= 10^5
+**Program**
+```cpp
+class Solution {
+public:
+    int minSetSize(vector<int>& arr) {
+        unordered_map<int,int> m;
+        int n=arr.size();
+        for(int i=0;i<n;i++) m[arr[i]]++;
+        vector<int> vec;
+        for(pair<int,int> x:m) vec.push_back(x.second);
+        sort(vec.begin(), vec.end(), greater<int>());
+        int ans=0;
+        int count=0;
+        for(int i=0;i<vec.size();i++){
+            ans+=vec[i];
+            count++;
+            if(ans>=n/2) break;
+        }
+        return count;
+    }
+};
+```
+## 738. 单调递增的数字
+**Description**
+给定一个非负整数 N，找出小于或等于 N 的最大的整数，同时这个整数需要满足其各个位数上的数字是单调递增。
+（当且仅当每个相邻位数上的数字 x 和 y 满足 x <= y 时，我们称这个整数是单调递增的。）
+**Example**
+示例 1:
+输入: N = 10
+输出: 9
+
+示例 2:
+输入: N = 1234
+输出: 1234
+
+示例 3:
+输入: N = 332
+输出: 299
+说明: N 是在 [0, 10^9] 范围内的一个整数。
+**Program**
+贪心算法，遍历数字每一位，当前位的数字比下一位的数字大，则将该位数字减小1，然后之后位的数字全部变为9。
+例如，如果 n=432543654，我们总是可以得到至少 39999999 的答案。
+第一个下降点减1，后面全变9，而返回至下降点前一个点继续，因为存在相等连续相邻的数字。
+```cpp
+class Solution {
+public:
+    int monotoneIncreasingDigits(int N) {
+        deque<int> dq;
+        while(N!=0){
+            dq.push_front(N%10);
+            N/=10;
+        }
+        for(int i=0;i<dq.size()-1;i++){
+            if(dq[i]>dq[i+1]){
+                dq[i]--;
+                for(int j=i+1;j<dq.size();j++) dq[j]=9;
+                if(i!=0) i-=2;
+                else i=-1;
+            }
+        }
+        int res=0;
+        for(int i=0;i<dq.size();i++) res=res*10+dq[i];
+        return res;
+    }
+};
+```
+## 1353. 最多可以参加的会议数目
+**Description**
+给你一个数组 events，其中 events[i] = [startDayi, endDayi] ，表示会议 i 开始于 startDayi ，结束于 endDayi 。
+你可以在满足 startDayi <= d <= endDayi 中的任意一天 d 参加会议 i 。注意，一天只能参加一个会议。
+请你返回你可以参加的 最大 会议数目。
+**Example**
+示例 1：
+输入：events = [[1,2],[2,3],[3,4]]
+输出：3
+解释：你可以参加所有的三个会议。
+![image](/assets/img/algorithm/1353_example_1.png)
+安排会议的一种方案如上图。
+第 1 天参加第一个会议。
+第 2 天参加第二个会议。
+第 3 天参加第三个会议。
+
+示例 2：
+输入：events= [[1,2],[2,3],[3,4],[1,2]]
+输出：4
+
+示例 3：
+输入：events = [[1,4],[4,4],[2,2],[3,4],[1,1]]
+输出：4
+
+示例 4：
+输入：events = [[1,100000]]
+输出：1
+
+示例 5：
+输入：events = [[1,1],[1,2],[1,3],[1,4],[1,5],[1,6],[1,7]]
+输出：7
+ 
+提示：
+1 <= events.length <= 10^5
+events[i].length == 2
+1 <= events[i][0] <= events[i][1] <= 10^5
+
+**Program**
+贪心的思想，对于第 i 天，如果有若干的会议都可以在这一天开，那么我们肯定是让 endDay 小的会议先在这一天开才会使答案最优，因为 endDay 大的会议可选择的空间是比 endDay 小的多的，所以在满足条件的会议需要让 endDay 小的先开。
+
+我们开两个数组和一个 setset：
+
+in[i]：表示在第 i 天开始的会议
+out[i]：表示在第 i 天有些会议结束了，注意endDay结束的会议，endDay+1才会被撤出
+multiset<in> s:记录当前第i天有哪些会议开始。
+
+```cpp
+class Solution {
+public:
+    const int N=100002;
+    int maxEvents(vector<vector<int>>& events) {
+        vector<int> in[N], out[N];  //记录第i天开始和结束的所有会议
+        multiset<int> multi_s;
+        int mx=0;
+        for(int i=0;i<events.size();i++){
+            int start=events[i][0], end=events[i][1];
+            in[start].push_back(i);    //第start天召开第i个会议
+            out[end+1].push_back(i);   //第end+1天第i个会议失效
+            mx=max(mx, end);
+        }
+        int ans=0;
+        for(int i=1;i<=mx;i++){
+            for(int x:in[i]) multi_s.insert(events[x][1]);  //加入第i天的所有会议
+            for(int x:out[i]){   //撤销所有第i天失效的会议
+                multiset<int>::iterator it=multi_s.find(events[x][1]);
+                if(it!=multi_s.end()) multi_s.erase(it);
+            }
+            if(!multi_s.empty()){  //参加endDay最早的会议
+                multi_s.erase(multi_s.begin());
+                ans++;
+            }
+        }
+        return ans;
+    }
+};
+```
+## 763. 划分字母区间
+**Description**
+字符串 S 由小写字母组成。我们要把这个字符串划分为尽可能多的片段，同一个字母只会出现在其中的一个片段。返回一个表示每个字符串片段的长度的列表。
+**Example**
+示例 1:
+输入: S = "ababcbacadefegdehijhklij"
+输出: [9,7,8]
+解释:
+划分结果为 "ababcbaca", "defegde", "hijhklij"。
+每个字母最多出现在一个片段中。
+像 "ababcbacadefegde", "hijhklij" 的划分是错误的，因为划分的片段数较少。
+
+注意:
+S的长度在[1, 500]之间。
+S只包含小写字母'a'到'z'。
+**Program**
+策略就是不断地选择从最左边起最小的区间。可以从第一个字母开始分析，假设第一个字母是 'a'，那么第一个区间一定包含最后一次出现的 'a'。但第一个出现的 'a' 和最后一个出现的 'a' 之间可能还有其他字母，这些字母会让区间变大。举个例子，在 "abccaddbeffe" 字符串中，第一个最小的区间是 "abccaddb"。
+通过以上的分析，我们可以得出一个算法：对于遇到的每一个字母，去找这个字母最后一次出现的位置，用来更新当前的最小区间
+
+很容易发现必须记录每个字母的最大区间，而最后需要合并那些区间有重叠的字母来获得最大区间，因为有重叠的两个字母对应的区间可能会更新成更大的区间。
+```cpp
+class Solution {
+public:
+    vector<int> partitionLabels(string S) {
+        unordered_map<int,int> m;
+        for(int i=0;i<S.length();i++) m[S[i]-'a']=i;
+        int start, end;
+        start=end=0;
+        vector<int> res;
+        for(int i=0;i<S.length();i++){
+            end=max(end, m[S[i]-'a']);   //更新区间右值
+            if(i==end){ //获得最大区间
+                res.push_back(end-start+1);
+                start=i+1;
+            }
+        }
+        return res;
+    }
+};
+```
+## 767. 重构字符串
+**Description**
+给定一个字符串S，检查是否能重新排布其中的字母，使得两相邻的字符不同。
+若可行，输出任意可行的结果。若不可行，返回空字符串。
+**Example**
+示例 1:
+输入: S = "aab"
+输出: "aba"
+
+示例 2:
+输入: S = "aaab"
+输出: ""
+注意:
+S 只包含小写字母并且长度在[1, 500]区间内。
+**Program**
+**桶排序：**
+1.根据每种字母出现的次数高低排序，先排次数高的字母
+2.优先加入长度短的队列
+```cpp
+class Solution {
+public:
+    struct Cmp{
+        bool operator()(const pair<int, char>& a,const pair<int,char>& b) const{
+            return a.first<b.first;
+        }
+    };
+    struct ICMP{
+        bool operator()(const pair<int, int>& a,const pair<int,int>& b) const{
+            return a.second>b.second;
+        }
+    };
+    string reorganizeString(string S) {
+        priority_queue<pair<int, char>, vector<pair<int,char>>, Cmp> pq;
+        unordered_map<char,int> m;
+        for(char ch:S){
+            m[ch]++;
+            if(m[ch]>(S.size()+1)/2) return "";
+        }
+        for(auto x:m) pq.push({x.second, x.first});
+        pair<int, char> top=pq.top();pq.pop();
+        int len=top.first;
+        vector<char> series[len];
+        for(int i=0;i<len;i++) series[i].push_back(top.second);
+        while(!pq.empty()){
+            top=pq.top();pq.pop();
+            priority_queue<pair<int,int>, vector<pair<int,int>>, ICMP> tmpPQ;
+            for(int i=0;i<len;i++) tmpPQ.push({i, series[i].size()});
+            while(!tmpPQ.empty()){
+                pair<int,int> now=tmpPQ.top();tmpPQ.pop();
+                int idx=now.first;
+                if(series[idx][series[idx].size()-1]!=top.second){
+                    series[idx].push_back(top.second);
+                    top.first--;
+                    if(top.first>0) pq.push({top.first, top.second});
+                    break;
+                }
+            }
+        }
+        string str="";
+        for(int i=0;i<len;i++){
+            for(int j=0;j<series[i].size();j++){
+                str+=series[i][j];
+            }
+        }
+        for(int i=0;i<str.length()-1;i++){
+            if(str[i]==str[i+1]) return "";
+        }
+        return str;
+    }
+};
+```
+**技巧**
+隔位排列。
+```cpp
+class Solution {
+public:
+    string reorganizeString(string S) {
+      map<char, int> maps;
+      for(auto c : S){
+        maps[c]++;
+        if(maps[c] > (S.size() + 1) / 2)
+          return "";
+      }
+      priority_queue<pair<int, char>, vector<pair<int, char>>> q;
+      for(auto m : maps){
+        q.push({m.second, m.first});
+      }
+
+      string res = S;
+      int i = 0;
+      while(!q.empty()){
+        char c = q.top().second;
+        int cnt = q.top().first;
+        q.pop();
+        while(cnt--){
+          i = i >= S.size() ? 1 : i;
+          res[i] = c;
+          i = i + 2;
+        }
+      }
+
+      return res;
+    }
+};
+
 ```
