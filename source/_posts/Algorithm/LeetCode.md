@@ -110,6 +110,7 @@ toc: true
 |279. 完全平方数|Medium|动态规划|
 |303. 区域和检索 - 数组不可变|Easy|动态规划|
 |304. 二维区域和检索 - 矩阵不可变|Medium|动态规划|
+|306. 累加数|Medium|DFS|
 |307. 区域和检索 - 数组可修改|Medium|树状数组|
 |309. 最佳买卖股票时机含冷冻期|Medium|动态规划|
 |310. 最小高度树|Medium|拓扑排序变体|
@@ -186,7 +187,11 @@ toc: true
 |801. 使序列递增的最小交换次数|Medium|动态规划|
 |808. 分汤|Medium|动态规划|
 |820. 单词的压缩编码|Medium|后缀+字典树|
+|842. 将数组拆分成斐波那契序列|Medium|DFS|
+|860. 柠檬水找零|Easy|贪心|
+|861. 翻转矩阵后的得分|Medium|贪心|
 |863. 二叉树中所有距离为 K 的结点|Medium|坐标化|
+|870. 优势洗牌|Medium|贪心|
 |898. 子数组按位或操作|Medium|位运算+unordered_set|
 |909. 蛇梯棋|Medium|广搜|
 |914. 卡牌分组|Easy|最大公约数|
@@ -206,6 +211,7 @@ toc: true
 |1129. 颜色交替的最短路径|Medium|广搜|
 |1131. 绝对值表达式的最大值|Medium|位运算+数学|
 |1202. 交换字符串中的元素|Medium|并查集|
+|1217. 玩筹码|Medium|贪心|
 |1239. 串联字符串的最大长度|Medium|位运算+暴力|
 |1290. 二进制链表转整数|Easy|位运算|
 |1296. 划分数组为连续数字的集合|Medium|贪心+Hash+模拟|
@@ -218,7 +224,10 @@ toc: true
 |1319. 连通网络的操作次数|Medium|并查集|
 |1338. 数组大小减半|Medium|贪心|
 |1353. 最多可以参加的会议数目|Medium|贪心|
+|1386. 安排电影院座位|Medium|贪心|
 |1391. 检查网格中是否存在有效路径|Medium|广搜|
+|1400. 构造 K 个回文字符串|Medium|贪心|
+|1414. 和为 K 的最少斐波那契数字数目|Medium|贪心|
 |面试题 04.03. 特定深度节点链表|Medium|广搜+链表|
 |面试题32 - I. 从上到下打印二叉树 II|Medium|广搜|
 |面试题32 - II. 从上到下打印二叉树 II|Easy|广搜|
@@ -14284,4 +14293,641 @@ public:
     }
 };
 
+```
+## 1217. 玩筹码
+**Description**
+数轴上放置了一些筹码，每个筹码的位置存在数组 chips 当中。
+你可以对 任何筹码 执行下面两种操作之一（不限操作次数，0 次也可以）：
+- 将第 i 个筹码向左或者右移动 2 个单位，代价为 0。
+- 将第 i 个筹码向左或者右移动 1 个单位，代价为 1。
+最开始的时候，同一位置上也可能放着两个或者更多的筹码。
+返回将所有筹码移动到同一位置（任意位置）上所需要的最小代价。
+**Example**
+示例 1：
+输入：chips = [1,2,3]
+输出：1
+解释：第二个筹码移动到位置三的代价是 1，第一个筹码移动到位置三的代价是 0，总代价为 1。
+
+示例 2：
+输入：chips = [2,2,2,3,3]
+输出：2
+解释：第四和第五个筹码移动到位置二的代价都是 1，所以最小总代价为 2。
+ 
+提示：
+1 <= chips.length <= 100
+1 <= chips[i] <= 10^9
+**Program**
+```cpp
+class Solution {
+public:
+    int minCostToMoveChips(vector<int>& chips) {
+        int evenOrodd[2]={0};
+        for(int x:chips) evenOrodd[x%2]++;
+        return min(evenOrodd[0], evenOrodd[1]);
+    }
+};
+```
+## 306. 累加数
+**Description**
+累加数是一个字符串，组成它的数字可以形成累加序列。
+一个有效的累加序列必须至少包含 3 个数。除了最开始的两个数以外，字符串中的其他数都等于它之前两个数相加的和。
+给定一个只包含数字 '0'-'9' 的字符串，编写一个算法来判断给定输入是否是累加数。
+说明: 累加序列里的数不会以 0 开头，所以不会出现 1, 2, 03 或者 1, 02, 3 的情况。
+**Example**
+示例 1:
+输入: "112358"
+输出: true
+解释: 累加序列为: 1, 1, 2, 3, 5, 8 。1 + 1 = 2, 1 + 2 = 3, 2 + 3 = 5, 3 + 5 = 8
+
+示例 2:
+输入: "199100199"
+输出: true
+解释: 累加序列为: 1, 99, 100, 199。1 + 99 = 100, 99 + 100 = 199
+**Program**
+i,j,k分别表示三个子串的起点，先得到前两个子串str[j-i], str[k-j]，求其和的字符串str_sum：
+①如果str_sum的长度大于整个字符串或str_sum与str[str_sum.length-k]不符，返回false；
+②否则，如果str_sum的长度满足要求且str_sum与str[str_sum.length-k]相符，返回true；
+③否则，继续递归dfs(j,k,k+str_sum.leng);
+```cpp
+class Solution {
+public:
+    string add(const string& a, const string& b){
+        string res;
+        int carry=0;
+        int idx_a=a.length()-1;
+        int idx_b=b.length()-1;
+        while(idx_a>=0||idx_b>=0||carry!=0){
+            int x=idx_a>=0?a[idx_a--]-'0':0;
+            int y=idx_b>=0?b[idx_b--]-'0':0;
+            res+=(x+y+carry)%10+'0';
+            carry=(x+y+carry)/10;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+    bool dfs(const string & str, int i, int j, int k){
+        if((str[i]=='0'&&j-i>1)||(str[j]=='0'&&k-j>1)) return false; //累加序列里的数以0开头
+        string a = str.substr(i,j-i);
+        string b = str.substr(j, k-j);
+        string sum=add(a, b);
+        int n=sum.size();
+        if(k+n-1>str.length()-1||sum!=str.substr(k, n)) return false;
+        if(k+n-1==str.length()-1&&sum==str.substr(k, n)) return true;
+        return dfs(str, j, k, k+n);
+    }
+    bool isAdditiveNumber(string num) {
+        int i=0;
+        for(int j=i+1;j<num.size();j++){
+            for(int k=j+1;k<num.size();k++){
+                if(dfs(num, i, j ,k)) return true;
+            }
+        }
+        return false;
+    }
+};
+```
+## 842. 将数组拆分成斐波那契序列
+**Description**
+给定一个数字字符串 S，比如 S = "123456579"，我们可以将它分成斐波那契式的序列 [123, 456, 579]。
+形式上，斐波那契式序列是一个非负整数列表 F，且满足：
+- 0 <= F[i] <= 2^31 - 1，（也就是说，每个整数都符合 32 位有符号整数类型）；
+- F.length >= 3；
+- 对于所有的0 <= i < F.length - 2，都有 F[i] + F[i+1] = F[i+2] 成立。
+- 另外，请注意，将字符串拆分成小块时，每个块的数字一定不要以零开头，除非这个块是数字 0 本身。
+返回从 S 拆分出来的所有斐波那契式的序列块，如果不能拆分则返回 []。
+
+示例 1：
+输入："123456579"
+输出：[123,456,579]
+
+示例 2：
+输入: "11235813"
+输出: [1,1,2,3,5,8,13]
+
+示例 3：
+输入: "112358130"
+输出: []
+解释: 这项任务无法完成。
+
+示例 4：
+输入："0123"
+输出：[]
+解释：每个块的数字不能以零开头，因此 "01"，"2"，"3" 不是有效答案。
+
+示例 5：
+输入: "1101111"
+输出: [110, 1, 111]
+解释: 输出 [11,0,11,11] 也同样被接受。
+提示：
+1 <= S.length <= 200
+字符串 S 中只含有数字。
+**Program**
+```cpp
+class Solution {
+public:
+    string add(const string& a, const string& b){
+        string res;
+        int carry=0;
+        int idx_a=a.length()-1;
+        int idx_b=b.length()-1;
+        while(idx_a>=0||idx_b>=0||carry!=0){
+            int x=idx_a>=0?a[idx_a--]-'0':0;
+            int y=idx_b>=0?b[idx_b--]-'0':0;
+            res+=(x+y+carry)%10+'0';
+            carry=(x+y+carry)/10;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+    bool dfs(const string & str, vector<int>& result, bool bFirst, int i, int j, int k){
+        if((str[i]=='0'&&j-i>1)||(str[j]=='0'&&k-j>1)) return false; //累加序列里的数以0开头
+        string a = str.substr(i,j-i);
+        string b = str.substr(j, k-j);
+        string sum = add(a, b);
+        if(bFirst){
+            int x,y;
+            if(!toInt(a, x)||!toInt(b, y)) return false;   //超过范围
+            result.push_back(x);
+            result.push_back(y);
+            bFirst=false;
+        }
+        int z;
+        if(!toInt(sum, z)) return false;   //超过范围
+        result.push_back(z);
+        int n=sum.size();
+        if(k+n-1>str.length()-1||sum!=str.substr(k, n)) return false;
+        if(k+n-1==str.length()-1&&sum==str.substr(k, n)) return true;
+        return dfs(str, result, bFirst, j, k, k+n);
+    }
+    bool toInt(string str, int& cb){
+        long res=0;
+        for(int i=0;i<str.length();i++){
+            res=res*10+str[i]-'0';
+            if(res>INT_MAX) return false;
+        }
+        cb=res;
+        return true;
+    }
+    vector<int> splitIntoFibonacci(string num) {
+        int i=0;
+        vector<int> result;
+        for(int j=i+1;j<num.length();j++){
+            for(int k=j+1;k<num.length();k++){
+                result.clear();
+                if(dfs(num, result, true, i, j ,k)){
+                    return result;
+                }
+            }
+        }
+        return {};
+    }
+};
+```
+```cpp
+class Solution {
+public:
+    vector<int> splitIntoFibonacci(string S) {
+        vector<int> tmp;
+        dfs(0,S.size()-1,S,tmp);
+        return tmp;
+    }
+   bool dfs(int left, int right, string num, vector<int> &tmp)
+    {
+        long  n = 0;
+        if(left > right)
+        {
+            if(tmp.size() > 2)
+                return true;
+            return false;
+        }
+        for(int i = left; i <= right; ++i)
+        {
+            n = n * 10 + (num[i] - '0');
+            if(n > INT_MAX)
+                break;
+            if(tmp.size() < 2)
+            {
+                tmp.push_back(n);
+                if(dfs(i + 1, right, num, tmp))
+                    return true;
+                tmp.pop_back();
+            }
+            else
+            {
+                long  num1 = tmp[tmp.size()-1];
+                long  num2 = tmp[tmp.size()-2];
+                long  sum = num1 + num2;
+                if(sum < n)
+                    return false;
+                if(n == sum)
+                {
+                    tmp.push_back(n);
+                    if(dfs(i + 1, right, num, tmp))
+                        return true;
+                    tmp.pop_back();
+                }
+            }
+            if(num[left] == '0')
+                break;
+        }
+        return false;
+    }
+};
+```
+## 1400. 构造 K 个回文字符串
+**Description**
+给你一个字符串 s 和一个整数 k 。请你用 s 字符串中 所有字符 构造 k 个非空 回文串 。
+如果你可以用 s 中所有字符构造 k 个回文字符串，那么请你返回 True ，否则返回 False 。
+**Example**
+示例 1：
+输入：s = "annabelle", k = 2
+输出：true
+解释：可以用 s 中所有字符构造 2 个回文字符串。
+一些可行的构造方案包括："anna" + "elble"，"anbna" + "elle"，"anellena" + "b"
+
+示例 2：
+输入：s = "leetcode", k = 3
+输出：false
+解释：无法用 s 中所有字符构造 3 个回文串。
+
+示例 3：
+输入：s = "true", k = 4
+输出：true
+解释：唯一可行的方案是让 s 中每个字符单独构成一个字符串。
+
+示例 4：
+输入：s = "yzyzyzyzyzyzyzy", k = 2
+输出：true
+解释：你只需要将所有的 z 放在一个字符串中，所有的 y 放在另一个字符串中。那么两个字符串都是回文串。
+
+示例 5：
+输入：s = "cr", k = 7
+输出：false
+解释：我们没有足够的字符去构造 7 个回文串。
+ 
+提示：
+1 <= s.length <= 10^5
+s 中所有字符都是小写英文字母。
+1 <= k <= 10^5
+**Program**
+先安排落单的字母，然后判断成对个数是否满足，特别要判断的是odd+even<k的情况，也有可能成立！
+```cpp
+class Solution {
+public:
+    bool canConstruct(string s, int k) {
+        if(s.length()==k) return true;  //全部的单个字母
+        if(s.length()<k) return false;  //一定不成立
+        vector<int> vec(26, 0);
+        for(char ch:s) vec[ch-'a']++;
+        int even=0, odd=0;  //成对个数，单个的个数
+        for(int x:vec){
+            even+=x/2;
+            odd+=x%2;
+        }
+        if(odd>k) return false; //单个的个数不满足
+        if(odd==k||odd+even>=k||(s.length()-odd)%2==0&&(even>=(s.length()-odd)/2)) return true;  //单个的个数为k，无论成对个数几何都成立||单个的个数小于k，但成对个数可以补足||单个个数小于k，但部分成对字母可以拆成
+        return false;
+    }
+};
+```
+## 860. 柠檬水找零
+**Description**
+在柠檬水摊上，每一杯柠檬水的售价为 5 美元。
+顾客排队购买你的产品，（按账单 bills 支付的顺序）一次购买一杯。
+每位顾客只买一杯柠檬水，然后向你付 5 美元、10 美元或 20 美元。你必须给每个顾客正确找零，也就是说净交易是每位顾客向你支付 5 美元。
+注意，一开始你手头没有任何零钱。
+如果你能给每位顾客正确找零，返回 true ，否则返回 false 。
+**Example**
+示例 1：
+输入：[5,5,5,10,20]
+输出：true
+解释：
+前 3 位顾客那里，我们按顺序收取 3 张 5 美元的钞票。
+第 4 位顾客那里，我们收取一张 10 美元的钞票，并返还 5 美元。
+第 5 位顾客那里，我们找还一张 10 美元的钞票和一张 5 美元的钞票。
+由于所有客户都得到了正确的找零，所以我们输出 true。
+
+示例 2：
+输入：[5,5,10]
+输出：true
+
+示例 3：
+输入：[10,10]
+输出：false
+
+示例 4：
+输入：[5,5,10,10,20]
+输出：false
+解释：
+前 2 位顾客那里，我们按顺序收取 2 张 5 美元的钞票。
+对于接下来的 2 位顾客，我们收取一张 10 美元的钞票，然后返还 5 美元。
+对于最后一位顾客，我们无法退回 15 美元，因为我们现在只有两张 10 美元的钞票。
+由于不是每位顾客都得到了正确的找零，所以答案是 false。
+ 
+提示：
+0 <= bills.length <= 10000
+bills[i] 不是 5 就是 10 或是 20 
+**Program**
+```cpp
+class Solution {
+public:
+    int dollars[3]={0};
+    const int dollar[3]={5, 10, 20};
+    int cal(int res, int idx){
+        if(res>=dollar[idx]&&dollars[idx]>0){
+            int n=res/dollar[idx];
+            if(n>0){
+                if(n>=dollars[idx]){
+                    res-=dollar[idx]*dollars[idx];
+                    dollars[idx]=0;
+                }else{
+                    res-=dollar[idx]*n;
+                    dollars[idx]-=n;
+                }
+            }
+        }
+        // while(res>=dollar[idx]){
+        //     if(dollars[idx]>0){
+        //         res-=dollar[idx];
+        //         dollars[idx]--;
+        //     }else break;
+        // }
+        return res;
+    }
+    bool lemonadeChange(vector<int>& bills) {
+        for(int x:bills){
+            if(x==5){
+                dollars[0]++;
+                continue;
+            }
+            int res=x-5;
+            res = cal(res, 1);
+            res = cal(res ,0);
+            if(res>0) return false;
+            if(x==10) dollars[1]++;
+            else dollars[2]++;
+        }
+        return true;
+    }
+};
+```
+## 861. 翻转矩阵后的得分
+**Description**
+有一个二维矩阵 A 其中每个元素的值为 0 或 1 。
+移动是指选择任一行或列，并转换该行或列中的每一个值：将所有 0 都更改为 1，将所有 1 都更改为 0。
+在做出任意次数的移动后，将该矩阵的每一行都按照二进制数来解释，矩阵的得分就是这些数字的总和。
+返回尽可能高的分数。
+**Example**
+示例：
+输入：[[0,0,1,1],[1,0,1,0],[1,1,0,0]]
+输出：39
+解释：
+转换为 [[1,1,1,1],[1,0,0,1],[1,1,1,1]]
+0b1111 + 0b1001 + 0b1111 = 15 + 9 + 15 = 39
+ 
+提示：
+1 <= A.length <= 20
+1 <= A[0].length <= 20
+A[i][j] 是 0 或 1
+**Program**
+贪心：高位优先翻转成1
+可以发现第一列一定能且一定要全成1，而后每列判断是否需要翻转。
+```cpp
+class Solution {
+public:
+    void flipRow(vector<vector<int>>& A, int nCol, int row){
+        for(int col=0;col<nCol;col++){
+            A[row][col]=1-A[row][col];
+        }
+    }
+    void flipCol(vector<vector<int>>& A, int nRow, int col){
+        for(int row=0;row<nRow;row++){
+            A[row][col]=1-A[row][col];
+        }
+    }
+    int getBinaryScore(vector<int> vec){
+        int ans=0;
+        int n=vec.size();
+        for(int i=0;i<n;i++){
+            ans+=vec[i]*(1<<(n-i-1));
+        }
+        return ans;
+    }
+    int calColZeros(const vector<vector<int>>& A, int nRow, int col){
+        int ans=0;
+        for(int row=0;row<nRow;row++){
+            if(A[row][col]==0) ans++;
+        }
+        return ans;
+    }
+    int matrixScore(vector<vector<int>>& A) {
+        int ans=0;
+        int nRow=A.size();
+        int nCol=A[0].size();
+        for(int row=0;row<nRow;row++){
+            if(A[row][0]==0) flipRow(A, nCol, row);  //该行最高位为0，翻转
+        }
+        for(int col=1; col<nCol;col++){
+            int zeros=calColZeros(A, nRow, col);
+            if(nRow/2<zeros) flipCol(A, nRow, col); //该列0个数过多，翻转
+        }
+        for(int row=0;row<nRow;row++){
+            ans+=getBinaryScore(A[row]);
+        }
+        return ans;
+    }
+};
+```
+## 1414. 和为 K 的最少斐波那契数字数目
+**Description**
+给你数字 k ，请你返回和为 k 的斐波那契数字的最少数目，其中，每个斐波那契数字都可以被使用多次。
+斐波那契数字定义为：
+F1 = 1
+F2 = 1
+Fn = Fn-1 + Fn-2 ， 其中 n > 2 。
+数据保证对于给定的 k ，一定能找到可行解。
+**Example**
+示例 1：
+输入：k = 7
+输出：2
+解释：斐波那契数字为：1，1，2，3，5，8，13，……
+对于 k = 7 ，我们可以得到 2 + 5 = 7 。
+
+示例 2：
+输入：k = 10
+输出：2
+解释：对于 k = 10 ，我们可以得到 2 + 8 = 10 。
+
+示例 3：
+输入：k = 19
+输出：3
+解释：对于 k = 19 ，我们可以得到 1 + 5 + 13 = 19 。
+ 
+提示：
+1 <= k <= 10^9
+**Program**
+```cpp
+class Solution {
+public:
+    vector<int> funcion(int count){
+        vector<int> res;
+        int a=1;
+        int b=1;
+        int idx=0;
+        res.push_back(a);
+        res.push_back(b);
+        while(idx<count){
+            int c=a+b;
+            res.push_back(c);
+            a=b;
+            b=c;
+            idx++;
+        }
+        return res;
+    }
+    int findMinFibonacciNumbers(int k) {
+        vector<int> vec=funcion(42);
+        int idx=vec.size()-1;
+        int res=0;
+        while(k>0){
+            while(vec[idx]<=k){
+                k-=vec[idx];
+                res++;
+            }
+            idx--;
+        }
+        return res;
+    }
+};
+```
+## 870. 优势洗牌
+**Description**
+给定两个大小相等的数组 A 和 B，A 相对于 B 的优势可以用满足 A[i] > B[i] 的索引 i 的数目来描述。
+返回 A 的任意排列，使其相对于 B 的优势最大化。
+**Example**
+示例 1：
+输入：A = [2,7,11,15], B = [1,10,4,11]
+输出：[2,11,7,15]
+
+示例 2：
+输入：A = [12,24,8,32], B = [13,25,32,11]
+输出：[24,32,8,12]
+ 
+提示：
+1 <= A.length = B.length <= 10000
+0 <= A[i] <= 10^9
+0 <= B[i] <= 10^9
+**Program**
+贪心的思想就是，两个数组排序，不同的是B数组需要保留原位置，然后A数组尽可能小的数与B尽可能大的数匹配，才能使A中更大的数匹配更多B中的元素。
+```cpp
+class Solution {
+public:
+    struct Node{
+        int val;
+        int idx;
+        Node(){}
+        Node(int Val, int Idx):val(Val), idx(Idx){}
+    };
+    static bool cmp(const Node& a, const Node& b){
+        return a.val<b.val;
+    }
+    vector<int> advantageCount(vector<int>& A, vector<int>& B) {
+        int n=A.size();
+        sort(A.begin(), A.end());
+        vector<Node> vecB;
+        for(int i=0;i<n;i++){
+            vecB.push_back(Node(B[i], i));
+        }
+        sort(vecB.begin(), vecB.end(), cmp);
+        int idxA=0, idxB=0;
+        vector<int> res(n, -1);
+        vector<int> restA;
+        while(idxA<n){
+            if(vecB[idxB].val<A[idxA]){
+                int idx=vecB[idxB].idx;
+                res[idx]=A[idxA];
+                idxB++;
+            }else restA.push_back(A[idxA]);
+            idxA++;
+        }
+        int idx=0;
+        for(int i=0;i<n;i++){
+            if(res[i]==-1){
+                res[i]=restA[idx++];
+            }
+        }
+        return res;
+    }
+};
+```
+## 1386. 安排电影院座位
+**Description**
+![image](/assets/img/algorithm/cinema_seats_1.png)
+如上图所示，电影院的观影厅中有 n 行座位，行编号从 1 到 n ，且每一行内总共有 10 个座位，列编号从 1 到 10 。
+给你数组 reservedSeats ，包含所有已经被预约了的座位。比如说，researvedSeats[i]=[3,8] ，它表示第 3 行第 8 个座位被预约了。
+请你返回 最多能安排多少个 4 人家庭 。4 人家庭要占据 同一行内连续 的 4 个座位。隔着过道的座位（比方说 [3,3] 和 [3,4]）不是连续的座位，但是如果你可以将 4 人家庭拆成过道两边各坐 2 人，这样子是允许的。
+**Example**
+示例 1：
+![image](/assets/img/algorithm/cinema_seats_2.png)
+输入：n = 3, reservedSeats = [[1,2],[1,3],[1,8],[2,6],[3,1],[3,10]]
+输出：4
+解释：上图所示是最优的安排方案，总共可以安排 4 个家庭。蓝色的叉表示被预约的座位，橙色的连续座位表示一个 4 人家庭。
+
+示例 2：
+输入：n = 2, reservedSeats = [[2,1],[1,8],[2,6]]
+输出：2
+
+示例 3：
+输入：n = 4, reservedSeats = [[4,3],[1,4],[4,6],[1,7]]
+输出：4
+
+提示：
+```
+1 <= n <= 10^9
+1 <= reservedSeats.length <= min(10*n, 10^4)
+reservedSeats[i].length == 2
+1 <= reservedSeats[i][0] <= n
+1 <= reservedSeats[i][1] <= 10
+所有 reservedSeats[i] 都是互不相同的。
+```
+**Program**
+贪心：n的范围决定了不能开数组，因为绝对超时。那么看reservedSeats长度不超过$10^4$，所以按照行号对reservedSeats排序，left,mid,right记录每行三个满足题意的可能位置，每次换行就可以开始计算上一行的满足题意的方案数，**注意新行与旧行不相邻，也就是跳行，那么中间的几行全部加2；其次最后一个计算的行需要下一次计算该行方案数，记得补上判断**，最后就是剩余行数的问题了。
+```cpp
+class Solution {
+public:
+    static bool cmp(const vector<int>& a, const vector<int>& b){
+        if(a[0]!=b[0]) return a[0]<b[0];
+        return a[1]<b[1];
+    }
+    int maxNumberOfFamilies(int n, vector<vector<int>>& reservedSeats) {
+        sort(reservedSeats.begin(), reservedSeats.end(), cmp);
+        int preRow=0;
+        int left=0, mid=0, right=0;
+        int len=reservedSeats.size();
+        int ans=0;
+        for(int i=0;i<len;i++){
+            int nowRow=reservedSeats[i][0];
+            int nowCol=reservedSeats[i][1];
+            if(nowRow!=preRow){     //新的一行
+                if(left==1&&right==1) ans+=2;
+                else if(left==0&&(mid==1||right==1)) ans+=1;
+                else if(right==0&&(mid==1||left==1)) ans+=1;
+                if(nowRow-preRow!=1) ans+=2*(nowRow-preRow-1); //跳行
+                preRow=nowRow;
+                left=mid=right=1;
+            }
+            if(nowCol==2||nowCol==3||nowCol==4||nowCol==5) left=0;   //左位点不满足
+            if(nowCol==4||nowCol==5||nowCol==6||nowCol==7) mid=0;    //中位点不满足
+            if(nowCol==6||nowCol==7||nowCol==8||nowCol==9) right=0;  //右位点不满足
+        }
+        //最后出现的一行
+        if(left==1&&right==1) ans+=2;
+        else if(left==0&&(mid==1||right==1)) ans+=1;
+        else if(right==0&&(mid==1||left==1)) ans+=1;
+        if(preRow<n){
+            ans+=2*(n-preRow);
+        }
+        return ans;
+    }
+};
 ```
