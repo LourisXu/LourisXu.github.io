@@ -1638,6 +1638,25 @@ find()方法有很多重载函数*
 　　　　　　　　　　　　　　　　 ![list双向链表图示](/assets/img/standardTemplateLibrary/STL_list001.png)
 　　　*list的每个节点有三个域：前驱元素指针域、数据域和后继元素指针域。前驱元素指针域保存了前驱元素的首地址；数据域则是本节点的数据；后继元素指针域则保存了后继元素的首地址。list的头节点的前驱元素指针域保存的是链表中尾元素的首地址，而list的尾节点的后继元素指针域则保存了头节点的首地址，这样就构成了一个双向循环链。
 由于list对象的结点并不要求在一段连续的内存中，所以，对于迭代器，只能通过“++”或“--”的操作将迭代器移动到后继/前驱节点元素处，而不能对迭代器进行+n或-n的操作，这点是与vector等不同的地方*
+```cpp
+#include <iterator>
+void advance(InputIterator& pos,Dist n);
+```
+说明：
+(1).使名为pos的Input迭代器步进（或步退）n个元素
+(2).对bidirectional迭代器和Random Access迭代器而言，n可为负值，表示向后退。
+(3).Dist是个template型别，通常是个整数型别。
+(4).advance()并不检查迭代器是否超过序列的end()，所有，对序列尾端调用operator++是一种未定义的操作行为。
+```cpp
+#include <iterator>
+Dist distance(InputIterator pos1, InputIterator pos2);
+```
+说明：
+(1).传回两个Input迭代器pos1,pos2之间的距离
+(2).两个敌当前必须指向同一容器
+(3).如果不是随机存取迭代器，则从pos1开始往前走必须能够到达pos2,亦即pos2的位置必须与pos1相同或在其后。
+(4).回返值Dist的型别由迭代器决定
+
 　　**内容**
 　　　**1.先决条件**
 　　　　#include&lt;list>

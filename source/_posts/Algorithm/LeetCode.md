@@ -104,6 +104,7 @@ toc: true
 |226. 翻转二叉树|Easy|二叉树|
 |231. 2的幂|Easy|快速幂|
 |257. 二叉树的所有路径|Easy|深搜|
+|258. 各位相加|Easy|数学|
 |260. 只出现一次的数字 III|Medium|位运算|
 |264. 丑数 II|Medium|动态规划+三指针|
 |268. 缺失数字|Medium|位运算|
@@ -120,7 +121,7 @@ toc: true
 |332. 重新安排行程|Medium|欧拉回路、深搜|
 |338. 比特位计数|Medium|位运算+动态规划|
 |342. 4的幂|Easy|位运算|
-|343. 整数拆分|Medium|动态规划|
+|343. 整数拆分|Medium|动态规划/数学|
 |357. 计算各个位数不同的数字个数|Medium|动态规划|
 |368. 最大整除子集|Medium|动态规划|
 |371. 两整数之和|Easy|位运算|
@@ -133,11 +134,16 @@ toc: true
 |397. 整数替换|Medium|位运算、动态规划|
 |399. 除法求值|Medium|并查集|
 |401. 二进制手表|Easy|位运算|
+|402. 移掉K位数字|Medium|贪心|
 |405. 数字转换为十六进制数|Easy|位运算|
+|406. 根据身高重建队列|Medium|贪心|
 |416. 分割等和子集|Medium|动态规划|
 |417. 太平洋大西洋水流问题|Medium|广搜|
 |421. 数组中两个数的最大异或值|Medium|位运算|
 |429. N叉树的层序遍历|Medium|广搜|
+|435. 无重叠区间|Medium|贪心|
+|452. 用最少数量的箭引爆气球|Medium|贪心|
+|455. 分发饼干|Easy|贪心|
 |461. 汉明距离|Easy|位运算|
 |464. 我能赢吗|Medium|动态规划|
 |467. 环绕字符串中唯一的子字符串|Medium|动态规划|
@@ -150,6 +156,7 @@ toc: true
 |516. 最长回文子序列|Medium|动态规划|
 |523. 连续的子数组和|Medium|动态规划|
 |529. 扫雷游戏|Medium|广搜|
+|537. 复数乘法|Medium|数学|
 |542. 01 矩阵|Medium|广搜|
 |547. 朋友圈|Medium|并查集|
 |559. N叉树的最大深度|Easy|广搜|
@@ -192,15 +199,25 @@ toc: true
 |861. 翻转矩阵后的得分|Medium|贪心|
 |863. 二叉树中所有距离为 K 的结点|Medium|坐标化|
 |870. 优势洗牌|Medium|贪心|
+|874. 模拟行走机器人|Easy|贪心|
+|881. 救生艇|Medium|贪心|
 |898. 子数组按位或操作|Medium|位运算+unordered_set|
 |909. 蛇梯棋|Medium|广搜|
+|910. 最小差值 II|Medium|贪心|
 |914. 卡牌分组|Easy|最大公约数|
+|921. 使括号有效的最少添加|Medium|贪心|
 |934. 最短的桥|Medium|广搜|
+|944. 删列造序|Easy|贪心|
 |947. 移除最多的同行或同列石头|Medium|并查集+Hash|
+|948. 令牌放置|Medium|贪心|
+|955. 删列造序 II|Medium|贪心|
 |959. 由斜杠划分区域|Medium|并查集|
+|984. 不含 AAA 或 BBB 的字符串|Medium|贪心|
 |990. 等式方程的可满足性|Medium|并查集|
+|991. 坏了的计算器|Medium|贪心|
 |993. 二叉树的堂兄弟节点|Easy|坐标化|
 |994. 腐烂的橘子|Medium|广搜|
+|1005. K 次取反后最大化的数组和|Easy|贪心|
 |1029. 两地调度|Easy|贪心|
 |1046. 最后一块石头的重量|Easy|贪心|
 |1053. 交换一次的先前排列|Medium|贪心|
@@ -210,9 +227,14 @@ toc: true
 |1111. 有效括号的嵌套深度|Medium|贪心|
 |1129. 颜色交替的最短路径|Medium|广搜|
 |1131. 绝对值表达式的最大值|Medium|位运算+数学|
+|1154. 一年中的第几天|Easy|数学|
 |1202. 交换字符串中的元素|Medium|并查集|
 |1217. 玩筹码|Medium|贪心|
+|1221. 分割平衡字符串|Easy|贪心|
 |1239. 串联字符串的最大长度|Medium|位运算+暴力|
+|1247. 交换字符使得字符串相同|Medium|贪心|
+|1253. 重构 2 行二进制矩阵|Medium|贪心|
+|1276. 不浪费原料的汉堡制作方案|Medium|贪心|
 |1290. 二进制链表转整数|Easy|位运算|
 |1296. 划分数组为连续数字的集合|Medium|贪心+Hash+模拟|
 |1297. 子串的最大出现次数|Medium|位运算|
@@ -227,11 +249,15 @@ toc: true
 |1386. 安排电影院座位|Medium|贪心|
 |1391. 检查网格中是否存在有效路径|Medium|广搜|
 |1400. 构造 K 个回文字符串|Medium|贪心|
+|1403. 非递增顺序的最小子序列|Easy|贪心|
+|1405. 最长快乐字符串|Medium|贪心|
 |1414. 和为 K 的最少斐波那契数字数目|Medium|贪心|
+|1433. 检查一个字符串是否可以打破另一个字符串|Medium|贪心|
 |面试题 04.03. 特定深度节点链表|Medium|广搜+链表|
 |面试题32 - I. 从上到下打印二叉树 II|Medium|广搜|
 |面试题32 - II. 从上到下打印二叉树 II|Easy|广搜|
 |面试题32 - III. 从上到下打印二叉树 III|Medium|广搜|
+面试题14- I. 剪绳子|Medium|数学|
 |面试题 16.19. 水域大小|Medium|广搜|
 |面试题 17.22. 单词转换|Medium|双向广搜|
 |面试题 17.07. 婴儿名字|Medium|并查集|
@@ -7680,6 +7706,23 @@ public:
     }
 };
 ```
+见面试题14-I题解
+···cpp
+class Solution {
+public:
+    int integerBreak(int n) {
+        if(n<=3) return n-1;
+        int mod=3;
+        int res=n%mod;
+        int count=n/mod;
+        int ans=0;
+        if(res==2) ans=(int)pow(mod,count)*2;
+        else if(res==1) ans=(int)pow(mod, count-1)*4;
+        else ans=(int)pow(mod, count);
+        return ans;
+    }
+};
+```
 ## 357. 计算各个位数不同的数字个数
 **Description**
 给定一个非负整数 n，计算各位数字都不同的数字 x 的个数，其中 $0 ≤ x < 10^n$ 。
@@ -14927,6 +14970,1535 @@ public:
         if(preRow<n){
             ans+=2*(n-preRow);
         }
+        return ans;
+    }
+};
+```
+## 1403. 非递增顺序的最小子序列
+**Description**
+给你一个数组 nums，请你从中抽取一个子序列，满足该子序列的元素之和 严格 大于未包含在该子序列中的各元素之和。
+如果存在多个解决方案，只需返回 长度最小 的子序列。如果仍然有多个解决方案，则返回 元素之和最大 的子序列。
+与子数组不同的地方在于，「数组的子序列」不强调元素在原数组中的连续性，也就是说，它可以通过从数组中分离一些（也可能不分离）元素得到。
+注意，题目数据保证满足所有约束条件的解决方案是 唯一 的。同时，返回的答案应当按 非递增顺序 排列。
+**Example**
+示例 1：
+输入：nums = [4,3,10,9,8]
+输出：[10,9]
+解释：子序列 [10,9] 和 [10,8] 是最小的、满足元素之和大于其他各元素之和的子序列。但是 [10,9] 的元素之和最大。 
+
+示例 2：
+输入：nums = [4,4,7,6,7]
+输出：[7,7,6]
+解释：子序列 [7,7] 的和为 14 ，不严格大于剩下的其他元素之和（14 = 4 + 4 + 6）。因此，[7,6,7] 是满足题意的最小子序列。注意，元素按非递增顺序返回。  
+示例 3：
+输入：nums = [6]
+输出：[6]
+
+提示：
+1 <= nums.length <= 500
+1 <= nums[i] <= 100
+**Program**
+```cpp
+class Solution {
+public:
+    vector<int> minSubsequence(vector<int>& nums) {
+        int sum=0;
+        for(int x:nums) sum+=x;
+        sort(nums.begin(), nums.end(), greater<int>());
+        vector<int> res;
+        int nowSum=0;
+        for(int x:nums){
+            nowSum+=x;
+            res.push_back(x);
+            if(nowSum>sum-nowSum) break;
+        }
+        return res;
+    }
+};
+```
+## 874. 模拟行走机器人
+**Description**
+机器人在一个无限大小的网格上行走，从点 (0, 0) 处开始出发，面向北方。该机器人可以接收以下三种类型的命令：
+-2：向左转 90 度
+-1：向右转 90 度
+1 <= x <= 9：向前移动 x 个单位长度
+在网格上有一些格子被视为障碍物。
+第 i 个障碍物位于网格点  (obstacles[i][0], obstacles[i][1])
+机器人无法走到障碍物上，它将会停留在障碍物的前一个网格方块上，但仍然可以继续该路线的其余部分。
+返回从原点到机器人的最大欧式距离的平方。
+**Example**
+示例 1：
+输入: commands = [4,-1,3], obstacles = []
+输出: 25
+解释: 机器人将会到达 (3, 4)
+
+示例 2：
+输入: commands = [4,-1,4,-2,4], obstacles = [[2,4]]
+输出: 65
+解释: 机器人在左转走到 (1, 8) 之前将被困在 (1, 4) 处
+ 
+提示：
+0 <= commands.length <= 10000
+0 <= obstacles.length <= 10000
+-30000 <= obstacle[i][0] <= 30000
+-30000 <= obstacle[i][1] <= 30000
+答案保证小于 2 ^ 31
+**Program**
+```cpp
+class Solution {
+public:
+    const int steps[4][2]={
+        1, 0,
+        0, 1,
+        -1, 0,
+        0, -1
+    };
+    int robotSim(vector<int>& commands, vector<vector<int>>& obstacles) {
+        int oriented=0; //北面开始顺时针，0,1,2,3
+        set<pair<int,int>> st;
+        int x,y;
+        for(vector<int>& obs:obstacles){
+            x=obs[0];
+            y=obs[1];
+            st.insert({x, y});
+        }
+        x=y=0;
+        int ans=0;
+        for(int cmd:commands){
+            if(cmd==-2) oriented=(oriented-1+4)%4;
+            else if(cmd==-1) oriented=(oriented+1+4)%4;
+            else{
+                for(int i=0;i<cmd;i++){
+                    int new_x=x+steps[oriented][1];
+                    int new_y=y+steps[oriented][0];
+                    if(st.find(pair<int,int>(new_x, new_y))!=st.end()) break;//注意不能用{}，否则找不到
+                    x=new_x;
+                    y=new_y;
+                }
+            }
+            ans=max(ans, x*x+y*y);
+        }
+        return ans;
+    }
+};
+```
+## 881. 救生艇
+**Description**
+第 i 个人的体重为 people[i]，每艘船可以承载的最大重量为 limit。
+每艘船最多可同时载两人，但条件是这些人的重量之和最多为 limit。
+返回载到每一个人所需的最小船数。(保证每个人都能被船载)。
+**Example**
+示例 1：
+输入：people = [1,2], limit = 3
+输出：1
+解释：1 艘船载 (1, 2)
+
+示例 2：
+输入：people = [3,2,2,1], limit = 3
+输出：3
+解释：3 艘船分别载 (1, 2), (2) 和 (3)
+
+示例 3：
+输入：people = [3,5,3,4], limit = 5
+输出：4
+解释：4 艘船分别载 (3), (3), (4), (5)
+提示：
+1 <= people.length <= 50000
+1 <= people[i] <= limit <= 30000
+**Program**
+贪心：一般思路，(最)较重的要与尽可能大的组合，然而这样做代码难写，反而换个思路，最轻的要与尽可能大的组合一个道理，那么最重和最小的组合，如果满足题意就一艘船，否则最重的单独一艘船。
+```cpp
+class Solution {
+public:
+    int numRescueBoats(vector<int>& people, int limit) {
+        int ans=0;
+        int n=people.size();
+        sort(people.begin(), people.end(), greater<int>());
+        int i=0, j=n-1;
+        while(i<=j){
+            if(people[i]+people[j]<=limit)j--;
+            i++;
+            ans++;
+        }
+        return ans;
+    }
+};
+```
+## 1405. 最长快乐字符串
+**Description**
+如果字符串中不含有任何 'aaa'，'bbb' 或 'ccc' 这样的字符串作为子串，那么该字符串就是一个「快乐字符串」。
+给你三个整数 a，b ，c，请你返回 任意一个 满足下列全部条件的字符串 s：
+s 是一个尽可能长的快乐字符串。
+s 中 最多 有a 个字母 'a'、b 个字母 'b'、c 个字母 'c' 。
+s 中只含有 'a'、'b' 、'c' 三种字母。
+如果不存在这样的字符串 s ，请返回一个空字符串 ""。
+**Example**
+示例 1：
+输入：a = 1, b = 1, c = 7
+输出："ccaccbcc"
+解释："ccbccacc" 也是一种正确答案。
+
+示例 2：
+输入：a = 2, b = 2, c = 1
+输出："aabbc"
+
+示例 3：
+输入：a = 7, b = 1, c = 0
+输出："aabaa"
+解释：这是该测试用例的唯一正确答案。
+ 
+提示：
+0 <= a, b, c <= 100
+a + b + c > 0
+**Program**
+贪心：一个个字符排列（两个两个排是错的），优先排列次数多的，如果当前次数最多的字符与前两个以排字符相同，则排列次多的字符。
+```cpp
+class Solution {
+public:
+    struct Node{
+        int count;
+        char ch;
+    };
+    struct Cmp{
+        bool operator () (const Node& a, const Node& b) const{
+            return a.count<b.count;
+        }
+    };
+    string longestDiverseString(int a, int b, int c) {
+        Node node[3];
+        node[0].count=a;node[0].ch='a';
+        node[1].count=b;node[1].ch='b';
+        node[2].count=c;node[2].ch='c';
+        priority_queue<Node, vector<Node>, Cmp> pq;
+        for(int i=0;i<3;i++) if(node[i].count>0) pq.push(node[i]);
+        string res="";
+        while(!pq.empty()){
+            Node now=pq.top();
+            pq.pop();
+            if(res.length()>=2&&now.ch==res[res.length()-1]&&now.ch==res[res.length()-2]){
+                if(pq.size()==0) break;
+                Node next=pq.top(); pq.pop();
+                res+=next.ch;
+                next.count--;
+                if(next.count>0)pq.push(next);
+                pq.push(now);
+            }else{
+                res+=now.ch;
+                now.count--;
+                if(now.count>0) pq.push(now);
+            }
+        }
+        return res;
+    }
+};
+```
+## 1221. 分割平衡字符串
+**Description**
+在一个「平衡字符串」中，'L' 和 'R' 字符的数量是相同的。
+给出一个平衡字符串 s，请你将它分割成尽可能多的平衡字符串。
+返回可以通过分割得到的平衡字符串的最大数量。
+**Example**
+示例 1：
+输入：s = "RLRRLLRLRL"
+输出：4
+解释：s 可以分割为 "RL", "RRLL", "RL", "RL", 每个子字符串中都包含相同数量的 'L' 和 'R'。
+
+示例 2：
+输入：s = "RLLLLRRRLR"
+输出：3
+解释：s 可以分割为 "RL", "LLLRRR", "LR", 每个子字符串中都包含相同数量的 'L' 和 'R'。
+
+示例 3：
+输入：s = "LLLLRRRR"
+输出：1
+解释：s 只能保持原样 "LLLLRRRR".
+ 
+提示：
+1 <= s.length <= 1000
+s[i] = 'L' 或 'R'
+分割得到的每个字符串都必须是平衡字符串。
+**Program**
+```cpp
+class Solution {
+public:
+    int balancedStringSplit(string s) {
+        int ans=0, l=0, r=0;
+        for(char ch: s){
+            if(ch=='L') l++;
+            if(ch=='R') r++;
+            if(l==r){
+                ans++;
+                l=r=0;
+            }
+        }
+        return ans;
+    }
+};
+```
+## 402. 移掉K位数字
+**Description**
+给定一个以字符串表示的非负整数 num，移除这个数中的 k 位数字，使得剩下的数字最小。
+注意:
+num 的长度小于 10002 且 ≥ k。
+num 不会包含任何前导零。
+**Example**
+示例 1 :
+输入: num = "1432219", k = 3
+输出: "1219"
+解释: 移除掉三个数字 4, 3, 和 2 形成一个新的最小的数字 1219。
+
+示例 2 :
+输入: num = "10200", k = 1
+输出: "200"
+解释: 移掉首位的 1 剩下的数字为 200. 注意输出不能有任何前导零。
+
+示例 3 :
+输入: num = "10", k = 2
+输出: "0"
+解释: 从原数字移除所有的数字，剩余为空就是0。
+**Program**
+贪心：移出k个数字，也就是保存resCount=n-k个数字，使其最小。那么每次选择结果字符串的第i个数字的时候，从除了末尾resCount-1个数字外，选择当前最小的数字作为结果的第i个数字即可。
+例如：
+1432219, k=3
+①保留后n-k-1=3位，从下标0开始，1432中选择最小的数字1,原字符串下标0；
+②保留后n-k-2=2位，从下标0+1开始，即4322中选择最小的数字2，原字符串下标3;
+③保留后n-k-3=1位，从下标3+1开始，即21中选择最小的数字1，原字符串下标5;
+④保留后n-k-4=0位，从下标5+1开始，即9中选择最小的数字9，原字符串下标6，结束，res字符串长度满足要求n-k。
+时间复杂度：$O((k+1)(n-k))$，当k=(n-1)/2时，时间复杂度最高，约$2.5×10^7$
+```cpp
+class Solution {
+public:
+    char findMinChar(string str, int &idx){
+        char ch=str[0];
+        idx=0;
+        for(int i=1;i<str.length();i++){
+            if(ch=='0')break;
+            if(str[i]<ch){
+                ch=str[i];
+                idx=i;
+            }
+        }
+        return ch;
+    }
+    string removeKdigits(string num, int k) {
+        if(num.length()==k) return "0";
+        if(k==0) return num;
+        int n=num.length();
+        int resCount=n-k;
+        string res="";
+        int idx=-1;
+        while(res.length()!=n-k){
+            int tmpIdx=0;
+            string str=num.substr(idx+1,n-(resCount-1)-idx-1); //选择从上次所选数字下一位开始的，保留原字符串后resCount-1个数字，剩余的字符串，选择数字最小的
+            res+=findMinChar(str, tmpIdx);
+            resCount--;
+            idx=idx+1+tmpIdx;
+        }
+        while(res[0]=='0'&&res.length()>1) res.erase(res.begin()); //去掉前导零
+        return res;
+    }
+};
+```
+算法：
+上述的规则使得我们通过一个接一个的删除数字，逐步的接近最优解。
+这个问题可以用贪心算法来解决。上述规则阐明了我们如何接近最终答案的基本逻辑。一旦我们从序列中删除一个数字，剩下的数字就形成了一个新的问题，我们可以继续使用这个规则。
+我们会注意到，在某些情况下，规则对任意数字都不适用，即单调递增序列。在这种情况下，我们只需要删除末尾的数字来获得最小数。
+我们可以利用栈来实现上述算法，存储当前迭代数字之前的数字。
+- 对于每个数字，如果该数字小于栈顶部，即该数字的左邻居，则弹出堆栈，即删除左邻居。否则，我们把数字推到栈上。
+- 我们重复上述步骤（1），直到任何条件不再适用，例如堆栈为空（不再保留数字）。或者我们已经删除了 k 位数字。
+![image](/assets/img/algorithm/402_example_01.png)
+我们在上图中演示了该算法的工作原理。给定输入序列 [1，2，3，4，5，2，6，4] 和 k=4，规则在 5 触发。删除数字 5 后，规则将在数字 4 处再次触发，直到数字 3。然后，在数字 6 处，规则也被触发。
+
+```cpp
+class Solution {
+public:
+    string removeKdigits(string num, int k) {
+        if(num.length()==k) return "0";
+        if(k==0) return num;
+        int n=num.length();
+        int m=0;
+        deque<char> dq;
+        for(char ch:num){
+            while(!dq.empty()&&ch<dq.back()&&m<k){
+                dq.pop_back();
+                m++;
+            }
+            dq.push_back(ch);
+        }
+        string str="";
+        while(!dq.empty()){
+            if(m<k){
+                 m++;
+                 dq.pop_back();
+            }else{
+                if(str.length()==0&&dq.front()=='0') {dq.pop_front();continue;}
+                str+=dq.front();
+                dq.pop_front();
+            }
+        }
+        return str==""?"0":str;
+    }
+};
+```
+## 406. 根据身高重建队列
+**Description**
+假设有打乱顺序的一群人站成一个队列。 每个人由一个整数对(h, k)表示，其中h是这个人的身高，k是排在这个人前面且身高大于或等于h的人数。 编写一个算法来重建这个队列。
+注意：
+总人数少于1100人。
+**Example**
+示例
+输入:
+[[7,0], [4,4], [7,1], [5,0], [6,1], [5,2]]
+输出:
+[[5,0], [7,0], [5,2], [6,1], [4,4], [7,1]]
+**Program**
+贪心：优先安排高的而非矮的，因为要满足无后效性，即安排较矮的，之前已排列的都是身高大于等于当前的，确定了插入位置，对其后面的不产生影响。可以试试优先安排矮的，会发现每次插入教高的时候，插入位置后面如果还有比当前更矮的就得重新计算，即先前排列相对位置。其次，频繁插入用链表更合适，数组需要移动元素不方便。
+```cpp
+class Solution {
+public:
+    struct LinkNode{
+        vector<int> data;
+        LinkNode* next;
+        LinkNode(){}
+    };
+    vector<vector<int>> reconstructQueue(vector<vector<int>>& people) {
+        sort(people.begin(), people.end(), [](const vector<int>& a, const vector<int>&b){
+            if(a[0]!=b[0]) return a[0]>b[0];
+            return a[1]<b[1];
+        });
+        vector<vector<int>> res;
+        LinkNode* root=new LinkNode(); //头结点
+        root->next=NULL;
+        for(vector<int>& vec:people){
+            int count=0;
+            LinkNode* p=root->next;
+            LinkNode* pre=root;
+            while(p!=NULL&&count<vec[1]){
+                if(p->data[0]>=vec[0]) count++;
+                pre=p;
+                p=p->next;
+            }
+            LinkNode* node=new LinkNode();
+            node->data=vec;
+            node->next=p;
+            pre->next=node;
+        }
+        root=root->next;
+        while(root!=NULL){
+            res.push_back(root->data);
+            root=root->next;
+        }
+        return res;
+    }
+};
+```
+```cpp
+class Solution {
+public:
+    vector<vector<int>> reconstructQueue(vector<vector<int>>& people) {
+        sort(people.begin(), people.end(), [](const vector<int>& a, const vector<int>&b){
+            if(a[0]!=b[0]) return a[0]>b[0];
+            return a[1]<b[1];
+        });
+        list<vector<int>> ls;
+        for(vector<int>& vec:people){
+            int count=0;
+            list<vector<int>>::iterator it=ls.begin();
+            advance(it, vec[1]);
+            ls.insert(it, vec);
+        }
+        return vector<vector<int>>(ls.begin(), ls.end());
+    }
+};
+```
+## 910. 最小差值 II
+**Description**
+给定一个整数数组 A，对于每个整数 A[i]，我们可以选择 x = -K 或是 x = K，并将 x 加到 A[i] 中。
+在此过程之后，我们得到一些数组 B。
+返回 B 的最大值和 B 的最小值之间可能存在的最小差值。
+**Example**
+示例 1：
+输入：A = [1], K = 0
+输出：0
+解释：B = [1]
+
+示例 2：
+输入：A = [0,10], K = 2
+输出：6
+解释：B = [2,8]
+
+示例 3：
+输入：A = [1,3,6], K = 3
+输出：3
+解释：B = [4,6,3]
+ 
+提示：
+1 <= A.length <= 10000
+0 <= A[i] <= 10000
+0 <= K <= 10000
+**Program**
+![image](/assets/img/algorithm/910_example_01.png)
+当我们选择在 i 这一点“切一刀”的时候，也就是 A[0] ~ A[i] 的元素都上移，A[i + 1] ~ A[A.length - 1] 的元素都下移。
+此时 B 点的值是 A[i] + K，D 点的值是 A[A.length - 1] - K。
+新数组的最大值要么是 B 点要么是 D 点，也就是说新数组的最大值是 $Max(A[i] + K, A[A.length - 1] - K)$。
+
+同样道理，此时 A 点的值是 A[0] + K，C 点的值是 A[i + 1] - K。
+新数组的最小值要么是 A 点要么是 C 点，也就是说新数组的最小值是 $Min(A[0] + K, A[i + 1] - K)$。
+
+因此，题目需要的“新数组的最大值和最小值的差值”，就是 $Max(A[i] + K, A[A.length - 1] - K) - Min(A[0] + K, A[i + 1] - K)$。
+K 的值是题目给出的固定值，因此如果我们想让上面这个算式的结果尽可能小的话，就要靠改变 i 的值，也就是思考究竟要在哪里“切这一刀”。因此我们挨个遍历一下所有可能的 i 的值，然后取上面算式的最小值即可。
+
+```cpp
+class Solution {
+public:
+    int smallestRangeII(vector<int>& A, int K) {
+        sort(A.begin(), A.end());
+        int ans=INT_MAX;
+        for(int i=0;i<A.size();i++){
+            int mx=max(A[i]+K, A[A.size()-1]-K);
+            int mn=(i+1>=A.size())?A[0]+K:min(A[0]+K, A[i+1]-K);
+            ans=min(ans, mx-mn);
+        }
+        return ans;
+    }
+};
+```
+## 921. 使括号有效的最少添加
+**Description**
+给定一个由'(' 和 ')'括号组成的字符串 S，我们需要添加最少的括号（ '(' 或是 ')'，可以在任何位置），以使得到的括号字符串有效。
+从形式上讲，只有满足下面几点之一，括号字符串才是有效的：它是一个空字符串，或者它可以被写成 AB （A 与 B 连接）, 其中 A 和 B 都是有效字符串，或者
+它可以被写作 (A)，其中 A 是有效字符串。给定一个括号字符串，返回为使结果字符串有效而必须添加的最少括号数。
+**Example**
+示例 1：
+输入："())"
+输出：1
+
+示例 2：
+输入："((("
+输出：3
+
+示例 3：
+输入："()"
+输出：0
+
+示例 4：
+输入："()))(("
+输出：4
+ 
+提示：
+S.length <= 1000
+S 只包含 '(' 和 ')' 字符。
+**Program**
+```cpp
+class Solution {
+public:
+    int minAddToMakeValid(string S) {
+        int l=0,r=0;
+        for(char ch:S){
+            if(ch=='(') l++; //进栈
+            else{
+                if(l>0) l--; //出栈
+                else r++; //进栈
+            }
+        }
+        return l+r;
+    }
+};
+```
+## 435. 无重叠区间
+**Description**
+给定个区间的集合，找到需要移除区间的最小数量，使剩余区间互不重叠。
+注意:
+- 可以认为区间的终点总是大于它的起点。
+- 区间 [1,2] 和 [2,3] 的边界相互“接触”，但没有相互重叠。
+**Example**
+示例 1:
+输入: [ [1,2], [2,3], [3,4], [1,3] ]
+输出: 1
+解释: 移除 [1,3] 后，剩下的区间没有重叠。
+
+示例 2:
+输入: [ [1,2], [1,2], [1,2] ]
+输出: 2
+解释: 你需要移除两个 [1,2] 来使剩下的区间没有重叠。
+
+示例 3:
+输入: [ [1,2], [2,3] ]
+输出: 0
+解释: 你不需要移除任何区间，因为它们已经是无重叠的了。
+**Program**
+正确的思路其实很简单，可以分为以下三步：
+- 从区间集合 intvs 中选择一个区间 x，这个 x 是在当前所有区间中结束最早的（end 最小）。
+- 把所有与 x 区间相交的区间从区间集合 intvs 中删除。
+- 重复步骤 1 和 2，直到 intvs 为空为止。之前选出的那些 x 就是最大不相交子集。
+```cpp
+class Solution {
+public:
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        if(intervals.size()==0) return 0;
+        sort(intervals.begin(), intervals.end(), [](const vector<int>& a, const vector<int>& b){
+            return a[1]<b[1];
+        });
+        vector<int> pre=intervals[0];
+        int ans=1;
+        for(int i=1;i<intervals.size();i++){
+            vector<int> cur=intervals[i];
+            if(cur[0]>=pre[1]){
+                ans++;
+                pre=cur;
+            }
+        }
+        return intervals.size()-ans;
+    }
+};
+```
+## 452. 用最少数量的箭引爆气球
+**Description**
+在二维空间中有许多球形的气球。对于每个气球，提供的输入是水平方向上，气球直径的开始和结束坐标。由于它是水平的，所以y坐标并不重要，因此只要知道开始和结束的x坐标就足够了。开始坐标总是小于结束坐标。平面内最多存在104个气球。
+一支弓箭可以沿着x轴从不同点完全垂直地射出。在坐标x处射出一支箭，若有一个气球的直径的开始和结束坐标为 xstart，xend， 且满足  xstart ≤ x ≤ xend，则该气球会被引爆。可以射出的弓箭的数量没有限制。 弓箭一旦被射出之后，可以无限地前进。我们想找到使得所有气球全部被引爆，所需的弓箭的最小数量。
+**Example**
+输入:
+[[10,16], [2,8], [1,6], [7,12]]
+输出:
+2
+
+解释:
+对于该样例，我们可以在x = 6（射爆[2,8],[1,6]两个气球）和 x = 11（射爆另外两个气球）。
+**Program**
+贪心：无重叠区间个数！！
+```cpp
+class Solution {
+public:
+    int findMinArrowShots(vector<vector<int>>& points) {
+        if(points.size()==0) return 0;
+        sort(points.begin(), points.end(), [](const vector<int>& a, const vector<int>& b){
+            return a[1]<b[1];
+        });
+        vector<int> pre=points[0];
+        int ans=1;
+        for(int i=1;i<points.size();i++){
+            vector<int> cur=points[i];
+            if(pre[1]<cur[0]){
+                ans++;
+                pre=cur;
+            }
+        }
+        return ans;
+    }
+};
+```
+## 1433. 检查一个字符串是否可以打破另一个字符串
+**Description**
+给你两个字符串 s1 和 s2 ，它们长度相等，请你检查是否存在一个 s1  的排列可以打破 s2 的一个排列，或者是否存在一个 s2 的排列可以打破 s1 的一个排列。
+字符串 x 可以打破字符串 y （两者长度都为 n ）需满足对于所有 i（在 0 到 n - 1 之间）都有 x[i] >= y[i]（字典序意义下的顺序）。
+**Example**
+示例 1：
+输入：s1 = "abc", s2 = "xya"
+输出：true
+解释："ayx" 是 s2="xya" 的一个排列，"abc" 是字符串 s1="abc" 的一个排列，且 "ayx" 可以打破 "abc" 。
+
+示例 2：
+输入：s1 = "abe", s2 = "acd"
+输出：false
+解释：s1="abe" 的所有排列包括："abe"，"aeb"，"bae"，"bea"，"eab" 和 "eba" ，s2="acd" 的所有排列包括："acd"，"adc"，"cad"，"cda"，"dac" 和 "dca"。然而没有任何 s1 的排列可以打破 s2 的排列。也没有 s2 的排列能打破 s1 的排列。
+
+示例 3：
+输入：s1 = "leetcodee", s2 = "interview"
+输出：true
+ 
+提示：
+s1.length == n
+s2.length == n
+1 <= n <= 10^5
+所有字符串都只包含小写英文字母。
+**Program**
+```cpp
+class Solution {
+public:
+    bool checkIfCanBreak(string s1, string s2) {
+        sort(s1.begin(), s1.end());
+        sort(s2.begin(), s2.end());
+        //cout<<s1<<endl<<s2<<endl;
+        int a=0, b=0;
+        for(int i=0;i<s1.length();i++){
+            if(s1[i]<=s2[i]) b++;
+            if(s1[i]>=s2[i]) a++;
+        }
+        return b==s1.length()||a==s1.length();
+    }
+};
+```
+cnt数组合理的情况应该是这样的（不考虑0）：
+①--++
+②++--
+③-+-+
+④+-+-
+不可能的是：+--+/-++-，即sum在整个过程中不能变号！
+```cpp
+class Solution {
+public:
+    bool checkIfCanBreak(string s1, string s2) {
+        int cnt[26] = { 0 };
+        for (int i = 0; i < s1.size(); ++i) {
+            --cnt[s1[i] - 'a'];
+            ++cnt[s2[i] - 'a'];
+        }
+
+        int sum = 0;
+        bool big1 = true, big2 = true;
+        for (int i = 25; i >= 0; --i) {
+            sum += cnt[i];
+            if (big1 && sum > 0) big1 = false;  //如果s1更大，sum在整个过程中<=0
+            if (big2 && sum < 0) big2 = false;  //如果s2更大，sum在整个过程中>=0
+            if (!big1 && !big2) return false;
+        }
+
+        return sum==0;
+    }
+};
+
+```
+```cpp
+class Solution {
+public:
+    bool checkIfCanBreak(string s1, string s2) {
+        int cnt[26] = { 0 };
+        for (int i = 0; i < s1.size(); ++i) {
+            --cnt[s1[i] - 'a'];
+            ++cnt[s2[i] - 'a'];
+        }
+
+        int sum = 0;
+        bool flag=true;
+        int label=0;
+        bool big1 = true, big2 = true;
+        for (int i = 0; i <26; i++) {
+            sum += cnt[i];
+            if(flag&&sum!=0){
+                if(sum>0) label=1;
+                else if(sum<0) label=-1;
+                flag=false;
+            }
+            if(!flag&&sum!=0){
+                if(sum>0&&label==-1) return false; //sum变号
+                if(sum<0&&label==1) return false; //sum变号
+            }
+            // if (big1 && sum > 0) big1 = false;  //如果s1更大，sum在整个过程中<=0
+            // if (big2 && sum < 0) big2 = false;  //如果s2更大，sum在整个过程中>=0
+            // if (!big1 && !big2) return false;
+        }
+
+        return true;
+    }
+};
+
+```
+## 944. 删列造序
+**Description**
+给定由 N 个小写字母字符串组成的数组 A，其中每个字符串长度相等。
+你需要选出一组要删掉的列 D，对 A 执行删除操作，使 A 中剩余的每一列都是 非降序 排列的，然后请你返回 D.length 的最小可能值。
+删除 操作的定义是：选出一组要删掉的列，删去 A 中对应列中的所有字符，形式上，第 n 列为 [A[0][n], A[1][n], ..., A[A.length-1][n]]）。
+比如，有 A = ["abcdef", "uvwxyz"]，
+![image](/assets/img/algorithm/944_1.png)
+要删掉的列为 {0, 2, 3}，删除后 A 为["bef", "vyz"]， A 的列分别为["b","v"], ["e","y"], ["f","z"]。
+![image](/assets/img/algorithm/944_2.png)
+**Example**
+示例 1：
+输入：["cba", "daf", "ghi"]
+输出：1
+解释：
+当选择 D = {1}，删除后 A 的列为：["c","d","g"] 和 ["a","f","i"]，均为非降序排列。
+若选择 D = {}，那么 A 的列 ["b","a","h"] 就不是非降序排列了。
+
+示例 2：
+输入：["a", "b"]
+输出：0
+解释：D = {}
+
+示例 3：
+输入：["zyx", "wvu", "tsr"]
+输出：3
+解释：D = {0, 1, 2}
+ 
+提示：
+1 <= A.length <= 100
+1 <= A[i].length <= 1000
+**Program**
+```cpp
+class Solution {
+public:
+    int minDeletionSize(vector<string>& A) {
+        if(A.size()==1) return 0;
+        int ans=0;
+        int rows=A.size();
+        int cols=A[0].length();
+        for(int col=0;col<cols;col++){
+            for(int row=0;row<rows-1;row++){
+                if(A[row][col]>A[row+1][col]){
+                    ans++;
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+## 1247. 交换字符使得字符串相同
+**Description**
+有两个长度相同的字符串 s1 和 s2，且它们其中 只含有 字符 "x" 和 "y"，你需要通过「交换字符」的方式使这两个字符串相同。
+每次「交换字符」的时候，你都可以在两个字符串中各选一个字符进行交换。
+交换只能发生在两个不同的字符串之间，绝对不能发生在同一个字符串内部。也就是说，我们可以交换 s1[i] 和 s2[j]，但不能交换 s1[i] 和 s1[j]。
+最后，请你返回使 s1 和 s2 相同的最小交换次数，如果没有方法能够使得这两个字符串相同，则返回 -1 。
+**Example**
+示例 1：
+输入：s1 = "xx", s2 = "yy"
+输出：1
+解释：
+交换 s1[0] 和 s2[1]，得到 s1 = "yx"，s2 = "yx"。
+
+示例 2：
+输入：s1 = "xy", s2 = "yx"
+输出：2
+解释：
+交换 s1[0] 和 s2[0]，得到 s1 = "yy"，s2 = "xx" 。
+交换 s1[0] 和 s2[1]，得到 s1 = "xy"，s2 = "xy" 。
+注意，你不能交换 s1[0] 和 s1[1] 使得 s1 变成 "yx"，因为我们只能交换属于两个不同字符串的字符。
+
+示例 3：
+输入：s1 = "xx", s2 = "xy"
+输出：-1
+
+示例 4：
+输入：s1 = "xxyyxyxyxx", s2 = "xyyxyxxxyx"
+输出：4
+ 
+提示：
+1 <= s1.length, s2.length <= 1000
+s1, s2 只包含 'x' 或 'y'。
+**Program**
+解题思路
+1.拿到这个题第一念头是把字符串扫一遍，把差异项识别出来；稍微纸上画画就不难发现下面的规律：
+- 'xx'与'yy'、'yy'与'xx'，他们之间仅需要1步即可完成满足题面的交换
+- 'xy'与'yx'、'yx'与'xy'，他们之间需要2步即可完成满足题面的交换
+2.假设我们把1中两种情况分开记录，当遇到s1[i] = 'x'，s2[i] = 'y'，我们记录到xyCnt中；当遇到s1[i] = 'y'，s2[i] = 'x'，我们记录到yxCnt中，那么我们只需要统计xyCnt和yxCnt的个数即可完成计算。
+3.具体计算的规则：
+- 如果xyCnt+yxCnt是个奇数，那肯定是要返回-1的，因为肯定最右有两个字符是无法通过对调匹配的；
+- 排除上面的条件后，xyCnt+yxCnt肯定是个偶数，那么又分两种情况，即“奇数+奇数”和“偶数+偶数”；
+- 基于上面的分析，可以发现每2个xyCnt或yxCnt对应一次移动，1个xyCnt与1个yxCnt对应两次移动，详见代码中注释下面那段代码；
+```cpp
+class Solution {
+public:
+    int minimumSwap(string s1, string s2) {
+        int xyCnt=0, yxCnt=0;
+        int ans=0;
+        for(int i=0;i<s1.length();i++){
+            if(s1[i]=='x'&&s2[i]=='y') xyCnt++;
+            if(s1[i]=='y'&&s2[i]=='x') yxCnt++;
+        }
+        if((xyCnt+yxCnt)%2!=0) return -1;
+        ans+=xyCnt/2;
+        ans+=yxCnt/2;
+        xyCnt%=2;
+        yxCnt%=2;
+        if(xyCnt!=0) ans+=2;
+        return ans;
+    }
+};
+```
+## 948. 令牌放置
+**Description**
+你的初始能量为 P，初始分数为 0，只有一包令牌。
+令牌的值为 token[i]，每个令牌最多只能使用一次，可能的两种使用方法如下：
+如果你至少有 token[i] 点能量，可以将令牌置为正面朝上，失去 token[i] 点能量，并得到 1 分。
+如果我们至少有 1 分，可以将令牌置为反面朝上，获得 token[i] 点能量，并失去 1 分。
+在使用任意数量的令牌后，返回我们可以得到的最大分数。
+**Example**
+示例 1：
+输入：tokens = [100], P = 50
+输出：0
+
+示例 2：
+输入：tokens = [100,200], P = 150
+输出：1
+
+示例 3：
+输入：tokens = [100,200,300,400], P = 200
+输出：2
+
+提示：
+tokens.length <= 1000
+0 <= tokens[i] < 10000
+0 <= P < 10000
+**Program**
+贪心：从小到大尽可能获取分数，否则从大到小尽可能获取能量！
+```cpp
+class Solution {
+public:
+    int bagOfTokensScore(vector<int>& tokens, int P) {
+        int left=0, right=tokens.size()-1;
+        int scores=0;
+        int ans=0;
+        sort(tokens.begin(), tokens.end());
+        while(left<=right){
+            if(P>=tokens[left]){
+                P-=tokens[left++];
+                scores++;
+                ans=max(ans, scores);
+            }else{
+                if(scores<=0) return ans;
+                P+=tokens[right--];
+                scores--;
+            }
+        }
+        return ans;
+    }
+};
+```
+## 455. 分发饼干
+**Description**
+假设你是一位很棒的家长，想要给你的孩子们一些小饼干。但是，每个孩子最多只能给一块饼干。对每个孩子 i ，都有一个胃口值 gi ，这是能让孩子们满足胃口的饼干的最小尺寸；并且每块饼干 j ，都有一个尺寸 sj 。如果 sj >= gi ，我们可以将这个饼干 j 分配给孩子 i ，这个孩子会得到满足。你的目标是尽可能满足越多数量的孩子，并输出这个最大数值。
+注意：
+你可以假设胃口值为正。
+一个小朋友最多只能拥有一块饼干。
+**Example**
+示例 1:
+输入: [1,2,3], [1,1]
+输出: 1
+
+解释:
+你有三个孩子和两块小饼干，3个孩子的胃口值分别是：1,2,3。
+虽然你有两块小饼干，由于他们的尺寸都是1，你只能让胃口值是1的孩子满足。
+所以你应该输出1。
+
+示例 2:
+输入: [1,2], [1,2,3]
+输出: 2
+
+解释:
+你有两个孩子和三块小饼干，2个孩子的胃口值分别是1,2。
+你拥有的饼干数量和尺寸都足以让所有孩子满足。
+所以你应该输出2.
+**Program**
+```cpp
+class Solution {
+public:
+    int findContentChildren(vector<int>& g, vector<int>& s) {
+        sort(g.begin(), g.end());
+        sort(s.begin(), s.end());
+        int gIdx=0, sIdx=0;
+        int gLen=g.size(), sLen=s.size();
+        while(gIdx<gLen&&sIdx<sLen){
+            if(s[sIdx]>=g[gIdx]){
+                sIdx++;
+                gIdx++;
+            }else sIdx++;
+        }
+        return gIdx;
+    }
+};
+```
+## 955. 删列造序 II
+**Description**
+给定由 N 个小写字母字符串组成的数组 A，其中每个字符串长度相等。
+选取一个删除索引序列，对于 A 中的每个字符串，删除对应每个索引处的字符。
+比如，有 A = ["abcdef", "uvwxyz"]，删除索引序列 {0, 2, 3}，删除后 A 为["bef", "vyz"]。
+假设，我们选择了一组删除索引 D，那么在执行删除操作之后，最终得到的数组的元素是按 字典序（A[0] <= A[1] <= A[2] ... <= A[A.length - 1]）排列的，然后请你返回 D.length 的最小可能值。
+**Example**
+示例 1：
+输入：["ca","bb","ac"]
+输出：1
+解释：
+删除第一列后，A = ["a", "b", "c"]。
+现在 A 中元素是按字典排列的 (即，A[0] <= A[1] <= A[2])。
+我们至少需要进行 1 次删除，因为最初 A 不是按字典序排列的，所以答案是 1。
+
+示例 2：
+输入：["xc","yb","za"]
+输出：0
+解释：
+A 的列已经是按字典序排列了，所以我们不需要删除任何东西。
+注意 A 的行不需要按字典序排列。
+也就是说，A[0][0] <= A[0][1] <= ... 不一定成立。
+
+示例 3：
+输入：["zyx","wvu","tsr"]
+输出：3
+解释：
+我们必须删掉每一列。
+
+提示：
+1 <= A.length <= 100
+1 <= A[i].length <= 100
+**Program**
+贪心：很容易分析出，两个相邻子串靠前一个字符如果满足要求，那么有两种情况：
+- ①两字符相等，则必须继续比较两字符串后面的字符是否满足要求；
+- ②前一个字符串的字符比后一个严格小，则不用继续比较后面的字符了！
+**问题在于如何代码表示这种情况。**
+开一个表示各行字符串是否继续比较的数组，先按列判断每行是否升序，如果升序，再确定哪些行可以不用再比较后面的字符。
+例如：
+abx
+agz
+bgc
+bfc
+①比较第一列，满足升序，再确定哪些行不用再次比对后续字符，可以发现第二行和第三行不用继续比对了！记录vis[2]=false即可
+②比较第二列，不满足升序，继续下一列比较；
+③比较第三列，满足升序，现需要继续比较12,34行，确定不用再次对比行，发现第12行不用继续比对了！记录vis[1]=false即可
+当所有行不用比较或所有列对比完了结束。
+```cpp
+class Solution {
+public:
+    int minDeletionSize(vector<string>& A) {
+        int rows=A.size();
+        int cols=A[0].length();
+        vector<bool> vis(rows, true); //记录哪些行需要进一步比较
+        int ans=0;
+        for(int col=0;col<cols;col++){
+            bool bPass=true;
+            for(int row=0;row<rows-1;row++){
+                if(vis[row]&&A[row][col]>A[row+1][col]){
+                    ans++;
+                    bPass=false;
+                    break;
+                }
+            }
+            if(!bPass) continue;
+            int cnt=0;
+            for(int row=0;row<rows-1;row++){
+                if(A[row][col]<A[row+1][col]){
+                    vis[row]=false; //该行比下一行第一个字符严格小，不用再次比较
+                    cnt++;
+                }
+            }
+            if(cnt==rows-1){
+                break;
+            }
+        }
+        return ans;
+    }
+};
+```
+## 984. 不含 AAA 或 BBB 的字符串
+**Description**
+给定两个整数 A 和 B，返回任意字符串 S，要求满足：
+- S 的长度为 A + B，且正好包含 A 个 'a' 字母与 B 个 'b' 字母；
+- 子串 'aaa' 没有出现在 S 中；
+- 子串 'bbb' 没有出现在 S 中。
+**Example**
+示例 1：
+输入：A = 1, B = 2
+输出："abb"
+解释："abb", "bab" 和 "bba" 都是正确答案。
+
+示例 2：
+输入：A = 4, B = 1
+输出："aabaa"
+ 
+提示：
+0 <= A <= 100
+0 <= B <= 100
+对于给定的 A 和 B，保证存在满足要求的 S。
+**Program**
+```cpp
+class Solution {
+public:
+    struct Node{
+        char ch;
+        int count;
+        Node(){}
+        Node(char Ch, int Count):ch(Ch),count(Count){}
+        bool operator < (const Node& tmp) const{
+            return count<tmp.count;
+        }
+    };
+    string strWithout3a3b(int A, int B) {
+        Node a('a', A);
+        Node b('b', B);
+        priority_queue<Node> pq;
+        pq.push(a);pq.push(b);
+        string res="";
+        while(!pq.empty()){
+            Node now=pq.top();pq.pop();
+            int len=res.length();
+            if(len>=2&&res[len-1]==res[len-2]&&res[len-1]==now.ch){
+                if(pq.empty()) break;
+                Node next=pq.top();pq.pop();
+                res+=next.ch;
+                next.count--;
+                if(next.count>0) pq.push(next);
+                pq.push(now);
+            }else{
+                res+=now.ch;
+                now.count--;
+                if(now.count>0) pq.push(now);
+            }
+            //cout<<res<<endl;
+        }
+        return res;
+    }
+};
+```
+## 991. 坏了的计算器
+**Description**
+在显示着数字的坏计算器上，我们可以执行以下两种操作：
+- 双倍（Double）：将显示屏上的数字乘 2；
+- 递减（Decrement）：将显示屏上的数字减 1 。
+最初，计算器显示数字 X。
+
+返回显示数字 Y 所需的最小操作数。
+**Example**
+示例 1：
+输入：X = 2, Y = 3
+输出：2
+解释：先进行双倍运算，然后再进行递减运算 {2 -> 4 -> 3}.
+
+示例 2：
+输入：X = 5, Y = 8
+输出：2
+解释：先递减，再双倍 {5 -> 4 -> 8}.
+
+示例 3：
+输入：X = 3, Y = 10
+输出：3
+解释：先双倍，然后递减，再双倍 {3 -> 6 -> 5 -> 10}.
+
+示例 4：
+输入：X = 1024, Y = 1
+输出：1023
+解释：执行递减运算 1023 次
+ 
+提示：
+1 <= X <= 10^9
+1 <= Y <= 10^9
+**Program**
+思路
+除了对 X 执行乘 2 或 减 1 操作之外，我们也可以对 Y 执行除 2（当 Y 是偶数时）或者加 1 操作。
+这样做的动机是我们可以总是贪心地执行除 2 操作：
+- 当 Y 是偶数，如果先执行 2 次加法操作，再执行 1 次除法操作，我们可以通过先执行 1 次除法操作，再执行 1 次加法操作以使用更少的操作次数得到相同的结果 [(Y+2) / 2 vs Y/2 + 1]。
+- 当 Y 是奇数，如果先执行 3 次加法操作，再执行 1 次除法操作，我们可以将其替代为顺次执行加法、除法、加法操作以使用更少的操作次数得到相同的结果 [(Y+3) / 2 vs (Y+1) / 2 + 1]。
+算法
+当 Y 大于 X 时，如果它是奇数，我们执行加法操作，否则执行除法操作。之后，我们需要执行 X - Y 次加法操作以得到 X。
+
+```cpp
+class Solution {
+public:
+    vector<int> nums;
+    int brokenCalc(int X, int Y) {
+        int ans=0;
+        while(Y>X){
+            ans++;
+            if((Y&1)==0){
+                Y/=2;
+            }else Y++;
+        }
+        return ans+X-Y;
+    }
+};
+```
+## 1276. 不浪费原料的汉堡制作方案
+**Description**
+圣诞活动预热开始啦，汉堡店推出了全新的汉堡套餐。为了避免浪费原料，请你帮他们制定合适的制作计划。
+给你两个整数 tomatoSlices 和 cheeseSlices，分别表示番茄片和奶酪片的数目。不同汉堡的原料搭配如下：
+- 巨无霸汉堡：4 片番茄和 1 片奶酪
+- 小皇堡：2 片番茄和 1 片奶酪
+请你以 [total_jumbo, total_small]（[巨无霸汉堡总数，小皇堡总数]）的格式返回恰当的制作方案，使得剩下的番茄片 tomatoSlices 和奶酪片 cheeseSlices 的数量都是 0。
+
+如果无法使剩下的番茄片 tomatoSlices 和奶酪片 cheeseSlices 的数量为 0，就请返回 []。
+**Example**
+示例 1：
+输入：tomatoSlices = 16, cheeseSlices = 7
+输出：[1,6]
+解释：制作 1 个巨无霸汉堡和 6 个小皇堡需要 4*1 + 2*6 = 16 片番茄和 1 + 6 = 7 片奶酪。不会剩下原料。
+
+示例 2：
+输入：tomatoSlices = 17, cheeseSlices = 4
+输出：[]
+解释：只制作小皇堡和巨无霸汉堡无法用光全部原料。
+
+示例 3：
+输入：tomatoSlices = 4, cheeseSlices = 17
+输出：[]
+解释：制作 1 个巨无霸汉堡会剩下 16 片奶酪，制作 2 个小皇堡会剩下 15 片奶酪。
+
+示例 4：
+输入：tomatoSlices = 0, cheeseSlices = 0
+输出：[0,0]
+
+示例 5：
+输入：tomatoSlices = 2, cheeseSlices = 1
+输出：[0,1]
+
+提示：
+0 <= tomatoSlices <= 10^7
+0 <= cheeseSlices <= 10^7
+**Program**
+```cpp
+class Solution {
+public:
+    vector<int> numOfBurgers(int tomatoSlices, int cheeseSlices) {
+        if(tomatoSlices%2!=0) return {};
+        int x=tomatoSlices/2-cheeseSlices;
+        int y=2*cheeseSlices-tomatoSlices/2;
+        if(x>=0&&y>=0) return {x, y};
+        return {};
+    }
+};
+```
+## 1253. 重构 2 行二进制矩阵
+**Description**
+给你一个 2 行 n 列的二进制数组：
+- 矩阵是一个二进制矩阵，这意味着矩阵中的每个元素不是 0 就是 1。
+- 第 0 行的元素之和为 upper。
+- 第 1 行的元素之和为 lower。
+- 第 i 列（从 0 开始编号）的元素之和为 colsum[i]，colsum 是一个长度为 n 的整数数组。
+你需要利用 upper，lower 和 colsum 来重构这个矩阵，并以二维整数数组的形式返回它。
+如果有多个不同的答案，那么任意一个都可以通过本题。
+如果不存在符合要求的答案，就请返回一个空的二维数组。
+**Example**
+示例 1：
+输入：upper = 2, lower = 1, colsum = [1,1,1]
+输出：[[1,1,0],[0,0,1]]
+解释：[[1,0,1],[0,1,0]] 和 [[0,1,1],[1,0,0]] 也是正确答案。
+
+示例 2：
+输入：upper = 2, lower = 3, colsum = [2,2,1,1]
+输出：[]
+
+示例 3：
+输入：upper = 5, lower = 5, colsum = [2,1,2,0,1,0,1,2,0,1]
+输出：[[1,1,1,0,1,0,0,1,0,0],[1,0,1,0,0,0,1,1,0,1]]
+ 
+提示：
+1 <= colsum.length <= 10^5
+0 <= upper, lower <= colsum.length
+0 <= colsum[i] <= 2
+**Program**
+先安排colsum[i]=2的位置，而后安排colsum[i]=1的位置。
+```cpp
+class Solution {
+public:
+    vector<vector<int>> reconstructMatrix(int upper, int lower, vector<int>& colsum) {
+        int cols=colsum.size();
+        vector<vector<int>> res(2, vector<int>(cols, 0));
+        int sum=0;
+        int nTwo=0;
+        vector<bool> vis(cols, false);
+        for(int i=0;i<cols;i++){
+            sum+=colsum[i];
+            if(colsum[i]==2){
+                res[0][i]=res[1][i]=1;
+                nTwo++;
+                vis[i]=true;
+            }
+        }
+        if(sum!=upper+lower) return {};
+        upper-=nTwo;
+        lower-=nTwo;
+        if(upper<0||lower<0) return {};
+        for(int i=0;i<cols;i++){
+            if(vis[i]) continue;
+            if(colsum[i]==1){
+                if(upper>0){
+                    res[0][i]=1;
+                    upper--;
+                }else if(lower>0){
+                    res[1][i]=1;
+                    lower--;
+                }else return {};
+            }
+        }
+        return res;
+    }
+};
+```
+## 1005. K 次取反后最大化的数组和
+**Description**
+给定一个整数数组 A，我们只能用以下方法修改该数组：我们选择某个个索引 i 并将 A[i] 替换为 -A[i]，然后总共重复这个过程 K 次。（我们可以多次选择同一个索引 i。）
+以这种方式修改数组后，返回数组可能的最大和。
+**Example**
+示例 1：
+输入：A = [4,2,3], K = 1
+输出：5
+解释：选择索引 (1,) ，然后 A 变为 [4,-2,3]。
+
+示例 2：
+输入：A = [3,-1,0,2], K = 3
+输出：6
+解释：选择索引 (1, 2, 2) ，然后 A 变为 [3,1,0,2]。
+
+示例 3：
+输入：A = [2,-3,-1,5,-4], K = 2
+输出：13
+解释：选择索引 (1, 4) ，然后 A 变为 [2,3,-1,5,4]。
+ 
+提示：
+1 <= A.length <= 10000
+1 <= K <= 10000
+-100 <= A[i] <= 100
+**Program**
+设负数个数为nF,零个数为nZ：
+①nF==0，选择最小值操作K-nF次；
+②nF<K，且nZ=0，选择最小的nF个负数进行操作，选择绝对值最小的数进行剩余K-nF次操作；
+③nF<K，且nZ>0，选择最小的nF个负数进行操作，对0进行K-nF操作，数组全正数；
+③nF=K，选择最小的nF个负数进行操作，数组全正数；
+④nF>K，选择最小的nF个负数进行操作。
+综上：只需要对数组从小到大排序，对前min(nF,K)进行操作，判断数组中零的个数，以及记录绝对值最小的位置。
+判断K-nF大小，若K-nF>0且nZ！=0就要对绝对值最小的值进行剩余K-nF次操作。
+```cpp
+class Solution {
+public:
+    int largestSumAfterKNegations(vector<int>& A, int K) {
+        sort(A.begin(), A.end());
+        int nZero=0;
+        int minAbs=INT_MAX;
+        int minIdx=-1;
+        for(int i=0;i<A.size();i++){
+            if(A[i]<0&&K>0){
+                A[i]=-A[i];
+                 K--;
+            }
+            if(A[i]==0) nZero++;
+            if(abs(A[i])<minAbs){
+                minAbs=abs(A[i]);
+                minIdx=i;
+            }
+        }
+        if(K>0&&nZero==0){
+            A[minIdx]=A[minIdx]*((int)pow(-1, K%2));
+        }
+        int sum=0;
+        for(int i=0;i<A.size();i++) sum+=A[i];
+        return sum;
+    }
+};
+```
+## 258. 各位相加
+**Description**
+给定一个非负整数 num，反复将各个位上的数字相加，直到结果为一位数。
+**Example**
+示例:
+输入: 38
+输出: 2
+解释: 各位相加的过程为：3 + 8 = 11, 1 + 1 = 2。 由于 2 是一位数，所以返回 2。
+进阶:
+你可以不使用循环或者递归，且在 O(1) 时间复杂度内解决这个问题吗？
+**Program**
+![image](/assets/img/algorithm/258_example_01.png)
+如图所示，最后剩余的X_0+Y_0+Z_0有可能超过各位数，继续进行分解一定可以只剩下个位！！而要考虑为9的倍数的情况，因为如果num%9有可能为0，(num-1)%9+1即可。
+```cpp
+class Solution {
+public:
+    int addDigits(int num) {
+        return (num - 1) % 9 + 1;
+    }
+};
+```
+## 面试题14- I. 剪绳子
+**Description**
+给你一根长度为 n 的绳子，请把绳子剪成整数长度的 m 段（m、n都是整数，n>1并且m>1），每段绳子的长度记为 k[0],k[1]...k[m-1] 。请问 k[0]*k[1]*...*k[m-1] 可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+**Example**
+示例 1：
+输入: 2
+输出: 1
+解释: 2 = 1 + 1, 1 × 1 = 1
+
+示例 2:
+输入: 10
+输出: 36
+解释: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36
+
+提示：
+2 <= n <= 58
+**Program**
+![image](/assets/img/algorithm/14_I_01.png)
+![image](/assets/img/algorithm/14_I_02.png)
+![image](/assets/img/algorithm/14_I_03.png)
+
+```cpp
+class Solution {
+public:
+    int cuttingRope(int n) {
+        if(n<=3) return n-1;
+        int mod=3;
+        int res=n%mod;
+        int count=n/mod;
+        int ans=0;
+        if(res==2) ans=(int)pow(mod,count)*2;
+        else if(res==1) ans=(int)pow(mod, count-1)*4;
+        else ans=(int)pow(mod, count);
+        return ans;
+    }
+};
+```
+## 537. 复数乘法
+**Description**
+给定两个表示复数的字符串。
+返回表示它们乘积的字符串。注意，根据定义 i2 = -1 。
+**Example**
+示例 1:
+输入: "1+1i", "1+1i"
+输出: "0+2i"
+解释: (1 + i) * (1 + i) = 1 + i2 + 2 * i = 2i ，你需要将它转换为 0+2i 的形式。
+
+示例 2:
+输入: "1+-1i", "1+-1i"
+输出: "0+-2i"
+解释: (1 - i) * (1 - i) = 1 + i2 - 2 * i = -2i ，你需要将它转换为 0+-2i 的形式。
+
+注意:
+输入字符串不包含额外的空格。
+输入字符串将以 a+bi 的形式给出，其中整数 a 和 b 的范围均在 [-100, 100] 之间。输出也应当符合这种形式。
+**Program**
+```cpp
+class Solution {
+public:
+    int sToi(string str){
+        int ans=0;
+        for(int i=0;i<str.length();i++){
+            ans=ans*10+str[i]-'0';
+        }
+        return ans;
+    }
+    string iTos(int a){
+        string res="";
+        int flag=1;
+        if(a==0) return "0";
+        if(a<0) {flag=-1;a=-a;}
+        while(a!=0){
+            res+=a%10+'0';
+            a/=10;
+        }
+        reverse(res.begin(), res.end());
+        if(flag==-1) res="-"+res;
+        return res;
+    }
+    pair<int,int> process(string str){
+        int idx=str.find('+');
+        //cout<<idx<<endl;
+        string sa=str.substr(0, idx);
+        string sb=str.substr(idx+1, str.length()-idx-2);
+        //cout<<sa<<" "<<sb<<endl;
+        int flagA=1,flagB=1;
+        if(sa[0]=='-'){flagA=-1; sa=sa.substr(1);}
+        if(sb[0]=='-'){flagB=-1; sb=sb.substr(1);}
+        int a=sToi(sa);
+        int b=sToi(sb);
+        //cout<<a*flagA<<" "<<b*flagB<<endl;
+        return {a*flagA, b*flagB};
+    }
+    string complexNumberMultiply(string a, string b) {
+        pair<int,int> pa=process(a);
+        pair<int,int> pb=process(b);
+        int aa=pa.first*pb.first-pa.second*pb.second;
+        int bb=pa.first*pb.second+pa.second*pb.first;
+        //cout<<aa<<":"<<bb<<endl;
+        string res="";
+        res=iTos(aa)+"+"+iTos(bb)+"i";
+        //cout<<res<<endl;
+        return res;
+    }
+};
+```
+```cpp
+class Solution {
+public:
+    // int sToi(string str){
+    //     int ans=0;
+    //     for(int i=0;i<str.length();i++){
+    //         ans=ans*10+str[i]-'0';
+    //     }
+    //     return ans;
+    // }
+    // string iTos(int a){
+    //     string res="";
+    //     int flag=1;
+    //     if(a==0) return "0";
+    //     if(a<0) {flag=-1;a=-a;}
+    //     while(a!=0){
+    //         res+=a%10+'0';
+    //         a/=10;
+    //     }
+    //     reverse(res.begin(), res.end());
+    //     if(flag==-1) res="-"+res;
+    //     return res;
+    // }
+    pair<int,int> process(string str){
+        int idx=str.find('+');
+        //cout<<idx<<endl;
+        string sa=str.substr(0, idx);
+        string sb=str.substr(idx+1, str.length()-idx-2);
+        //cout<<sa<<" "<<sb<<endl;
+        int flagA=1,flagB=1;
+        if(sa[0]=='-'){flagA=-1; sa=sa.substr(1);}
+        if(sb[0]=='-'){flagB=-1; sb=sb.substr(1);}
+        int a=stoi(sa);
+        int b=stoi(sb);
+        //cout<<a*flagA<<" "<<b*flagB<<endl;
+        return {a*flagA, b*flagB};
+    }
+    string complexNumberMultiply(string a, string b) {
+        pair<int,int> pa=process(a);
+        pair<int,int> pb=process(b);
+        int aa=pa.first*pb.first-pa.second*pb.second;
+        int bb=pa.first*pb.second+pa.second*pb.first;
+        //cout<<aa<<":"<<bb<<endl;
+        string res="";
+        res=to_string(aa)+"+"+to_string(bb)+"i";
+        //cout<<res<<endl;
+        return res;
+    }
+};
+```
+## 1154. 一年中的第几天
+**Description**
+给你一个按 YYYY-MM-DD 格式表示日期的字符串 date，请你计算并返回该日期是当年的第几天。
+通常情况下，我们认为 1 月 1 日是每年的第 1 天，1 月 2 日是每年的第 2 天，依此类推。每个月的天数与现行公元纪年法（格里高利历）一致。
+**Example**
+示例 1：
+输入：date = "2019-01-09"
+输出：9
+
+示例 2：
+输入：date = "2019-02-10"
+输出：41
+
+示例 3：
+输入：date = "2003-03-01"
+输出：60
+
+示例 4：
+输入：date = "2004-03-01"
+输出：61
+ 
+提示：
+date.length == 10
+date[4] == date[7] == '-'，其他的 date[i] 都是数字。
+date 表示的范围从 1900 年 1 月 1 日至 2019 年 12 月 31 日。
+**Program**
+```cpp
+class Solution {
+public:
+    const int month_days[2][12]={
+        31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
+        31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
+    };
+    bool isLeepYear(int year){
+        if((year%4==0&&year%100!=0)||(year%400==0)) return true;
+        return false;
+    }
+    int dayOfYear(string date) {
+        int idx1=date.find('-');
+        int year=stoi(date.substr(0, idx1));
+        int idx2=date.find('-', idx1+1);
+        int month=stoi(date.substr(idx1+1,idx2-idx1-1));
+        int day=stoi(date.substr(idx2+1));
+        //cout<<year<<" "<<month<<" "<<day<<endl;
+        year=isLeepYear(year)?1:0;
+        int ans=0;
+        for(int m=0;m<month-1;m++){
+            ans+=month_days[year][m];
+        }
+        ans+=day;
         return ans;
     }
 };
