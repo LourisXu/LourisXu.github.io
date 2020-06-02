@@ -31,8 +31,9 @@ toc: true
 - 类的成员变量默认值：数值型为0，布尔型为false，String为NULL，对象为NULL，字符型为空字符。
 - 类的euqals方法：**①如果子类能够拥有自己的相等概念， 则对称性需求将强制采用 getClass 进行检测；②如果由超类决定相等的概念，那么就可以使用 instanceof进行检测**， 这样可以在不同子类的对象之间进行相等的比较。
 - @Override 对覆盖超类的方法进行标记避免重写时参数类型不同报错。
-- 在接口中**不能包含实例域或静态方法**，但却可以包含常量。接口的方法默认为公有，不必写出public。在 Java SE 8 中，允许在接口中增加静态方法。理论上讲，没有任何理由认为这是不合法
-的。只是这有违于将接口作为抽象规范的初衷。静态方法通常放在伴随类中。
+- 在接口中**不能包含实例域或静态方法**，但却可以包含常量。接口的方法默认为公有，不必写出public。在 Java SE 8 中，允许在接口中增加静态方法。理论上讲，没有任何理由认为这是不合法的。只是这有违于将接口作为抽象规范的初衷。静态方法通常放在伴随类中。
+- 只有内部类可以是私有类，而常规类只可以具有包可见性，或公有可见性。
+- 与其他内部类相比较，局部类还有一个优点。它们不仅能够访问包含它们的外部类， 还可以访问局部变量。**<span style="border-bottom:1px solid">不过，那些局部变量必须事实上为 final。有些情况需要更新变量，补救的方法是使用一个长度为 1 的数组，然后更新数组元素值即可！</span>**
 ```
 ©Override public boolean equals(Object other)
 //写另一个equals方法
@@ -229,8 +230,17 @@ class Manager extends Employee{
 
 ## 函数式接口
 对于只有一个抽象方法的接口， 需要这种接口的对象时， 就可以提供一个 lambda 表达式。这种接口称为函数式接口 （ functional interface )。lambda表达式可以转换为函数式接口。
-···java
+```java
 Arrays.sort (words, (first, second) -> first.length() - second.length()) ;
 Comparator<String> comp
 = (first, second) // Same as (String first, String second) -> first.length() - second.length();
+```
+
+## 数组的clone方法
+**一维深复制，二维浅复制(引用)**
+所有数组类型都有一个 public 的 clone 方法， 而不是 protected: 可以用这个方法建立一个新数组， 包含原数组所有元素的副本。例如：
+```java
+int[] luckyNumbers = { 2, 3, 5, 7, 11, 13 };
+int[] cloned = luckyNumbers.clone();
+cloned[5] = 12; // doesn't change luckyNumbers[5]
 ```

@@ -123,6 +123,7 @@ toc: true
 |342. 4的幂|Easy|位运算|
 |343. 整数拆分|Medium|动态规划/数学|
 |357. 计算各个位数不同的数字个数|Medium|动态规划|
+|367. 有效的完全平方数|Easy|数学|
 |368. 最大整除子集|Medium|动态规划|
 |371. 两整数之和|Easy|位运算|
 |375. 猜数字大小 II|Medium|动态规划|
@@ -133,6 +134,7 @@ toc: true
 |393. UTF-8 编码验证|Medium|位运算|
 |397. 整数替换|Medium|位运算、动态规划|
 |399. 除法求值|Medium|并查集|
+|400. 第N个数字|Medium|数学|
 |401. 二进制手表|Easy|位运算|
 |402. 移掉K位数字|Medium|贪心|
 |405. 数字转换为十六进制数|Easy|位运算|
@@ -161,6 +163,7 @@ toc: true
 |547. 朋友圈|Medium|并查集|
 |559. N叉树的最大深度|Easy|广搜|
 |576. 出界的路径数|Medium|动态规划|
+|593. 有效的正方形|Medium|数学|
 |621. 任务调度器|Medium|贪心|
 |638. 大礼包|Medium|动态规划|
 |646. 最长数对链|Medium|动态规划|
@@ -212,6 +215,7 @@ toc: true
 |948. 令牌放置|Medium|贪心|
 |955. 删列造序 II|Medium|贪心|
 |959. 由斜杠划分区域|Medium|并查集|
+|976. 三角形的最大周长|Easy|数学|
 |984. 不含 AAA 或 BBB 的字符串|Medium|贪心|
 |990. 等式方程的可满足性|Medium|并查集|
 |991. 坏了的计算器|Medium|贪心|
@@ -227,9 +231,11 @@ toc: true
 |1111. 有效括号的嵌套深度|Medium|贪心|
 |1129. 颜色交替的最短路径|Medium|广搜|
 |1131. 绝对值表达式的最大值|Medium|位运算+数学|
+|1139. 最大的以 1 为边界的正方形|Medium|动态规划|
 |1154. 一年中的第几天|Easy|数学|
 |1202. 交换字符串中的元素|Medium|并查集|
 |1217. 玩筹码|Medium|贪心|
+|1218. 最长定差子序列|Medium|动态规划变体|
 |1221. 分割平衡字符串|Easy|贪心|
 |1239. 串联字符串的最大长度|Medium|位运算+暴力|
 |1247. 交换字符使得字符串相同|Medium|贪心|
@@ -258,9 +264,15 @@ toc: true
 |面试题32 - II. 从上到下打印二叉树 II|Easy|广搜|
 |面试题32 - III. 从上到下打印二叉树 III|Medium|广搜|
 面试题14- I. 剪绳子|Medium|数学|
+|面试题 08.11. 硬币|Medium|动态规划|
+|面试题 16.05. 阶乘尾数|Easy|数学|
 |面试题 16.19. 水域大小|Medium|广搜|
+|面试题17. 打印从1到最大的n位数|Easy|数学|
+|面试题 17.06. 2出现的次数|Medium|数学|
 |面试题 17.22. 单词转换|Medium|双向广搜|
 |面试题 17.07. 婴儿名字|Medium|并查集|
+|面试题42. 连续子数组的最大和|Easy|动规|
+|面试题67. 把字符串转换成整数|Medium|数学|
 
 ## 1.两数之和
 **Description**
@@ -16499,6 +16511,509 @@ public:
             ans+=month_days[year][m];
         }
         ans+=day;
+        return ans;
+    }
+};
+```
+## 976. 三角形的最大周长
+**Description**
+给定由一些正数（代表长度）组成的数组 A，返回由其中三个长度组成的、面积不为零的三角形的最大周长。
+如果不能形成任何面积不为零的三角形，返回 0。
+**Example**
+示例 1：
+输入：[2,1,2]
+输出：5
+
+示例 2：
+输入：[1,2,1]
+输出：0
+
+示例 3：
+输入：[3,2,3,4]
+输出：10
+
+示例 4：
+输入：[3,6,2,3]
+输出：8
+ 
+提示：
+3 <= A.length <= 10000
+1 <= A[i] <= 10^6
+**Program**
+三角形中，较短的两条边之和必须大于第三条边。
+```cpp
+class Solution {
+public:
+    int largestPerimeter(vector<int>& A) {
+        sort(A.begin(), A.end(), greater<int>());
+        for(int i=0;i<A.size()-2;i++){
+            if(A[i+2]+A[i+1]>A[i]) return A[i]+A[i+1]+A[i+2];
+        }
+        return 0;
+    }
+};
+```
+## 400. 第N个数字
+**Description**
+在无限的整数序列 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ...中找到第 n 个数字。
+注意:
+n 是正数且在32位整数范围内 ($n < 2^31$)。
+**Example**
+示例 1:
+输入:
+3
+输出:
+3
+
+示例 2:
+输入:
+11
+输出:
+0
+
+说明:
+第11个数字在序列 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ... 里是0，它是10的一部分。
+**Program**
+$[0, 9]$这个区间，长度为9，每个数字只有1位，共有$9*1$个数字
+$[10, 99]$这个区间，长度为90，每个数字只有2位，共有$90*2$个数字
+$[100, 999]$这个区间，长度为900，每个数字只有3位，共有$900*3$个数字
+因此本题可以先得到数字所在的区间，然后再根据n和bit的关系找到具体的数字，最后在这个数字中找特定的那一位。
+```cpp
+class Solution {
+public:
+    int findNthDigit(int n) {
+        long long bit=1, count=9;
+        while(n-bit*count>0){
+            n-=bit*count;
+            bit++;
+            count*=10;
+        }
+        int num=(int)pow(10, bit-1) + (n-1)/bit;  //n所在的数字
+        int pos=(n-1)%bit;  //n所在该数字中的位置
+        string str=to_string(num);
+        return str[pos] - '0';
+    }
+};
+```
+## 面试题67. 把字符串转换成整数
+**Description**
+写一个函数 StrToInt，实现把字符串转换成整数这个功能。不能使用 atoi 或者其他类似的库函数。
+
+首先，该函数会根据需要丢弃无用的开头空格字符，直到寻找到第一个非空格的字符为止。
+当我们寻找到的第一个非空字符为正或者负号时，则将该符号与之后面尽可能多的连续数字组合起来，作为该整数的正负号；假如第一个非空字符是数字，则直接将其与之后连续的数字字符组合起来，形成整数。
+该字符串除了有效的整数部分之后也可能会存在多余的字符，这些字符可以被忽略，它们对于函数不应该造成影响。
+注意：假如该字符串中的第一个非空格字符不是一个有效整数字符、字符串为空或字符串仅包含空白字符时，则你的函数不需要进行转换。
+在任何情况下，若函数不能进行有效的转换时，请返回 0。
+
+说明：
+假设我们的环境只能存储 32 位大小的有符号整数，那么其数值范围为 [−231,  231 − 1]。如果数值超过这个范围，请返回  INT_MAX ($2^31 − 1$) 或 INT_MIN ($−2^31$) 。
+**Example**
+示例 1:
+输入: "42"
+输出: 42
+
+示例 2:
+输入: "   -42"
+输出: -42
+解释: 第一个非空白字符为 '-', 它是一个负号。
+     我们尽可能将负号与后面所有连续出现的数字组合起来，最后得到 -42 。
+
+示例 3:
+输入: "4193 with words"
+输出: 4193
+解释: 转换截止于数字 '3' ，因为它的下一个字符不为数字。
+
+示例 4:
+输入: "words and 987"
+输出: 0
+解释: 第一个非空字符是 'w', 但它不是数字或正、负号。
+     因此无法执行有效的转换。
+
+示例 5:
+输入: "-91283472332"
+输出: -2147483648
+解释: 数字 "-91283472332" 超过 32 位有符号整数范围。
+     因此返回 INT_MIN ($−2^31$) 。
+**Program**
+```cpp
+class Solution {
+public:
+    int strToInt(string str) {
+        int start=-1, end=-1;
+        while(str[0]==' ') str.erase(0, 1); //去掉前缀空格
+        if(str.length()==0||!(str[0]=='+'||str[0]=='-'||(str[0]>='0'&&str[0]<='9'))) return 0;
+        int flag=1;
+        if(str[0]=='+') str.erase(0, 1);
+        else if(str[0]=='-'){flag=-1;str.erase(0, 1);}
+        int idx=0;
+        while(str[idx]>='0'&&str[idx]<='9'){
+            if(start==-1){
+                start=idx;
+                end=idx;
+            }else{
+                end++;
+            }
+            idx++;
+        }
+        if(start==-1) return 0;
+        str = str.substr(start, end-start+1);
+        long long ans=0;
+        for(int i=0;i<str.length();i++){
+            ans=ans*10+flag*(str[i]-'0');
+            if(ans<INT_MIN) return INT_MIN;
+            if(ans>INT_MAX) return INT_MAX;
+        }
+        return ans;
+    }
+};
+```
+## 1139. 最大的以 1 为边界的正方形
+**Description**
+给你一个由若干 0 和 1 组成的二维网格 grid，请你找出边界全部由 1 组成的最大 正方形 子网格，并返回该子网格中的元素数量。如果不存在，则返回 0。
+**Example**
+示例 1：
+输入：grid = [[1,1,1],[1,0,1],[1,1,1]]
+输出：9
+
+示例 2：
+输入：grid = [[1,1,0,0]]
+输出：1
+ 
+提示：
+1 <= grid.length <= 100
+1 <= grid[0].length <= 100
+grid[i][j] 为 0 或 1
+**Program**
+与最大正方形类似，这里需要记录grid[i][j]==1时**包含自身**的左边与上边连续1的个数。
+```cpp
+class Solution {
+public:
+    int largest1BorderedSquare(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        vector<vector<int>> leftOnes(m ,vector<int>(n ,0));
+        vector<vector<int>> upOnes(m, vector<int>(n, 0));
+        int ans=0;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==0) continue;
+                leftOnes[i][j]=1;
+                upOnes[i][j]=1;
+                if(i>0) upOnes[i][j]+=upOnes[i-1][j];
+                if(j>0) leftOnes[i][j]+=leftOnes[i][j-1];
+                for(int k=1;k<=min(upOnes[i][j], leftOnes[i][j]);k++){
+                    if(k>ans&&upOnes[i][j-k+1]>=k&&leftOnes[i-k+1][j]>=k){
+                        ans=k;
+                    }
+                }
+            }
+        }
+        return ans*ans;
+    }
+};
+```
+## 367. 有效的完全平方数
+**Description**
+给定一个正整数 num，编写一个函数，如果 num 是一个完全平方数，则返回 True，否则返回 False。
+说明：不要使用任何内置的库函数，如  sqrt。
+**Example**
+示例 1：
+输入：16
+输出：True
+
+示例 2：
+输入：14
+输出：False
+**Program**
+```cpp
+class Solution {
+public:
+    bool isPerfectSquare(int num) {
+        for(long long i=1;i<=num;i++){
+            if(i*i==num) return true;
+            if(i*i>num) break;
+        }
+        return false;
+    }
+};
+```
+## 1218. 最长定差子序列
+**Description**
+给你一个整数数组 arr 和一个整数 difference，请你找出 arr 中所有相邻元素之间的差等于给定 difference 的等差子序列，并返回其中最长的等差子序列的长度。
+**Example**
+示例 1：
+输入：arr = [1,2,3,4], difference = 1
+输出：4
+解释：最长的等差子序列是 [1,2,3,4]。
+
+示例 2：
+输入：arr = [1,3,5,7], difference = 1
+输出：1
+解释：最长的等差子序列是任意单个元素。
+
+示例 3：
+输入：arr = [1,5,7,8,5,3,4,2,1], difference = -2
+输出：4
+解释：最长的等差子序列是 [7,5,3,1]。
+ 
+提示：
+1 <= arr.length <= 10^5
+-10^4 <= arr[i], difference <= 10^4
+**Program**
+动态规划：DP[i]=max(DP[i], DP[j]+1) if arr[i]-arr[j]==difference
+但是时间复杂度$O(n^2)$，肯定超时。
+那么这里记录arr[i]值最后出现的位置以及其dp值，因为同值arr[i]，后出现的dp值可能更高。
+具体算法：
+m记录值x最后出现时的dp值，m[x]=max(m[x], m[x-difference]+1)，注意x-difference有可能等于x，那么必须记录x值出现的位置，如果位置不同才能做max运算，否则m[x]=1；
+```cpp
+class Solution {
+public:
+    int longestSubsequence(vector<int>& arr, int difference) {
+        unordered_map<int,int> m; //记录值x最后出现时，dp值
+        unordered_map<int,int> loc; //记录值x出现的位置
+        int ans=0;
+        for(int i=0;i<arr.size();i++){
+            int x=arr[i];
+            if(m.find(x)==m.end()) {m[x] = 1;loc[x]=i;}
+            if(m.find(x-difference)!=m.end()&&loc[x-difference]!=i) m[x] = max(m[x], m[x-difference]+1);
+            ans=max(m[x], ans);
+        }
+        return ans;
+    }
+};
+```
+## 面试题 16.05. 阶乘尾数
+**Description**
+设计一个算法，算出 n 阶乘有多少个尾随零。
+**Example**
+示例 1:
+输入: 3
+输出: 0
+解释: 3! = 6, 尾数中没有零。
+
+示例 2:
+输入: 5
+输出: 1
+解释: 5! = 120, 尾数中有 1 个零.
+说明: 你算法的时间复杂度应为 O(log n) 。
+**Program**
+1、最初想到先把阶乘计算出来，再对结果进行处理，从而得到0的个数，但当计算完阶乘后，发现0的个数并不好获取。
+2、之后考虑到，哪些数相乘会有零出现，也就是哪些数相乘会是10或10的倍数。也就得到2x5、4x5、6x5......会是10或10的倍数,也就是5和一个偶数相乘会得到10或10的倍数。
+3、在数的阶乘中，偶数的个数明显多于5的个数，所以只要计算出阶乘中每个数的因数中5的个数，即可得到0的个数
+4、所以只要计算在阶乘中是5的倍数的个数（包含一个5）、25的倍数的个数（包含两个5）、125的倍数的个数（包含3个5)...
+```cpp
+class Solution {
+public:
+    int trailingZeroes(int n) {
+        int ans=0;
+        // for(int i=1;i<=n;i++){
+        //     int x=i;
+        //     while(x%5==0){
+        //         ans++;
+        //         x/=5;
+        //     }
+        // }
+        while(n>0){
+            ans+=n/5;
+            n/=5;
+        }
+        return ans;
+    }
+};
+```
+## 面试题 08.11. 硬币
+**Description**
+硬币。给定数量不限的硬币，币值为25分、10分、5分和1分，编写代码计算n分有几种表示法。(结果可能会很大，你需要将结果模上1000000007)
+**Example**
+示例1:
+ 输入: n = 5
+ 输出：2
+ 解释: 有两种方式可以凑成总金额:
+5=5
+5=1+1+1+1+1
+示例2:
+ 输入: n = 10
+ 输出：4
+ 解释: 有四种方式可以凑成总金额:
+10=10
+10=5+5
+10=5+1+1+1+1+1
+10=1+1+1+1+1+1+1+1+1+1
+
+说明：
+注意:
+你可以假设：
+0 <= n (总金额) <= 1000000
+**Program**
+典型动规，DP[m][i]=DP[m][i-1]+DP[m-w[i]][i],边界DP[0][i]=1；
+```cpp
+class Solution {
+public:
+    const int MOD=1e9+7;
+    int waysToChange(int n) {
+        int w[5]={0, 25, 10, 5, 1};
+        int DP[n+1][5];
+        memset(DP, 0, sizeof(DP));
+        //vector<vector<int>> DP(n+1, vector<int>(5, 0));
+        for(int i=1;i<=4;i++) DP[0][i]=1;
+        for(int m=1;m<=n;m++){
+            for(int i=1;i<=4;i++){
+                DP[m][i]=DP[m][i-1]%MOD;
+                if(m>=w[i])DP[m][i]=(DP[m][i-1]+DP[m-w[i]][i])%MOD;
+            }
+        }
+        return DP[n][4];
+    }
+};
+```
+## 面试题17. 打印从1到最大的n位数
+**Description**
+输入数字 n，按顺序打印出从 1 到最大的 n 位十进制数。比如输入 3，则打印出 1、2、3 一直到最大的 3 位数 999。
+**Example**
+示例 1:
+输入: n = 1
+输出: [1,2,3,4,5,6,7,8,9]
+ 
+说明：
+用返回一个整数列表来代替打印
+n 为正整数
+**Program**
+```cpp
+class Solution {
+public:
+	vector<int> printNumbers(int n) {
+		vector<int> res;
+		if (n == 0) return res;
+		//打印到数组中
+		for (int i=1,max=pow(10,n);i<max;i++)
+		{
+			res.push_back(i);
+		}
+		return res;
+	}
+};
+```
+## 593. 有效的正方形
+**Description**
+给定二维空间中四点的坐标，返回四点是否可以构造一个正方形。
+一个点的坐标（x，y）由一个有两个整数的整数数组表示。
+**Example**
+示例:
+输入: p1 = [0,0], p2 = [1,1], p3 = [1,0], p4 = [0,1]
+输出: True
+ 
+注意:
+所有输入整数都在 [-10000，10000] 范围内。
+一个有效的正方形有四个等长的正长和四个等角（90度角）。
+输入点没有顺序。
+**Program**
+有效的正方形，四条边相等，两条对角线长度也相等。计算这六个的长度，如果长度出现第三个不同值就说明不是正方形！当然也注意重点的情况！
+```cpp
+class Solution {
+public:
+    int calDis(vector<int> a, vector<int> b){
+        return (a[0]-b[0])*(a[0]-b[0])+(a[1]-b[1])*(a[1]-b[1]);
+    }
+    bool validSquare(vector<int>& p1, vector<int>& p2, vector<int>& p3, vector<int>& p4) {
+        vector<vector<int>> vec;
+        vec.push_back(p1);
+        vec.push_back(p2);
+        vec.push_back(p3);
+        vec.push_back(p4);
+        //可以是旋转的正方形！，所以比较坐标的方式不行
+        // sort(vec.begin(), vec.end(), [](const vector<int>& a, const vector<int>& b){
+        //     if(a[0]!=b[0]) return a[0]<b[0];
+        //     return a[1]<b[1];
+        // });
+        // //两两点横坐标不相等
+        // if(vec[0][0]!=vec[1][0]||vec[2][0]!=vec[3][0]) return false;
+
+        // if((vec[0][1]-vec[1][1])!=(vec[2][1]-vec[3][1])||(vec[0][0]-vec[2][0])!=(vec[1][0]-vec[3][0])) return false;
+        // return true;
+        set<int> s;
+        for(int i=0;i<4;i++){
+            for(int j=i+1;j<4;j++){
+                //cout<<calDis(vec[i], vec[j])<<endl;
+                int dis=calDis(vec[i], vec[j]);
+                if(dis==0) return false; //有重合点！
+                s.insert(dis);
+            }
+        }
+        if(s.size()>2) return false;
+        return true;
+    }
+};
+```
+## 面试题 17.06. 2出现的次数
+**Description**
+编写一个方法，计算从 0 到 n (含 n) 中数字 2 出现的次数。
+**Example**
+示例:
+输入: 25
+输出: 9
+解释: (2, 12, 20, 21, 22, 23, 24, 25)(注意 22 应该算作两次)
+提示：
+$n <= 10^9$
+**Program**
+```
+以前写过的都忘了。。。
+思路：计算每一位2出现的个数！
+以13a31一般式子为例，计算百位2的个数
+a=3>2时，有200~299,...,13200~13299一共(13+1)×100个2，注意13是前缀！
+a=2==2时，有200~299,...,12200~12299以及13200~13231，一共13×100+31+1个数，注意13是前缀，31是后缀
+a=1<2时，有200~299,...,12200~12299一共13×100个数！
+所以不失一般性：
+xxxayyy
+a>3时，一共(xxx+1)×len(yyy)
+a==2时，一共xxx×len(yyy)+yyy+1
+a<2时，一共xxx×len(yyy)
+```
+```cpp
+class Solution {
+public:
+    int numberOf2sInRange(int n) {
+        long base=1, post=0; //基数、后缀
+        int pre=n/10; //前缀数
+        int res=n%10; //当前以10*base为基的余数
+        int ans=0;
+        while(n!=post){
+            if(res>2) ans+=(pre+1)*base;
+            else if(res==2) ans+=pre*base + post + 1;
+            else ans+=pre*base;
+            post+=res*base;
+            base*=10;
+            res=pre%10;
+            pre/=10;
+        }
+        return ans;
+    }
+};
+```
+## 面试题42. 连续子数组的最大和
+**Description**
+输入一个整型数组，数组里有正数也有负数。数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值。
+要求时间复杂度为O(n)。
+**Example**
+示例1:
+输入: nums = [-2,1,-3,4,-1,2,1,-5,4]
+输出: 6
+解释: 连续子数组 [4,-1,2,1] 的和最大，为 6。
+ 
+提示：
+1 <= arr.length <= 10^5
+-100 <= arr[i] <= 100
+```cpp
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int n=nums.size();
+        int DP[n];
+        DP[0]=nums[0];
+        int ans=DP[0];
+        for(int i=1;i<n;i++){
+            DP[i]=max(DP[i-1]+nums[i],nums[i]);
+            ans=max(ans, DP[i]);
+        }
         return ans;
     }
 };
