@@ -102,6 +102,7 @@ toc: true
 |221. 最大正方形|Medium|动态规划|
 |225. 用队列实现栈|Easy|队列|
 |226. 翻转二叉树|Easy|二叉树|
+|240. 搜索二维矩阵 II|Medium|数学|
 |231. 2的幂|Easy|快速幂|
 |257. 二叉树的所有路径|Easy|深搜|
 |258. 各位相加|Easy|数学|
@@ -161,6 +162,7 @@ toc: true
 |537. 复数乘法|Medium|数学|
 |542. 01 矩阵|Medium|广搜|
 |547. 朋友圈|Medium|并查集|
+|553. 最优除法|Medium|数学|
 |559. N叉树的最大深度|Easy|广搜|
 |576. 出界的路径数|Medium|动态规划|
 |593. 有效的正方形|Medium|数学|
@@ -190,6 +192,7 @@ toc: true
 |763. 划分字母区间|Medium|贪心|
 |764. 最大加号标志|Medium|动态规划|
 |767. 重构字符串|Medium|贪心+桶排序|
+|775. 全局倒置与局部倒置|Medium|数学/树状数组|
 |784. 字母大小写全排列|Easy|位运算|
 |785. 判断二分图|Medium|广搜、并查集|
 |787. K 站中转内最便宜的航班|Medium|动态规划|
@@ -201,9 +204,11 @@ toc: true
 |860. 柠檬水找零|Easy|贪心|
 |861. 翻转矩阵后的得分|Medium|贪心|
 |863. 二叉树中所有距离为 K 的结点|Medium|坐标化|
+|869. 重新排序得到 2 的幂|Medium|数学|
 |870. 优势洗牌|Medium|贪心|
 |874. 模拟行走机器人|Easy|贪心|
 |881. 救生艇|Medium|贪心|
+|892. 三维形体的表面积|Easy|数学|
 |898. 子数组按位或操作|Medium|位运算+unordered_set|
 |909. 蛇梯棋|Medium|广搜|
 |910. 最小差值 II|Medium|贪心|
@@ -216,12 +221,14 @@ toc: true
 |955. 删列造序 II|Medium|贪心|
 |959. 由斜杠划分区域|Medium|并查集|
 |976. 三角形的最大周长|Easy|数学|
+|983. 最低票价|Medium|动态规划|
 |984. 不含 AAA 或 BBB 的字符串|Medium|贪心|
 |990. 等式方程的可满足性|Medium|并查集|
 |991. 坏了的计算器|Medium|贪心|
 |993. 二叉树的堂兄弟节点|Easy|坐标化|
 |994. 腐烂的橘子|Medium|广搜|
 |1005. K 次取反后最大化的数组和|Easy|贪心|
+|1009. 十进制整数的反码|Easy|数学|
 |1029. 两地调度|Easy|贪心|
 |1046. 最后一块石头的重量|Easy|贪心|
 |1053. 交换一次的先前排列|Medium|贪心|
@@ -232,11 +239,15 @@ toc: true
 |1129. 颜色交替的最短路径|Medium|广搜|
 |1131. 绝对值表达式的最大值|Medium|位运算+数学|
 |1139. 最大的以 1 为边界的正方形|Medium|动态规划|
+|1140. 石子游戏 II|Medium|动态规划|
 |1154. 一年中的第几天|Easy|数学|
+|1191. K 次串联后最大子数组之和|Medium|动态规划|
+|1201. 丑数 III|Medium|数学+容斥原理+二分查找|
 |1202. 交换字符串中的元素|Medium|并查集|
 |1217. 玩筹码|Medium|贪心|
 |1218. 最长定差子序列|Medium|动态规划变体|
 |1221. 分割平衡字符串|Easy|贪心|
+|1237. 找出给定方程的正整数解|Easy|数学|
 |1239. 串联字符串的最大长度|Medium|位运算+暴力|
 |1247. 交换字符使得字符串相同|Medium|贪心|
 |1253. 重构 2 行二进制矩阵|Medium|贪心|
@@ -248,10 +259,12 @@ toc: true
 |1306. 跳跃游戏 III|Medium|广搜|
 |1310. 子数组异或查询|Medium|位运算+前缀和|
 |1311. 获取你好友已观看的视频|Medium|广搜|
+|1317. 将整数转换为两个无零整数的和|Easy|数学|
 |1318. 或运算的最小翻转次数|Medium|位运算|
 |1319. 连通网络的操作次数|Medium|并查集|
 |1338. 数组大小减半|Medium|贪心|
 |1353. 最多可以参加的会议数目|Medium|贪心|
+|1362. 最接近的因数|Medium|数学|
 |1386. 安排电影院座位|Medium|贪心|
 |1391. 检查网格中是否存在有效路径|Medium|广搜|
 |1400. 构造 K 个回文字符串|Medium|贪心|
@@ -263,7 +276,8 @@ toc: true
 |面试题32 - I. 从上到下打印二叉树 II|Medium|广搜|
 |面试题32 - II. 从上到下打印二叉树 II|Easy|广搜|
 |面试题32 - III. 从上到下打印二叉树 III|Medium|广搜|
-面试题14- I. 剪绳子|Medium|数学|
+|面试题14- I. 剪绳子|Medium|数学|
+面试题14- II. 剪绳子 II|Medium|数学|
 |面试题 08.11. 硬币|Medium|动态规划|
 |面试题 16.05. 阶乘尾数|Easy|数学|
 |面试题 16.19. 水域大小|Medium|广搜|
@@ -272,6 +286,7 @@ toc: true
 |面试题 17.22. 单词转换|Medium|双向广搜|
 |面试题 17.07. 婴儿名字|Medium|并查集|
 |面试题42. 连续子数组的最大和|Easy|动规|
+|面试题49. 丑数|Medium|丑数|
 |面试题67. 把字符串转换成整数|Medium|数学|
 
 ## 1.两数之和
@@ -17015,6 +17030,1086 @@ public:
             ans=max(ans, DP[i]);
         }
         return ans;
+    }
+};
+```
+## 553. 最优除法
+**Description**
+给定一组正整数，相邻的整数之间将会进行浮点除法操作。例如， [2,3,4] -> 2 / 3 / 4 。
+但是，你可以在任意位置添加任意数目的括号，来改变算数的优先级。你需要找出怎么添加括号，才能得到最大的结果，并且返回相应的字符串格式的表达式。你的表达式不应该含有冗余的括号。
+**Example**
+示例：
+输入: [1000,100,10,2]
+输出: "1000/(100/10/2)"
+解释:
+1000/(100/10/2) = 1000/((100/10)/2) = 200
+但是，以下加粗的括号 "1000/((100/10)/2)" 是冗余的，
+因为他们并不影响操作的优先级，所以你需要返回 "1000/(100/10/2)"。
+其他用例:
+1000/(100/10)/2 = 50
+1000/(100/(10/2)) = 50
+1000/100/10/2 = 0.5
+1000/100/(10/2) = 2
+
+说明:
+输入数组的长度在 [1, 10] 之间。
+数组中每个元素的大小都在 [2, 1000] 之间。
+每个测试用例只有一个最优除法解。
+**Program**
+分子不能变了，那么希望分母越小越好，当然是除了第一个外都整体做分子更好啦！
+```cpp
+class Solution {
+public:
+    string optimalDivision(vector<int>& nums) {
+        string res="";
+        for(int i=0;i<nums.size();i++){
+            if(nums.size()>2&&i==1) res+='(';
+            res=res+to_string(nums[i]);
+            if(i!=nums.size()-1) res+='/';
+            if(nums.size()>2&&i==nums.size()-1) res+=')';
+        }
+        return res;
+    }
+};
+```
+## 1362. 最接近的因数
+**Description**
+给你一个整数 num，请你找出同时满足下面全部要求的两个整数：
+两数乘积等于  num + 1 或 num + 2
+以绝对差进行度量，两数大小最接近
+你可以按任意顺序返回这两个整数。
+**Example**
+示例 1：
+输入：num = 8
+输出：[3,3]
+解释：对于 num + 1 = 9，最接近的两个因数是 3 & 3；对于 num + 2 = 10, 最接近的两个因数是 2 & 5，因此返回 3 & 3 。
+
+示例 2：
+输入：num = 123
+输出：[5,25]
+
+示例 3：
+输入：num = 999
+输出：[40,25]
+ 
+提示：
+1 <= num <= 10^9
+**Program**
+$[1,\sqrt{n}],[\sqrt{n}, n]$从$\sqrt{n}$开始搜索，一旦找到即是最小差的数！
+注意：从$\sqrt{n}$到$1$开始搜索更好，因为$\frac{num}{\sqrt{n}}$不一定小于等于$\sqrt{n}$，例如1,2,3，如果从$\sqrt{n}$到$n$搜索，就会出问题。相反，从$\sqrt{n}$到$1$开始搜索，$\frac{num}{\sqrt{n}}$一定大于等于$\sqrt{n}$。
+```cpp
+class Solution {
+public:
+    vector<int> calFactors(int num){
+        int sqt=(int)sqrt(num);
+        vector<int> res;
+        for(int i=sqt;i>0;i--){
+            if(num%i==0){
+                return {i, num/i};
+            }
+        }
+        return {};
+    }
+    vector<int> closestDivisors(int num) {
+        int x=num+1;
+        int y=num+2;
+        vector<int> vec1=calFactors(x);
+        vector<int> vec2=calFactors(y);
+        if(vec1[1]-vec1[0]>vec2[1]-vec2[0]) return vec2;
+        return vec1;
+    }
+};
+```
+## 1140. 石子游戏 II
+**Description**
+亚历克斯和李继续他们的石子游戏。许多堆石子 排成一行，每堆都有正整数颗石子 piles[i]。游戏以谁手中的石子最多来决出胜负。
+亚历克斯和李轮流进行，亚历克斯先开始。最初，M = 1。
+在每个玩家的回合中，该玩家可以拿走剩下的 前 X 堆的所有石子，其中 1 <= X <= 2M。然后，令 M = max(M, X)。
+游戏一直持续到所有石子都被拿走。
+假设亚历克斯和李都发挥出最佳水平，返回亚历克斯可以得到的最大数量的石头。
+**Example**
+示例：
+输入：piles = [2,7,9,4,4]
+输出：10
+解释：
+如果亚历克斯在开始时拿走一堆石子，李拿走两堆，接着亚历克斯也拿走两堆。在这种情况下，亚历克斯可以拿到 2 + 4 + 4 = 10 颗石子。
+如果亚历克斯在开始时拿走两堆石子，那么李就可以拿走剩下全部三堆石子。在这种情况下，亚历克斯可以拿到 2 + 7 = 9 颗石子。
+所以我们返回更大的 10。
+ 
+提示：
+1 <= piles.length <= 100
+1 <= piles[i] <= 10 ^ 4
+**Program**
+思路：
+本题难点在于理解两者都发挥“最佳水平”，“最佳水平”在于，每当轮到自己拿石子的时候，要在后继的所有状态中，选择对自己最有利的，那么也就是要遍历后继的所有状态，并选择一个最优解。我们设 dfs(i, M) 表示，当从第 i 堆石子开始拿，允许拿 M <= x <= 2 * M 时，在剩余石子中所能拿到的最大值，那么我们最终要返回的结果就是 dfs(0, 1)。搜索状态时，我们要遵循以下几个原则：
+- 如果 i >= n，那么说明石子都已经拿完，直接返回 0；
+- 如果 i + M * 2 >= n，那么说明可以把剩余石子一起拿到，就可以直接返回剩余石子的数目 sum(piles[i:])；
+- 如果不属于以上两种情况，那么我们需要遍历 1 <= x <= 2 * M，求剩余的最小 dfs(i + x, max(x, M))，也就是自己拿多少的时候，对手拿的石子最少（由于剩余石子数固定，那么最小化对手石子数，就是最大化自己的石子数）。
+为了防止重复搜索，可以采用记忆化的方法。为了快速求剩余石子数目，可以提前处理后缀和。
+```cpp
+class Solution {
+public:
+    vector<int> sum;
+    map<pair<int,int>, int> vis;
+    int dfs(vector<int>& piles, int n, int start, int m){
+        if(vis.find(pair<int,int>(start, m))!=vis.end()) return vis[pair<int,int>(start, m)];
+        if(start>=n) return 0;
+        if(start+2*m>=n) return sum[start];
+        int best=0;
+        for(int x=0;x<2*m;x++){
+            best=max(best, sum[start]-dfs(piles, n, start+x+1, max(x+1,m)));
+        }
+        vis[pair<int,int>(start, m)]=best;
+        return best;
+    }
+    int stoneGameII(vector<int>& piles) {
+        int n=piles.size();
+        sum.resize(n, 0);
+        for(int i=n-1;i>=0;i--){
+            sum[i]=piles[i];
+            if(i+1<=n-1)sum[i]+=sum[i+1];
+        }
+        return dfs(piles, n, 0, 1);
+    }
+};
+
+```
+```cpp
+class Solution {
+public:
+    int stoneGameII(vector<int>& piles) {
+        int n=piles.size();
+        int DP[n][n+1];
+        memset(DP, 0, sizeof(DP));
+        int sum=0;
+        for(int i=n-1;i>=0;i--){
+            sum+=piles[i];
+            for(int m=1;m<=n;m++){
+                if(i+2*m>=n){
+                    DP[i][m]=sum;
+                    continue;
+                }
+                for(int x=0;x<2*m&&i+x<n;x++){
+                    DP[i][m]=max(DP[i][m], sum-DP[i+x+1][max(x+1,m)]);
+                }
+            }  
+        }
+        return DP[0][1];
+    }
+};
+```
+## 775. 全局倒置与局部倒置
+**Description**
+数组 A 是 [0, 1, ..., N - 1] 的一种排列，N 是数组 A 的长度。全局倒置指的是 i,j 满足 $0 <= i < j < N$ 并且 A[i] > A[j] ，局部倒置指的是 i 满足 $0 <= i < N$ 并且 A[i] > A[i+1] 。
+当数组 A 中全局倒置的数量等于局部倒置的数量时，返回 true 。
+**Example**
+示例 1:
+输入: A = [1,0,2]
+输出: true
+解释: 有 1 个全局倒置，和 1 个局部倒置。
+
+示例 2:
+输入: A = [1,2,0]
+输出: false
+解释: 有 2 个全局倒置，和 1 个局部倒置。
+注意:
+A 是 [0, 1, ..., A.length - 1] 的一种排列
+A 的长度在 [1, 5000]之间
+这个问题的时间限制已经减少了。
+**Program**
+**①逆序对个数**
+全局倒置就是逆序对个数，用树状数组来求即可。
+时间复杂度$O(n\log{n})$
+```cpp
+class Solution {
+public:
+    int C[5001]={0};
+    int lowbit(int x){
+        return x&(-x);
+    }
+    int getSum(int x){
+        int sum=0;
+        for(int i=x;i>0;i-=lowbit(i)){
+            sum+=C[i];
+        }
+        return sum;
+    }
+    void update(int x, int v){
+        for(int i=x;i<5001;i+=lowbit(i)) C[i]+=v;
+    }
+    bool isIdealPermutation(vector<int>& A) {
+        int globalAns=0;
+        int regionAns=0;
+        int n=A.size();
+        for(int i=n-1;i>=0;i--){
+            if(i-1>=0&&A[i-1]>A[i]) regionAns++;
+            update(A[i]+1, 1);
+            globalAns+=getSum(A[i]);
+        }
+        return regionAns==globalAns;
+    }
+};
+```
+**②分析**
+全局倒置一定是局部倒置，反之不是。所以当数组中的数大于自身的索引+1或者小于自身的所以-1时就会出现2个以上的全局倒置，就不可能和局部倒置相等了
+```cpp
+class Solution {
+public:
+    bool isIdealPermutation(vector<int>& A) {
+        int n=A.size();
+        for(int i=0;i<n;i++){
+            if(A[i]<i-1||A[i]>i+1) return false;
+        }
+        return true;
+    }
+};
+```
+## 892. 三维形体的表面积
+**Description**
+在 N * N 的网格上，我们放置一些 1 * 1 * 1  的立方体。
+每个值 v = grid[i][j] 表示 v 个正方体叠放在对应单元格 (i, j) 上。
+请你返回最终形体的表面积。
+**Example**
+示例 1：
+输入：[[2]]
+输出：10
+
+示例 2：
+输入：[[1,2],[3,4]]
+输出：34
+
+示例 3：
+输入：[[1,0],[0,2]]
+输出：16
+
+示例 4：
+输入：[[1,1,1],[1,0,1],[1,1,1]]
+输出：32
+
+示例 5：
+输入：[[2,2,2],[2,1,2],[2,2,2]]
+输出：46
+
+提示：
+1 <= N <= 50
+0 <= grid[i][j] <= 50
+**Program**
+思路：遍历每个位置的方块数，可以算出该柱体的表面积上下底+4*方块数，当然要减去重叠区面积，假设当前为(i,j)位置，则(i-1,j)和(i,j-1)已知，减去重叠区面积即可，那么(i+1,j)和(i,j+1)怎么办？其实也是已知的对应位置数量的，但是如果有重叠减一次就可以了，如果这两个位置都减去了重叠面积，那么后面计算的时候回重复减！所以只需要减(i-1,j)和(i,j-1)即可。
+```cpp
+class Solution {
+public:
+    int surfaceArea(vector<vector<int>>& grid) {
+        int ans=0;
+        int n=grid.size();
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                int count=grid[i][j];
+                if(count>0){
+                    ans+=count*4+2;
+                    ans-=i-1>=0?min(count,grid[i-1][j])*2:0;
+                    ans-=j-1>=0?min(count,grid[i][j-1])*2:0;
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+## 面试题14- II. 剪绳子 II
+**Description**
+给你一根长度为 n 的绳子，请把绳子剪成整数长度的 m 段（m、n都是整数，n>1并且m>1），每段绳子的长度记为 k[0],k[1]...k[m] 。请问 $k[0]*k[1]*...*k[m]$ 可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+**Example**
+示例 1：
+输入: 2
+输出: 1
+解释: 2 = 1 + 1, 1 × 1 = 1
+
+示例 2:
+输入: 10
+输出: 36
+解释: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36
+ 
+提示：
+2 <= n <= 1000
+**Program**
+动态规划不行，数值太大了。
+```cpp
+class Solution {
+public:
+    const int MOD=1e9+7;
+    int cal(int mod, int count, int res){
+        long long ans=1;
+        if(res==1) count--;
+        while(count>0){
+            ans=ans*mod%MOD;count--;
+        }
+        if(res==1) ans=ans*4%MOD;
+        if(res==2) ans=ans*2%MOD;
+        return ans;
+    }
+    int cuttingRope(int n) {
+        if(n<=3) return n-1;
+        int mod=3;
+        int res=n%mod;
+        int count=n/mod;
+        int ans=0;
+        if(res==2) ans=cal(mod, count, res);
+        else if(res==1) ans=cal(mod, count, res);
+        else ans=cal(mod, count, res);
+        return ans;
+    }
+};
+```
+## 1317. 将整数转换为两个无零整数的和
+**Description**
+「无零整数」是十进制表示中 不含任何 0 的正整数。
+给你一个整数 n，请你返回一个 由两个整数组成的列表 [A, B]，满足：
+- A 和 B 都是无零整数
+- A + B = n
+题目数据保证至少有一个有效的解决方案。
+如果存在多个有效解决方案，你可以返回其中任意一个。
+**Example**
+示例 1：
+输入：n = 2
+输出：[1,1]
+解释：A = 1, B = 1. A + B = n 并且 A 和 B 的十进制表示形式都不包含任何 0 。
+
+示例 2：
+输入：n = 11
+输出：[2,9]
+
+示例 3：
+输入：n = 10000
+输出：[1,9999]
+
+示例 4：
+输入：n = 69
+输出：[1,68]
+
+示例 5：
+输入：n = 1010
+输出：[11,999]
+
+提示：
+2 <= n <= 10^4
+**Program**
+```cpp
+class Solution {
+public:
+    vector<int> getNoZeroIntegers(int n) {
+        for(int i=1;i<n;i++){
+            string a=to_string(i);
+            string b=to_string(n-i);
+            if(a.find('0')==string::npos&&b.find('0')==string::npos){
+                return {i, n-i};
+            }
+        }
+        return {};
+    }
+};
+```
+## 1201. 丑数 III
+**Description**
+请你帮忙设计一个程序，用来找出第 n 个丑数。
+丑数是可以被 a 或 b 或 c 整除的 正整数。
+**Example**
+示例 1：
+输入：n = 3, a = 2, b = 3, c = 5
+输出：4
+解释：丑数序列为 2, 3, 4, 5, 6, 8, 9, 10... 其中第 3 个是 4。
+
+示例 2：
+输入：n = 4, a = 2, b = 3, c = 4
+输出：6
+解释：丑数序列为 2, 3, 4, 6, 8, 9, 12... 其中第 4 个是 6。
+
+示例 3：
+输入：n = 5, a = 2, b = 11, c = 13
+输出：10
+解释：丑数序列为 2, 4, 6, 8, 10, 11, 12, 13... 其中第 5 个是 10。
+
+示例 4：
+输入：n = 1000000000, a = 2, b = 217983653, c = 336916467
+输出：1999999984
+ 
+提示：
+1 <= n, a, b, c <= 10^9
+1 <= a * b * c <= 10^18
+本题结果在 [1, 2 * 10^9] 的范围内
+**Program**
+1，对于一个数，有多少个丑数小于等于该数是可以快速计算出来的
+2，因此可以用二分搜索定位该数
+```cpp
+class Solution {
+public:
+    int gcd(int x, int y){
+        return y==0?x:gcd(y,x%y);
+    }
+    long cal(long a, long b){
+        return a*(b/gcd(a,b));
+    }
+    int nthUglyNumber(int n, int a, int b, int c) {
+        long ab=cal(a,b);
+        long ac=cal(a,c);
+        long bc=cal(b,c);
+        long abc=cal(ab,c);
+        int l=min(a,min(b,c));
+        int r=2e9;
+        while(l<r){
+            int mid=l+(r-l)/2; //mid不一定是最后结果！比如n=1,a=b=2,3/2=2/2=1但2才是结果而不是3
+            int count=mid/a+mid/b+mid/c-mid/ab-mid/ac-mid/bc+mid/abc; //容斥原理
+            if(count<n) l=mid+1;
+            else r=mid; //mid有可能是最后结果，所以r=mid，之后会进一步逼近到正确结果
+        }
+        return l;
+    }
+};
+```
+## 面试题49. 丑数
+**Description**
+我们把只包含因子 2、3 和 5 的数称作丑数（Ugly Number）。求按从小到大的顺序的第 n 个丑数。
+**Example**
+示例:
+输入: n = 10
+输出: 12
+解释: 1, 2, 3, 4, 5, 6, 8, 9, 10, 12 是前 10 个丑数。
+
+说明:  
+1 是丑数。
+n 不超过1690。
+**Program**
+**动态规划**
+已知DP[1]...DP[i-1],求DP[i]，前i-1个丑数是严格递增的，那么DP[i]为前i-1个丑数分别乘以2,3,5后得到的最小值！当然需要记录已存的值！
+然而很遗憾超时了！！
+```cpp
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        vector<long long> DP(n,0);
+        DP[0]=1;
+        unordered_set<long long> s;
+        for(int i=1;i<n;i++){
+            long long minValue=LONG_LONG_MAX;
+            for(int j=0;j<i;j++){
+                if(s.find(DP[j] * 2)==s.end()) minValue=minValue>(DP[j] * 2)?DP[j] * 2:minValue;
+                if(s.find(DP[j] * 3)==s.end()) minValue=minValue>(DP[j] * 3)?DP[j] * 3:minValue;
+                if(s.find(DP[j] * 5)==s.end()) minValue=minValue>(DP[j] * 5)?DP[j] * 5:minValue;
+            }
+            s.insert(minValue);
+            DP[i]=minValue;
+        }
+        return DP[n-1];
+    }
+};
+```
+进一步分析，很多重复计算！
+比如已有1,2,3,4,5，计算下一个丑数的时候，需要都从1,2,3,4,5都乘2,3,5求最小值吗？
+1×2,2×2,
+1×3,
+1×5
+都已经在序列里了！重复计算了，当序列越来越长，重复计算将会更多。我们需要不重复且所得尽可能小的数！
+对于因子2而言，就需要从3开始计算，
+对于因子3而言，就需要从2开始计算，
+对于因子5而言，就需要从2开始计算，
+得到下一个丑数6
+3×2==6，所以下一次对于因子2，将从4开始计算
+2×3==6,所以下一次对于因子3，将从3开始计算，
+2×5!=6,所以下一次对于因子5，还是从2开始计算。
+采用三个索引p2,p3,p5
+记录DP[p2]×2,DP[p3]×3,DP[p5]×5中最小的值minValue,其中DP[px] * x==minValue的索引自增！
+```cpp
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        vector<int> DP(n,0);
+        DP[0]=1;
+        int p2, p3, p5;
+        p2=p3=p5=0;
+        for(int i=1;i<n;i++){
+            int mVal=min(DP[p2]*2, min(DP[p3]*3, DP[p5]*5));
+            if(mVal==DP[p2]*2) p2++;
+            if(mVal==DP[p3]*3) p3++;
+            if(mVal==DP[p5]*5) p5++;
+            DP[i]=mVal;
+        }
+        return DP[n-1];
+    }
+};
+```
+## 869. 重新排序得到 2 的幂
+**Description**
+给定正整数 N ，我们按任何顺序（包括原始顺序）将数字重新排序，注意其前导数字不能为零。
+如果我们可以通过上述方式得到 2 的幂，返回 true；否则，返回 false。
+**Example**
+示例 1：
+输入：1
+输出：true
+
+示例 2：
+输入：10
+输出：false
+
+示例 3：
+输入：16
+输出：true
+
+示例 4：
+输入：24
+输出：false
+
+示例 5：
+输入：46
+输出：true
+ 
+提示：
+1 <= N <= 10^9
+**Program**
+如果排列组合的话复杂度太高肯定超时，反过来如果枚举int范围的2的幂次，只有31个数，只需要比较十进制0~9每个数字的个数是否完全一样即可。
+进一步来说，这31个数只有其十进制数的位数与N的位数相等才有可能满足！
+```cpp
+class Solution {
+public:
+    bool cmp(string str, vector<int>& vec){
+        vector<int> v(10, 0);
+        for(char ch:str){
+            v[ch-'0']++;
+        }
+        for(int i=0;i<10;i++){
+            if(v[i]!=vec[i]) return false;
+        }
+        return true;
+    }
+    bool reorderedPowerOf2(int N) {
+        vector<int> vec(10, 0);
+        string str=to_string(N);
+        int len=str.length();
+        for(char ch:str){
+            int i=ch-'0';
+            vec[i]++;
+        }
+        for(int i=0;i<31;i++){
+            int count=(1<<i);
+            string s=to_string(count);
+            if(s.length()==len){
+                if(cmp(s, vec)) return true;
+            }
+        }
+        return false;
+    }
+};
+```
+## 1009. 十进制整数的反码
+**Description**
+每个非负整数 N 都有其二进制表示。例如， 5 可以被表示为二进制 "101"，11 可以用二进制 "1011" 表示，依此类推。注意，除 N = 0 外，任何二进制表示中都不含前导零。
+二进制的反码表示是将每个 1 改为 0 且每个 0 变为 1。例如，二进制数 "101" 的二进制反码为 "010"。
+给你一个十进制数 N，请你返回其二进制表示的反码所对应的十进制整数。
+**Example**
+示例 1：
+输入：5
+输出：2
+解释：5 的二进制表示为 "101"，其二进制反码为 "010"，也就是十进制中的 2 。
+
+示例 2：
+输入：7
+输出：0
+解释：7 的二进制表示为 "111"，其二进制反码为 "000"，也就是十进制中的 0 。
+
+示例 3：
+输入：10
+输出：5
+解释：10 的二进制表示为 "1010"，其二进制反码为 "0101"，也就是十进制中的 5 。
+
+提示：
+0 <= N < 10^9
+**Program**
+```cpp
+class Solution {
+public:
+    int bitwiseComplement(int N) {
+        if(N==0) return 1;
+        bool isFirst=true;
+        for(int i=31;i>=0;i--){
+            if(isFirst&&((N>>i)&1)==1){
+                isFirst=false;
+                N^=(1<<i);
+                continue;
+            }
+            if(!isFirst) N^=(1<<i);
+        }
+        return N;
+    }
+};
+```
+```cpp
+class Solution {
+public:
+    int bitwiseComplement(int num) {
+        if(num==0) return 1;
+        int upbit=1<<30;
+        for(int i=30;i>=0;i--){
+            if((num&upbit)!=0) break;
+            upbit>>=1;
+        }
+        for(int i=1;i<=16;i*=2) upbit|=(upbit>>i);
+        return (upbit^num);
+    }
+};
+```
+## 1191. K 次串联后最大子数组之和
+**Description**
+给你一个整数数组 arr 和一个整数 k。
+首先，我们要对该数组进行修改，即把原数组 arr 重复 k 次。
+举个例子，如果 arr = [1, 2] 且 k = 3，那么修改后的数组就是 [1, 2, 1, 2, 1, 2]。
+然后，请你返回修改后的数组中的最大的子数组之和。
+注意，子数组长度可以是 0，在这种情况下它的总和也是 0。
+由于 结果可能会很大，所以需要 模（mod） 10^9 + 7 后再返回。 
+**Example**
+示例 1：
+输入：arr = [1,2], k = 3
+输出：9
+
+示例 2：
+输入：arr = [1,-2,1], k = 5
+输出：2
+
+示例 3：
+输入：arr = [-1,-2], k = 7
+输出：0
+ 
+提示：
+1 <= arr.length <= 10^5
+1 <= k <= 10^5
+-10^4 <= arr[i] <= 10^4
+**Program**
+三种情况如下图所示，前两种好理解，只需返回对应的结果就行。
+关键是第三种情况：
+根据最大连续子数组之和的DP[i]=max(DP[i-1]+A[i],A[i])，可以知道当一段序列和大于0时，一定可以相连！
+那么此时的结果为k-2个数组总和+2个数组中的最大DP值（注意此时2个数组中的最大DP值一定是与k-2个数组相连组成的最大子数组，因为若单个数组总和大于0，那么一定连接了整个数组，其次如果单个数组的后缀和使得整体和大于0，那么最后的结果肯定是包含单个数组的后缀+k-2个全数组+单个数组的前缀！这里单个数组的前缀后缀由两个数组的DP值决定）
+例如:
+-1,-2,4,5 | ... | -1,-2,4,5
+4,5,-1,-2|...|4,5,-1,-2
+简单来说，
+①单个数组和s大于0，直观来说k个数组都放在结果数组里和更大，但是最大的还得看两个单独数组的DP值组成的前后缀！如上面两个例子，结果都是从第一个4到最后一个5结束，但是分别不包含前面的-1，-2和最后的-1，-2！
+②单个数组和s小于0（等于0没必要，抵消了，例如-1,-2,1,2），那么根据最大连续子数组之和的DP过程来看肯定会中断，如图第二种情况！即结果肯定在最多两个数组的DP结果产生。
+![image](/assets/img/algorithm/1191.png)
+根据DP递推公式，只有前一项DP[i-1]+A[i]大于等于0时才能连续！
+**第一种情况成立的条件，**
+- 考虑两个单独数组，第一个数组和第二个数组都有这一段**最大子数组**，那么第一个最大子数组的下一个位置的绝对值一定比该最大子数组的和大，且为负数！（中断了！）
+- 两个最大子数组之间当然也可能存在连续子数组但不是最大子数组！那么这之间所有可能的子数组（如果有）肯定不连续既然各个子数组不连续，那么相邻两个子数组之间肯定有个负数绝对值大于前一个子数组之和！
+- 而两个单独数组的最大子数组之间刚好又构成一个单独数组！根据分析，这个新的单独数组上的所有子数组（包括最大子数组），既然不连续，中断，一定有若干个负数绝对值大于这些子数组之和！
+- 即该单独数组的和小于0！
+**第二种情况成立条件：**
+- 两个单独数组组成的最大子数组要想成立，这个最大子数组一定不会完全等于单独数组，也就是说由单独数组的后缀+前缀构成，**而且不等价于单独数组，肯定元素比单独子数组个数少！。**
+- 那么首先该最大子数组前面单独数组剩余部分的子数组（如果有），因为各个数组不连续，那么必然每个子数组后都有一个负数且绝对值比对应子数组之和大！
+- 其次，该最大子数组后面，也就是第二个单独数组，对应最大子数组起始元素前一个位置（从最大子数组头元素到此元素刚好构成一个单独数组），这一段，最大子数组后的一个元素是负数且绝对值比最大子数组和大！这个元素之后到最大子数组起始元素前，如果有若干子数组，则每个子数组后必存在一个负数绝对值比对应子数组之和大！因为各个子数组不连续，中断！
+- 即该单独数组之和小于0！（由上面分析，从最大子数组头元素到构成单独数组的最后一个元素这一段，每个子数组后都有个负数绝对值比该子数组和大！）
+**第三种情况成立条件：**
+- 这里刚好解释下为什么第二种情况最大子数组不等价于单独子数组且元素个数更少，如果最大子数组末尾元素超过了后一个单独数组对应最大数组头元素，也就是说最大子数组覆盖了整个单独数组，那么表明单独数组之和大于等于0！
+- 如果单独数组之和大于等于0，那么必定后面一直连续到最后一个单独数组！也就是第三种情况了！
+- 很明显此时分为三部分，**单独数组的后缀+k-2个全数组+单独数组前缀**
+特殊情况：
+单独数组之和等于0！这个时候没必要连续到最后一个单独数组！因为中间这部分总和为0，最多只需求两个单独数组的最大子数组就可以了！
+```cpp
+class Solution {
+public:
+    typedef long long ll;
+    const ll mod=1e9+7;
+    int kConcatenationMaxSum(vector<int>& arr, int k) {
+        ll s=0;
+        for(int& x:arr) s+=x;
+        ll dp=0;
+        ll ans=0;
+        for(int& x:arr){
+            dp = dp + x>x?dp+x:x;
+            ans = ans>dp?ans:dp;
+        }
+        if(k==1) return ans;
+        for(int& x:arr){
+            dp = dp + x>x?dp+x:x;
+            ans = ans>dp?ans:dp;
+        }
+        if(k==2||s<=0) return ans;
+        return (ans+((k-2)*s%mod+mod)%mod+mod)%mod;
+    }
+};
+```
+## 1237. 找出给定方程的正整数解
+**Description**
+给出一个函数  f(x, y) 和一个目标结果 z，请你计算方程 f(x,y) == z 所有可能的正整数 数对 x 和 y。
+给定函数是严格单调的，也就是说：
+- f(x, y) < f(x + 1, y)
+- f(x, y) < f(x, y + 1)
+函数接口定义如下：
+```
+interface CustomFunction {
+public:
+  // Returns positive integer f(x, y) for any given positive integer x and y.
+  int f(int x, int y);
+};
+```
+如果你想自定义测试，你可以输入整数 function_id 和一个目标结果 z 作为输入，其中 function_id 表示一个隐藏函数列表中的一个函数编号，题目只会告诉你列表中的 2 个函数。  
+你可以将满足条件的 结果数对 按任意顺序返回。
+**Example**
+示例 1：
+输入：function_id = 1, z = 5
+输出：[[1,4],[2,3],[3,2],[4,1]]
+解释：function_id = 1 表示 f(x, y) = x + y
+
+示例 2：
+输入：function_id = 2, z = 5
+输出：[[1,5],[5,1]]
+解释：function_id = 2 表示 f(x, y) = x * y
+ 
+提示：
+1 <= function_id <= 9
+1 <= z <= 100
+题目保证 f(x, y) == z 的解处于 1 <= x, y <= 1000 的范围内。
+在 1 <= x, y <= 1000 的前提下，题目保证 f(x, y) 是一个 32 位有符号整数。
+**Program**
+**暴力**
+```cpp
+/*
+ * // This is the custom function interface.
+ * // You should not implement it, or speculate about its implementation
+ * class CustomFunction {
+ * public:
+ *     // Returns f(x, y) for any given positive integers x and y.
+ *     // Note that f(x, y) is increasing with respect to both x and y.
+ *     // i.e. f(x, y) < f(x + 1, y), f(x, y) < f(x, y + 1)
+ *     int f(int x, int y);
+ * };
+ */
+
+class Solution {
+public:
+    vector<vector<int>> findSolution(CustomFunction& customfunction, int z) {
+        vector<vector<int>> res;
+        for(int x=1;x<=z;x++){
+            for(int y=1;y<=z;y++){
+                if(customfunction.f(x,y)==z){
+                    res.push_back({x, y});
+                    break; //f(x,y)<f(x, y+1)
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+**伪双指针法**
+最后发现和两层循环没啥区别！每组xy都被考虑。。。
+```cpp
+/*
+ * // This is the custom function interface.
+ * // You should not implement it, or speculate about its implementation
+ * class CustomFunction {
+ * public:
+ *     // Returns f(x, y) for any given positive integers x and y.
+ *     // Note that f(x, y) is increasing with respect to both x and y.
+ *     // i.e. f(x, y) < f(x + 1, y), f(x, y) < f(x, y + 1)
+ *     int f(int x, int y);
+ * };
+ */
+
+class Solution {
+public:
+    vector<vector<int>> findSolution(CustomFunction& customfunction, int z) {
+        vector<vector<int>> res;
+        int x=1,y=1;
+        int min_x=1,min_y=1;
+        int flag=2; //1表示x移动，2表示y移动
+        while(min_x<=z&&min_y<=z){
+            //cout<<x<<" "<<y<<endl;
+            if(x==z+1||y==z+1){
+                if(flag==1){min_y++;flag=2;}
+                else{min_x++;flag=1;}
+                x=min_x;
+                y=min_y;
+                continue;
+            }
+            if(customfunction.f(x,y)==z){
+                res.push_back({x, y});
+                if(flag==1){min_y++;flag=2;}
+                else{min_x++;flag=1;}
+                x=min_x;
+                y=min_y;
+                continue;
+            }
+            if(flag==1) x++;
+            if(flag==2) y++;
+        }
+        return res;
+    }
+};
+```
+**双指针法**
+根据严格单调的特性：
+令x=1,y=1000，
+若f(x,y)<z，则计算f(x+1,,y)
+若f(x,y)>z，则计算f(x,y-1)
+若f(x,y)==z，则计算f(x+1,y-1)
+时间复杂度：$O(m+n)$
+
+确实巧妙，想了下这个算法的关键是找到合适的遍历起点，这个点肯定具有某种特殊性，这个二维矩阵，四个角就是四个特殊点，但他们的特点不同，左上和右下分别是矩阵的最小和最大值，左下和右上具有两面性，如果是所在行最大值那么就是所在列的最小值，反过来也一样。左上和右下与目标值比较不相等时，下一步既可以遍历行也可以遍历列是不确定的，而左下和右上是可以确定的，因为自身值的特点可以排除一个方向的路径，只有一个遍历路径。
+```cpp
+/*
+ * // This is the custom function interface.
+ * // You should not implement it, or speculate about its implementation
+ * class CustomFunction {
+ * public:
+ *     // Returns f(x, y) for any given positive integers x and y.
+ *     // Note that f(x, y) is increasing with respect to both x and y.
+ *     // i.e. f(x, y) < f(x + 1, y), f(x, y) < f(x, y + 1)
+ *     int f(int x, int y);
+ * };
+ */
+
+class Solution {
+public:
+    vector<vector<int>> findSolution(CustomFunction& customfunction, int z) {
+        vector<vector<int>> res;
+        int x=1;
+        int y=1000;
+        while(x<=1000&&y>=1){
+            int tmp=customfunction.f(x, y);
+            if(tmp==z){
+                res.push_back({x,y});
+                x++;y--;
+            }else if(tmp>z) y--;
+            else x++;
+        }
+        return res;
+    }
+};
+```
+## 240. 搜索二维矩阵 II
+**Description**
+编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target。该矩阵具有以下特性：
+- 每行的元素从左到右升序排列。
+- 每列的元素从上到下升序排列。
+**Example**
+示例:
+现有矩阵 matrix 如下：
+[
+  [1,   4,  7, 11, 15],
+  [2,   5,  8, 12, 19],
+  [3,   6,  9, 16, 22],
+  [10, 13, 14, 17, 24],
+  [18, 21, 23, 26, 30]
+]
+给定 target = 5，返回 true。
+给定 target = 20，返回 false。
+**Program**
+根据严格单调的特性：
+令x=1,y=1000，
+若f(x,y)<z，则计算f(x+1,,y)
+若f(x,y)>z，则计算f(x,y-1)
+若f(x,y)==z，则计算f(x+1,y-1)
+时间复杂度：$O(m+n)$
+
+确实巧妙，想了下这个算法的关键是找到合适的遍历起点，这个点肯定具有某种特殊性，这个二维矩阵，四个角就是四个特殊点，但他们的特点不同，左上和右下分别是矩阵的最小和最大值，左下和右上具有两面性，如果是所在行最大值那么就是所在列的最小值，反过来也一样。左上和右下与目标值比较不相等时，下一步既可以遍历行也可以遍历列是不确定的，而左下和右上是可以确定的，因为自身值的特点可以排除一个方向的路径，只有一个遍历路径。
+```cpp
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        if(matrix.size()==0) return false;
+        int m=matrix.size();
+        int n=matrix[0].size();
+        int i=0,j=n-1;
+        while(i<m&&j>=0){
+            int tmp=matrix[i][j];
+            if(tmp==target) return true;
+            else if(tmp>target) j--;
+            else i++;
+        }
+        return false;
+    }
+};
+```
+## 983. 最低票价
+**Description**
+在一个火车旅行很受欢迎的国度，你提前一年计划了一些火车旅行。在接下来的一年里，你要旅行的日子将以一个名为 days 的数组给出。每一项是一个从 1 到 365 的整数。
+火车票有三种不同的销售方式：
+- 一张为期一天的通行证售价为 costs[0] 美元；
+- 一张为期七天的通行证售价为 costs[1] 美元；
+- 一张为期三十天的通行证售价为 costs[2] 美元。
+通行证允许数天无限制的旅行。 例如，如果我们在第 2 天获得一张为期 7 天的通行证，那么我们可以连着旅行 7 天：第 2 天、第 3 天、第 4 天、第 5 天、第 6 天、第 7 天和第 8 天。
+返回你想要完成在给定的列表 days 中列出的每一天的旅行所需要的最低消费。
+**Example**
+示例 1：
+输入：days = [1,4,6,7,8,20], costs = [2,7,15]
+输出：11
+解释：
+例如，这里有一种购买通行证的方法，可以让你完成你的旅行计划：
+在第 1 天，你花了 costs[0] = $2 买了一张为期 1 天的通行证，它将在第 1 天生效。
+在第 3 天，你花了 costs[1] = $7 买了一张为期 7 天的通行证，它将在第 3, 4, ..., 9 天生效。
+在第 20 天，你花了 costs[0] = $2 买了一张为期 1 天的通行证，它将在第 20 天生效。
+你总共花了 $11，并完成了你计划的每一天旅行。
+
+示例 2：
+输入：days = [1,2,3,4,5,6,7,8,9,10,30,31], costs = [2,7,15]
+输出：17
+解释：
+例如，这里有一种购买通行证的方法，可以让你完成你的旅行计划：
+在第 1 天，你花了 costs[2] = $15 买了一张为期 30 天的通行证，它将在第 1, 2, ..., 30 天生效。
+在第 31 天，你花了 costs[0] = $2 买了一张为期 1 天的通行证，它将在第 31 天生效。
+你总共花了 $17，并完成了你计划的每一天旅行。
+ 
+提示：
+1 <= days.length <= 365
+1 <= days[i] <= 365
+days 按顺序严格递增
+costs.length == 3
+1 <= costs[i] <= 1000
+**Program**
+**记忆化搜索**
+首先定义dfs(i, resDay)为当前第days[i]天，通行证有效期的截止时间为resDay的最低消费。
+设n为days长度
+①i>n，return 0；超出days的日期长度了
+②days[i]<=resDay，当前第days[i]天在前一次通行证有效期内，计算下一天dfs(i+1,resDay)即可
+③days[i]>resDay，
+那么当前第days[i]天可以买三种票价
+ans=min(ans, costs[j]+dfs(i+1,days[j]+cosDays[j]-1)), j=0,1,2即可
+```cpp
+class Solution {
+public:
+    const int cosDays[3]={1,7,30};
+    int n;
+    map<pair<int,int>, int> m;
+    int dfs(vector<int>& days, vector<int>& costs,int i, int resDay){
+        if(i>=n) return 0;
+        if(m.find(pair<int,int>(i, resDay))!=m.end()) return m[pair<int,int>(i, resDay)];
+        if(days[i]<=resDay) return dfs(days, costs, i+1, resDay);
+        int ans=INT_MAX;
+        for(int j=0;j<3;j++){
+            ans=min(ans, costs[j]+dfs(days, costs, i+1, days[i]+cosDays[j]-1));
+        }
+        m[pair<int,int>(i, resDay)] = ans;
+        return ans;
+    }
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        n=days.size();
+        return dfs(days, costs, 0, 0);
+    }
+};
+```
+resDay表示剩余天数
+```cpp
+class Solution {
+public:
+    const int cosDays[3]={1,7,30};
+    int n;
+    vector<vector<int>> vis;
+    int dfs(vector<int>& days, vector<int>& costs, int i, int resDay){
+        if(i>=n) return 0;
+        if(vis[i][resDay]!=-1) return vis[i][resDay];
+        if(i>0){
+            int rd=resDay-(days[i]-days[i-1]);
+            if(rd>=0) return dfs(days, costs, i+1, rd);
+        }
+        int ans=INT_MAX;
+        for(int j=0;j<3;j++){
+            ans=min(ans, costs[j]+dfs(days, costs, i+1, cosDays[j]-1));
+        }
+        vis[i][resDay]=ans;
+        return ans;
+    }
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        n=days.size();
+        vis.resize(n,vector<int>(31,-1));
+        return dfs(days, costs, 0, 0);
+    }
+};
+```
+**动态规划**
+```cpp
+class Solution {
+public:
+    const int cosDays[3]={1,7,30};
+    int n;
+    const int inf=0x3f3f3f3f;
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        n=days.size();
+        int DP[n][396];
+        memset(DP, inf, sizeof(DP));
+        for(int i=n-1;i>=0;i--){
+            for(int d=0;d<=395;d++){
+                if(d>=days[i]){
+                    if(i<n-1) DP[i][d]=DP[i+1][d];
+                    else DP[i][d]=0;
+                    continue;
+                }
+                for(int j=0;j<3;j++){
+                    if(i<n-1)DP[i][d]=min(DP[i][d], costs[j]+DP[i+1][days[i]+cosDays[j]-1]);
+                    else DP[i][d]=min(DP[i][d], costs[j]);
+                }
+            }
+        }
+        return DP[0][0];
+    }
+};
+```
+```cpp
+class Solution {
+public:
+    const int cosDays[3]={1,7,30};
+    int n;
+    const int inf=0x3f3f3f3f;
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        n=days.size();
+        int DP[n][31];
+        memset(DP, inf, sizeof(DP));
+        for(int i=n-1;i>=0;i--){
+            for(int d=0;d<=30;d++){
+                if(i>0){
+                    int rd=d-(days[i]-days[i-1]);
+                    if(rd>=0){
+                        if(i+1<n)DP[i][d]=DP[i+1][rd];
+                        else DP[i][d]=0;
+                        continue;
+                    }
+                }
+                for(int j=0;j<3;j++){
+                    if(i<n-1)DP[i][d]=min(DP[i][d], costs[j]+DP[i+1][cosDays[j]-1]);
+                    else DP[i][d]=min(DP[i][d], costs[j]);
+                }
+            }
+        }
+        return DP[0][0];
+    }
+};
+```
+**一维DP**
+```cpp
+class Solution {
+public:
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        int last = days[days.size()-1];
+
+        vector<int> dp(last+1, 0);
+        int idx = 0;
+
+        for (int i = 1; i <= last; i++) {
+            if (i == days[idx]) {
+                int cost = INT_MAX;
+                int oneDayAgo = i-1;
+                int sevenDaysAgo = i-7>0?i-7:0;
+                int thirtyDaysAgo = i-30>0?i-30:0;
+
+                cost = min(dp[oneDayAgo] + costs[0], cost);
+                cost = min(dp[sevenDaysAgo] + costs[1], cost);
+                cost = min(dp[thirtyDaysAgo] + costs[2], cost);
+
+                dp[i] = cost;
+
+                idx++;
+            } else {
+                dp[i] = dp[i-1];
+            }
+        }
+
+        return dp[last];
     }
 };
 ```
