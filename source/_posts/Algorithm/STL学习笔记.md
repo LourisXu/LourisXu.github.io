@@ -1192,7 +1192,7 @@ find()方法有很多重载函数*
 　　　　};
 　　　　int main(){
   　　　　　//定义map对象，当前没有任何元素
-  　　　　　map<int,char,myComp> m;
+  　　　　　map<int,myComp> m;
   　　　　　//插入元素，按键值的由小到大放入红黑树中
   　　　　　m[25]='m';
   　　　　　m[28]='k';

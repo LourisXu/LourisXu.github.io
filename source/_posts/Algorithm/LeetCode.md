@@ -13,6 +13,7 @@ toc: true
 |1. 两数之和|Easy|Hash|
 |5. 最长回文子串|Medium|动态规划|
 |7. 整数反转|Easy|限制判断|
+|8. 字符串转换整数 (atoi)|Medium|数学|
 |9. 回文数|Easy|字符串，Two points|
 |13. 罗马数字转整数|Easy|字符串，技巧|
 |14. 最长公共前缀|Easy|字符串比较|
@@ -30,6 +31,7 @@ toc: true
 |面试题62. 圆圈中最后剩下的数字|Easy|数学+迭代|
 |63. 不同路径 II|Medium|动态规划|
 |64. 最小路径和|Medium|动态规划|
+|65. 有效数字|Hard|确定有限状态自动机|
 |66. 加一|Easy|加法进位|
 |67. 二进制求和|Easy|加法进位|
 |69. x 的平方根|Easy|二分法|
@@ -100,6 +102,7 @@ toc: true
 |217. 存在重复元素|Easy|Hash|
 |219. 存在重复元素 II|Easy|Hash|
 |221. 最大正方形|Medium|动态规划|
+|223. 矩形面积|Medium|数学|
 |225. 用队列实现栈|Easy|队列|
 |226. 翻转二叉树|Easy|二叉树|
 |240. 搜索二维矩阵 II|Medium|数学|
@@ -166,6 +169,7 @@ toc: true
 |559. N叉树的最大深度|Easy|广搜|
 |576. 出界的路径数|Medium|动态规划|
 |593. 有效的正方形|Medium|数学|
+|598. 范围求和 II|Easy|数学/短板效应|
 |621. 任务调度器|Medium|贪心|
 |638. 大礼包|Medium|动态规划|
 |646. 最长数对链|Medium|动态规划|
@@ -204,12 +208,15 @@ toc: true
 |860. 柠檬水找零|Easy|贪心|
 |861. 翻转矩阵后的得分|Medium|贪心|
 |863. 二叉树中所有距离为 K 的结点|Medium|坐标化|
+|868. 二进制间距|Easy|数学|
 |869. 重新排序得到 2 的幂|Medium|数学|
 |870. 优势洗牌|Medium|贪心|
 |874. 模拟行走机器人|Easy|贪心|
+|877. 石子游戏|Medium|动态规划/记忆化搜索/前缀和|
 |881. 救生艇|Medium|贪心|
 |892. 三维形体的表面积|Easy|数学|
 |898. 子数组按位或操作|Medium|位运算+unordered_set|
+|908. 最小差值 I|Easy|数学|
 |909. 蛇梯棋|Medium|广搜|
 |910. 最小差值 II|Medium|贪心|
 |914. 卡牌分组|Easy|最大公约数|
@@ -272,6 +279,7 @@ toc: true
 |1405. 最长快乐字符串|Medium|贪心|
 |1414. 和为 K 的最少斐波那契数字数目|Medium|贪心|
 |1433. 检查一个字符串是否可以打破另一个字符串|Medium|贪心|
+|1447. 最简分数|Medium|数学|
 |面试题 04.03. 特定深度节点链表|Medium|广搜+链表|
 |面试题32 - I. 从上到下打印二叉树 II|Medium|广搜|
 |面试题32 - II. 从上到下打印二叉树 II|Easy|广搜|
@@ -285,6 +293,7 @@ toc: true
 |面试题 17.06. 2出现的次数|Medium|数学|
 |面试题 17.22. 单词转换|Medium|双向广搜|
 |面试题 17.07. 婴儿名字|Medium|并查集|
+|面试题20. 表示数值的字符串|Medium|数学/确定有限状态自动机|
 |面试题42. 连续子数组的最大和|Easy|动规|
 |面试题49. 丑数|Medium|丑数|
 |面试题67. 把字符串转换成整数|Medium|数学|
@@ -10565,6 +10574,7 @@ public:
         return calResult(root);
     }
 };
+```
 ## 417. 太平洋大西洋水流问题
 **Description**
 给定一个 m x n 的非负整数矩阵来表示一片大陆上各个单元格的高度。“太平洋”处于大陆的左边界和上边界，而“大西洋”处于大陆的右边界和下边界。
@@ -18112,4 +18122,583 @@ public:
         return dp[last];
     }
 };
+```
+## 面试题20. 表示数值的字符串
+**Description**
+请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。例如，字符串"+100"、"5e2"、"-123"、"3.1416"、"0123"都表示数值，但"12e"、"1a3.14"、"1.2.3"、"+-5"、"-1E-16"及"12e+5.4"都不是。
+**Program**
+![image](/assets/img/algorithm/interview_20.jpg)
+详细说明请参考[讲解](https://leetcode-cn.com/problems/biao-shi-shu-zhi-de-zi-fu-chuan-lcof/solution/mian-shi-ti-20-biao-shi-shu-zhi-de-zi-fu-chuan-y-2/)
+```cpp
+class Solution {
+public:
+    vector<map<char,int>> states;
+    set<int> legalStates;
+    void init(){
+        states.resize(9);
+        states[0][' ']=0; states[0]['d']=2;states[0]['s']=1;states[0]['.']=8;
+        states[1]['.']=8;states[1]['d']=2;
+        states[2]['d']=2;states[2]['.']=3;states[2]['e']=4;states[2][' ']=7;
+        states[3]['d']=3;states[3]['e']=4;states[3][' ']=7;
+        states[4]['s']=5;states[4]['d']=6;
+        states[5]['d']=6;
+        states[6]['d']=6;states[6][' ']=7;
+        states[7][' ']=7;
+        states[8]['d']=3;
+        legalStates.insert(2);
+        legalStates.insert(3);
+        legalStates.insert(6);
+        legalStates.insert(7);
+    }
+    bool isNumber(string s) {
+        init();
+        int p=0; //当前状态
+        for(char ch:s){
+            if(ch>='0'&&ch<='9') ch='d';
+            else if(ch=='+'||ch=='-') ch='s';
+            // else ch=ch; //空格、dot、e以及其他非法字符
+            if(states[p].find(ch)==states[p].end()) return false; //出现非法字符
+            p = states[p][ch];
+        }
+        return (legalStates.find(p)!=legalStates.end());
+    }
+};
+```
+## 65. 有效数字
+**Description**
+验证给定的字符串是否可以解释为十进制数字。
+**Example**
+例如:
+"0" => true
+" 0.1 " => true
+"abc" => false
+"1 a" => false
+"2e10" => true
+" -90e3   " => true
+" 1e" => false
+"e3" => false
+" 6e-1" => true
+" 99e2.5 " => false
+"53.5e93" => true
+" --6 " => false
+"-+3" => false
+"95a54e53" => false
+
+说明: 我们有意将问题陈述地比较模糊。在实现代码之前，你应当事先思考所有可能的情况。这里给出一份可能存在于有效十进制数字中的字符列表：
+
+数字 0-9
+指数 - "e"
+正/负号 - "+"/"-"
+小数点 - "."
+当然，在输入中，这些字符的上下文也很重要。
+**Program**
+```cpp
+class Solution {
+public:
+    vector<map<char,int>> states;
+    set<int> legalStates;
+    void init(){
+        states.resize(9);
+        states[0][' ']=0; states[0]['d']=2;states[0]['s']=1;states[0]['.']=8;
+        states[1]['.']=8;states[1]['d']=2;
+        states[2]['d']=2;states[2]['.']=3;states[2]['e']=4;states[2][' ']=7;
+        states[3]['d']=3;states[3]['e']=4;states[3][' ']=7;
+        states[4]['s']=5;states[4]['d']=6;
+        states[5]['d']=6;
+        states[6]['d']=6;states[6][' ']=7;
+        states[7][' ']=7;
+        states[8]['d']=3;
+        legalStates.insert(2);
+        legalStates.insert(3);
+        legalStates.insert(6);
+        legalStates.insert(7);
+    }
+    bool isNumber(string s) {
+        init();
+        int p=0; //当前状态
+        for(char ch:s){
+            if(ch>='0'&&ch<='9') ch='d';
+            else if(ch=='+'||ch=='-') ch='s';
+            // else ch=ch; //空格、dot、e以及其他非法字符
+            if(states[p].find(ch)==states[p].end()) return false; //出现非法字符
+            p = states[p][ch];
+        }
+        return (legalStates.find(p)!=legalStates.end());
+    }
+};
+```
+## 908. 最小差值 I
+**Description**
+给你一个整数数组 A，对于每个整数 A[i]，我们可以选择处于区间 [-K, K] 中的任意数 x ，将 x 与 A[i] 相加，结果存入 A[i] 。
+在此过程之后，我们得到一些数组 B。
+返回 B 的最大值和 B 的最小值之间可能存在的最小差值。
+**Example**
+示例 1：
+输入：A = [1], K = 0
+输出：0
+解释：B = [1]
+
+示例 2：
+输入：A = [0,10], K = 2
+输出：6
+解释：B = [2,8]
+
+示例 3：
+输入：A = [1,3,6], K = 3
+输出：0
+解释：B = [3,3,3] 或 B = [4,4,4]
+ 
+提示：
+1 <= A.length <= 10000
+0 <= A[i] <= 10000
+0 <= K <= 10000
+**Program**
+思路：将数组排序，记最大值与最小值之间的差D，
+如果D/2<=K，那么可以使得数组元素全相等！最小差值为0。因为任意选择[-K,K]区间的数进行加法，既然最大值/最小值都能够减/加上特定的数(这个数一定小于等于K)使二者相等，那么其他元素可以选择$[0,|K|]$中的数进行
+如果D/2>K，则最小差值为D-2K。
+所以answer=max(0,D-2K);
+```cpp
+class Solution {
+public:
+    int smallestRangeI(vector<int>& A, int K) {
+        int minValue=INT_MAX,maxValue=-INT_MAX;
+        for(int x:A){
+            minValue=min(minValue, x);
+            maxValue=max(maxValue, x);
+        }
+        return max(0,maxValue-minValue-2*K);
+    }
+};
+```
+## 8. 字符串转换整数 (atoi)
+**Description**
+请你来实现一个 atoi 函数，使其能将字符串转换成整数。
+首先，该函数会根据需要丢弃无用的开头空格字符，直到寻找到第一个非空格的字符为止。接下来的转化规则如下：
+- 如果第一个非空字符为正或者负号时，则将该符号与之后面尽可能多的连续数字字符组合起来，形成一个有符号整数。
+- 假如第一个非空字符是数字，则直接将其与之后连续的数字字符组合起来，形成一个整数。
+- 该字符串在有效的整数部分之后也可能会存在多余的字符，那么这些字符可以被忽略，它们对函数不应该造成影响。
+注意：假如该字符串中的第一个非空格字符不是一个有效整数字符、字符串为空或字符串仅包含空白字符时，则你的函数不需要进行转换，即无法进行有效转换。
+在任何情况下，若函数不能进行有效的转换时，请返回 0 。
+
+提示：
+本题中的空白字符只包括空格字符 ' ' 。
+假设我们的环境只能存储 32 位大小的有符号整数，那么其数值范围为 $[−2^31,  2^31 − 1]$。如果数值超过这个范围，请返回  INT_MAX $(2^31 − 1)$ 或 INT_MIN $(−2^31)$ 。
+**Example**
+示例 1:
+输入: "42"
+输出: 42
+
+示例 2:
+输入: "   -42"
+输出: -42
+解释: 第一个非空白字符为 '-', 它是一个负号。
+     我们尽可能将负号与后面所有连续出现的数字组合起来，最后得到 -42 。
+
+示例 3:
+输入: "4193 with words"
+输出: 4193
+解释: 转换截止于数字 '3' ，因为它的下一个字符不为数字。
+
+示例 4:
+输入: "words and 987"
+输出: 0
+解释: 第一个非空字符是 'w', 但它不是数字或正、负号。
+     因此无法执行有效的转换。
+
+示例 5:
+输入: "-91283472332"
+输出: -2147483648
+解释: 数字 "-91283472332" 超过 32 位有符号整数范围。
+     因此返回 INT_MIN $(−2^31)$ 。
+**Program**
+```cpp
+class Solution {
+public:
+    int myAtoi(string str) {
+        int start=-1, end=-1;
+        while(str[0]==' ') str.erase(0, 1); //去掉前缀空格
+        if(str.length()==0||!(str[0]=='+'||str[0]=='-'||(str[0]>='0'&&str[0]<='9'))) return 0;
+        int flag=1;
+        if(str[0]=='+') str.erase(0, 1);
+        else if(str[0]=='-'){flag=-1;str.erase(0, 1);}
+        int idx=0;
+        while(str[idx]>='0'&&str[idx]<='9'){
+            if(start==-1){
+                start=idx;
+                end=idx;
+            }else{
+                end++;
+            }
+            idx++;
+        }
+        if(start==-1) return 0;
+        str = str.substr(start, end-start+1);
+        long long ans=0;
+        for(int i=0;i<str.length();i++){
+            ans=ans*10+flag*(str[i]-'0');
+            if(ans<INT_MIN) return INT_MIN;
+            if(ans>INT_MAX) return INT_MAX;
+        }
+        return ans;
+    }
+};
+```
+## 223. 矩形面积
+**Description**
+在二维平面上计算出两个由直线构成的矩形重叠后形成的总面积。
+每个矩形由其左下顶点和右上顶点坐标表示，如图所示。
+![image](/assets/img/algorithm/rectangle_area.png)
+**Example**
+示例:
+输入: -3, 0, 3, 4, 0, -1, 9, 2
+输出: 45
+说明: 假设矩形面积不会超出 int 的范围。
+**Program**
+思路：先对两个矩形按照左下角横坐标排序，较小的在左边，即rectA, rectB
+①rectA与rectB不重叠(自己可以在图上画一下)：
+- rectA.rightUp_x<=rectB.leftDown_x      //rectA的右边界与rectB的左边界不相交
+- rectA.rightUp_y<=rectB.leftDown_y      //rectA的上边界与rectB的下边界不相交
+- rectA.leftDown_y>=rectB.rightUp_y      //rectA的下边界与rectB的上边界不相交
+
+②rectA与rectB重叠，计算重叠矩形rectU坐标：uLx,uLy,uRx,uRy，可以发现以下关系：
+- uLx=max(rectA.leftDown_x, rectB.leftDown_x);    //rectU的左边界坐标为rectA与rectB左边界的最小值
+- uLy=max(rectA.leftDown_y, rectB.leftDown_y);    //rectU的下边界为rectA与rectB下边界的最小值
+- uRx=min(rectA.rightUp_x,rectB.rightUp_x);       //rectU的右边界为rectA与rectB右边界最小值
+- uRy=min(rectA.rightUp_y, rectB.rightUp_y);      //rectU的上边界为rectA与rectB上边界的最小值
+
+③计算最终面积
+```cpp
+class Solution {
+public:
+    struct Rect{
+        int leftDown_x,leftDown_y;
+        int rightUp_x, rightUp_y;
+        Rect(){}
+        Rect(int lx, int ly, int rx, int ry):leftDown_x(lx), leftDown_y(ly),rightUp_x(rx),rightUp_y(ry){}
+        int calArea(){
+            return (rightUp_y-leftDown_y) * (rightUp_x-leftDown_x);
+        }
+    };
+
+    int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+        Rect rectA(A,B,C,D);
+        Rect rectB(E,F,G,H);
+        if(rectA.leftDown_x>rectB.leftDown_x) swap(rectA, rectB);
+        if(rectA.rightUp_x<=rectB.leftDown_x
+            ||rectA.rightUp_y<=rectB.leftDown_y
+            ||rectA.leftDown_y>=rectB.rightUp_y) return rectA.calArea()+rectB.calArea();
+        int uLx=max(rectA.leftDown_x, rectB.leftDown_x);
+        int uLy=max(rectA.leftDown_y, rectB.leftDown_y);
+        int uRx=min(rectA.rightUp_x,rectB.rightUp_x);
+        int uRy=min(rectA.rightUp_y, rectB.rightUp_y);
+        Rect rectU(uLx, uLy, uRx, uRy);
+        return rectA.calArea()+ (rectB.calArea() - rectU.calArea()); //防止溢出
+    }
+};
+```
+## 1447. 最简分数
+**Description**
+给你一个整数 n ，请你返回所有 0 到 1 之间（不包括 0 和 1）满足分母小于等于  n 的 最简 分数 。分数可以以 任意 顺序返回。
+**Example**
+示例 1：
+输入：n = 2
+输出：["1/2"]
+解释："1/2" 是唯一一个分母小于等于 2 的最简分数。
+
+示例 2：
+输入：n = 3
+输出：["1/2","1/3","2/3"]
+
+示例 3：
+输入：n = 4
+输出：["1/2","1/3","1/4","2/3","3/4"]
+解释："2/4" 不是最简分数，因为它可以化简为 "1/2" 。
+
+示例 4：
+输入：n = 1
+输出：[]
+ 
+提示：
+1 <= n <= 100
+**Program**
+```cpp
+class Solution {
+public:
+    struct Fraction{
+        int up,down;
+        Fraction(){}
+        Fraction(int u, int d):up(u), down(d){}
+        string toString(){
+            string str="";
+            str+=to_string(up);
+            str+='/';
+            str+=to_string(down);
+            return str;
+        }
+    };
+    int gcd(int x,int y){
+        return y==0?x:gcd(y,x%y);
+    }
+    Fraction reduction(Fraction fraction){
+        if(fraction.down<0){
+            fraction.up=-fraction.up;
+            fraction.down=-fraction.down;
+        }
+        if(fraction.up==0){
+            fraction.down=1;
+        }else{
+            int gd=gcd(fraction.up, fraction.down);
+            fraction.up/=gd;
+            fraction.down/=gd;
+        }
+        return fraction;
+    }
+    vector<string> simplifiedFractions(int n) {
+        set<string> s;
+        for(int down=2;down<=n;down++){
+            for(int up=1;up<down;up++){
+                Fraction fraction(up, down);
+                fraction = reduction(fraction);
+                s.insert(fraction.toString());
+            }
+        }
+        return vector<string>(s.begin(), s.end());
+    }
+};
+```
+## 877. 石子游戏
+**Description**
+亚历克斯和李用几堆石子在做游戏。偶数堆石子排成一行，每堆都有正整数颗石子 piles[i] 。
+游戏以谁手中的石子最多来决出胜负。石子的总数是奇数，所以没有平局。
+亚历克斯和李轮流进行，亚历克斯先开始。 每回合，玩家从行的开始或结束处取走整堆石头。 这种情况一直持续到没有更多的石子堆为止，此时手中石子最多的玩家获胜。
+假设亚历克斯和李都发挥出最佳水平，当亚历克斯赢得比赛时返回 true ，当李赢得比赛时返回 false 。
+**Example**
+示例：
+输入：[5,3,4,5]
+输出：true
+解释：
+亚历克斯先开始，只能拿前 5 颗或后 5 颗石子 。
+假设他取了前 5 颗，这一行就变成了 [3,4,5] 。
+如果李拿走前 3 颗，那么剩下的是 [4,5]，亚历克斯拿走后 5 颗赢得 10 分。
+如果李拿走后 5 颗，那么剩下的是 [3,4]，亚历克斯拿走后 4 颗赢得 9 分。
+这表明，取前 5 颗石子对亚历克斯来说是一个胜利的举动，所以我们返回 true 。
+ 
+提示：
+2 <= piles.length <= 500
+piles.length 是偶数。
+1 <= piles[i] <= 500
+sum(piles) 是奇数。
+**Program**
+**记忆化搜索**
+记dfs(sum, i, j)为当前区间[i,j]，和为sum时，选手最优得分，
+很明显：
+(1)i>j时，return 0;
+
+(2)计算区间[i,j]时，选手的最优得分
+- 选择头元素，score1=piles[i]+sum-piles[i]-dfs(sum-piles[i], i+1, j);  //此时dfs为另一个选手的最优得分，本选手最优得分当然是区间[i+1,j]和减去下个选手在[i+1,j]上的最优得分，以下同理。
+- 选择尾元素，score2=piles[j]+sum-piles[j]-dfs(sum-piles[j], i,j-1);
+所以当前选手最优得分：score=max(score1, score2);
+
+(3)有重复计算，记录vis[i][j]即可。
+```cpp
+class Solution {
+public:
+    vector<vector<int>> vis;
+    int dfs(vector<int>& piles,int sum, int i, int j){
+        if(i>j) return 0;
+        if(vis[i][j]!=-1) return vis[i][j];
+        int ans=0;
+        int score1=piles[i]+sum-piles[i]-dfs(piles, sum-piles[i], i+1,j);
+        int score2=piles[j]+sum-piles[j]-dfs(piles, sum-piles[j], i, j-1);
+        ans=max(score1, score2);
+        vis[i][j]=ans;
+        return ans;
+    }
+    bool stoneGame(vector<int>& piles) {
+        int n=piles.size();
+        int sum=0;
+        vis.resize(n, vector<int>(n, -1));
+        for(int x:piles) sum+=x;
+        return dfs(piles, sum, 0, n-1)>sum/2;
+    }
+};
+```
+**动态规划**
+```cpp
+class Solution {
+public:
+    bool stoneGame(vector<int>& piles) {
+        int n=piles.size();
+        vector<int> sum(n, 0);  //前缀和
+        for(int i=0;i<n;i++){
+            sum[i]+=piles[i];
+            if(i>0) sum[i]+=sum[i-1];
+        }
+        vector<vector<int>> DP(n, vector<int>(n, 0));
+        for(int i=n-1;i>=0;i--){
+            for(int j=i;j<n;j++){
+                int s=(i>0)?sum[j]-sum[i-1]:sum[j];
+                if(i+1<n) DP[i][j]=max(DP[i][j], piles[i]+s-piles[i]-DP[i+1][j]);
+                if(j-1>=0)DP[i][j]=max(DP[i][j], piles[j]+s-piles[j]-DP[i][j-1]);
+            }
+        }
+        return DP[0][n-1]>sum[n-1]/2;
+    }
+};
+```
+## 868. 二进制间距
+**Description**
+给定一个正整数 N，找到并返回 N 的二进制表示中两个连续的 1 之间的最长距离。 
+如果没有两个连续的 1，返回 0 。
+**Example**
+示例 1：
+输入：22
+输出：2
+解释：
+22 的二进制是 0b10110 。
+在 22 的二进制表示中，有三个 1，组成两对连续的 1 。
+第一对连续的 1 中，两个 1 之间的距离为 2 。
+第二对连续的 1 中，两个 1 之间的距离为 1 。
+答案取两个距离之中最大的，也就是 2 。
+
+示例 2：
+输入：5
+输出：2
+解释：
+5 的二进制是 0b101 。
+
+示例 3：
+输入：6
+输出：1
+解释：
+6 的二进制是 0b110 。
+
+示例 4：
+输入：8
+输出：0
+解释：
+8 的二进制是 0b1000 。
+在 8 的二进制表示中没有连续的 1，所以返回 0 。
+ 
+提示：
+1 <= N <= 10^9
+**Program**
+两个连续1，是指二进制从低位到高位两个相邻1的距离！题目描述的恶心人。
+```cpp
+class Solution {
+public:
+    int binaryGap(int N) {
+        int ans=0;
+        vector<int> record;
+        for(int i=0;i<=30;i++){
+            if(((N>>i)&1)==1){
+                record.push_back(i);
+            }
+        }
+        for(int i=0;i<record.size()-1;i++){
+            ans=max(ans, record[i+1] - record[i]);
+        }
+        return ans;
+    }
+};
+```
+## 598. 范围求和 II
+**Description**
+给定一个初始元素全部为 0，大小为 m*n 的矩阵 M 以及在 M 上的一系列更新操作。
+操作用二维数组表示，其中的每个操作用一个含有两个正整数 a 和 b 的数组表示，含义是将所有符合 0 <= i < a 以及 0 <= j < b 的元素 M[i][j] 的值都增加 1。
+在执行给定的一系列操作后，你需要返回矩阵中含有最大整数的元素个数。
+**Example**
+示例 1:
+输入:
+m = 3, n = 3
+operations = [[2,2],[3,3]]
+输出: 4
+解释:
+初始状态, M =
+[[0, 0, 0],
+ [0, 0, 0],
+ [0, 0, 0]]
+执行完操作 [2,2] 后, M =
+[[1, 1, 0],
+ [1, 1, 0],
+ [0, 0, 0]]
+执行完操作 [3,3] 后, M =
+[[2, 2, 1],
+ [2, 2, 1],
+ [1, 1, 1]]
+
+M 中最大的整数是 2, 而且 M 中有4个值为2的元素。因此返回 4。
+注意:
+m 和 n 的范围是 [1,40000]。
+a 的范围是 [1,m]，b 的范围是 [1,n]。
+操作数目不超过 10000。
+**Program**
+**二维树状数组**
+根据数据范围，二维树状数组和还是会超时
+```cpp
+class Solution {
+public:
+    vector<vector<int>> C;
+    int M,N;
+    int lowbit(int x){
+        return x&(-x);
+    }
+    void update(int x, int y, int v){
+        for(int i=x;i>0;i-=lowbit(i)){
+            for(int j=y;j>0;j-=lowbit(j)){
+                C[i][j]+=v;
+            }
+        }
+    }
+    int getSum(int x, int y){
+        int sum=0;
+        for(int i=x;i<=M;i+=lowbit(i)){
+            for(int j=y;j<=N;j+=lowbit(j)){
+                sum+=C[i][j];
+            }
+        }
+        return sum;
+    }
+    int maxCount(int m, int n, vector<vector<int>>& ops) {
+        if(ops.size()==0) return m*n;
+        C.resize(m+1, vector<int>(n+1, 0));
+        M=n,N=n;
+        for(vector<int>& op:ops){
+            update(op[0], op[1], 1);
+        }
+        int ans=0;
+        int nCount=0;
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                int tmp=getSum(i, j);
+                if(tmp>ans){
+                    ans=tmp;
+                    nCount=1;
+                }else if(tmp==ans){
+                    nCount++;
+                }
+            }
+        }
+        return nCount;
+    }
+};
+```
+**短板效应**
+其实题意转化一下，就是：求重叠部分的面积。阴影部分面积取决于宽度最小的和长度最小的
+![image](/assets/img/algorithm/598_example_01.png)
+```cpp
+class Solution {
+public:
+    int maxCount(int m, int n, vector<vector<int>>& ops) {
+        if (ops.empty())
+            return m * n;
+        int a = INT_MAX, b = INT_MAX;
+        for (int i = 0; i < ops.size(); i++) {
+            a = min(a, ops[i][0]);
+            b = min(b, ops[i][1]);
+        }
+        return a * b;
+    }
+};
+
 ```

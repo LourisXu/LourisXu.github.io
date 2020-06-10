@@ -4,7 +4,22 @@ translate_title: respiratory-sound-database
 date: 2020-05-06 16:33:40
 tags:
   - Essay
+toc: true
 ---
+
+## 多项式分布采样
+某随机实验如果有$k$个可能结局$A_1、A_2、…、A_k$，分别将他们的出现次数记为随机变量$X_1、X_2、…、X_k$，它们的概率分布分别是$p_1，p_2，…，p_k$，那么在$n$次采样的总结果中，$A_1$出现$n_1$次、$A_2$出现$n_2$次、…、$A_k$出现$n_k$次的这种事件的出现概率$P$有下面公式：
+$p_1+p_2+p_3+...+p_k=1$
+
+设$m$为每类样本数，$N$为采样总数，$n$为类数，则$N=n * m$;
+为使每类样本平衡，且充分利用每类现有样本 (每类现有样本数分别为 $C_0,C_1,...,C_{n-1}$ )，则每类的每个样本选中概率应当相等，
+即有每类样本概率分别为$p_0,p_1,p_2,...,p_{n-1}$。
+
+那么，$N$次采样后应有以下关系：
+$$N * p_0 * C_1=N * p_1 * C_1=...=N * p_{n-1} * C_{n-1}=m$$
+即$$p_0=\frac{m}{N * C_0},p_1=\frac{m}{N * C_1},...,p_{n-1}=\frac{m}{N * C_{n-1}}$$
+即每类样本概率：$p_i=\frac{m}{N * C_i},i=0,1,2,...n-1$, 可证得$p_0+p_1+p_2+...+p_{n-1}=1.$
+
 ## Context
 Respiratory sounds are important indicators of respiratory health and respiratory disorders. The sound emitted when a person breathes is directly related to air movement, changes within lung tissue and the position of secretions within the lung. A wheezing sound, for example, is a common sign that a patient has an obstructive airway disease like asthma or chronic obstructive pulmonary disease (COPD).
 
@@ -623,4 +638,64 @@ from keras.utils.vis_utils import plot_model
 plot_model(model, show_shapes=True, show_layer_names = True)
 from IPython.display import Image
 Image(filename='model.png')
+```
+## Data augmentation
+```python
+########################
+# Augmentation methods
+#########################
+def noise(data):
+    """
+    Adding White Noise.
+    """
+    # you can take any distribution from https://docs.scipy.org/doc/numpy-1.13.0/reference/routines.random.html
+    noise_amp = 0.05*np.random.uniform()*np.amax(data)   # more noise reduce the value to 0.5
+    data = data.astype('float64') + noise_amp * np.random.normal(size=data.shape[0])
+    return data
+
+def shift(data):
+    """
+    Random Shifting.
+    """
+    s_range = int(np.random.uniform(low=-5, high = 5)*1000)  #default at 500
+    return np.roll(data, s_range)
+
+def stretch(data, rate=0.8):
+    """
+    Streching the Sound. Note that this expands the dataset slightly
+    """
+    data = librosa.effects.time_stretch(data, rate)
+    return data
+
+def pitch(data, sample_rate):
+    """
+    Pitch Tuning.
+    """
+    bins_per_octave = 12
+    pitch_pm = 2
+    pitch_change =  pitch_pm * 2*(np.random.uniform())   
+    data = librosa.effects.pitch_shift(data.astype('float64'),
+                                      sample_rate, n_steps=pitch_change,
+                                      bins_per_octave=bins_per_octave)
+    return data
+
+def dyn_change(data):
+    """
+    Random Value Change.
+    """
+    dyn_change = np.random.uniform(low=-0.5 ,high=7)  # default low = 1.5, high = 3
+    return (data * dyn_change)
+
+def speedNpitch(data):
+    """
+    peed and Pitch Tuning.
+    """
+    # you can change low and high here
+    length_change = np.random.uniform(low=0.8, high = 1)
+    speed_fac = 1.2  / length_change # try changing 1.0 to 2.0 ... =D
+    tmp = np.interp(np.arange(0,len(data),speed_fac),np.arange(0,len(data)),data)
+    minlen = min(data.shape[0], tmp.shape[0])
+    data *= 0
+    data[0:minlen] = tmp[0:minlen]
+    return data
 ```

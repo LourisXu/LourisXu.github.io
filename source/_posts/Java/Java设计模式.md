@@ -95,13 +95,13 @@ public int hashCode()
 ## ArrayList数组列表
 **警告：** 只有 i 小于或等于数组列表的大小时， 才能够调用 list.set(，i x。) 例如， 下面这段代码是错误的：
 ```java
-ArrayList<Employee> list = new ArrayListo(100); // capacity 100，size 0
+ArrayList<Employee> list = new ArrayList<>(100); // capacity 100，size 0
 list.set(0, x); // no element 0 yet
 ```
 使用 add 方法为数组添加新元素， 而不要使用 set 方法， 它只能替换数组中已经存在的元素内容。
 **警告：**： 没有泛型类时，原始的 ArrayList 类提供的 get 方法别无选择只能返回 Object, 因此， get 方法的调用者必须对返回值进行类型转换：
 ```java
-Employee e = (Eiployee) staff.get(i);
+Employee e = (Employee) staff.get(i);
 ```
 原始的 ArrayList 存在一定的危险性。它的 add 和 set 方法允许接受任意类型的对象。对于下面这个调用
 ```java

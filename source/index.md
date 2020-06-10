@@ -6,7 +6,8 @@ data: 2017-07-05 19:11:29
 <br>
 　　<font size=12>沁园春·雪</font>
 <img src='/assets/img/blog/Black&White_027.jpg' align='right'>　　
-　　　　　毛泽东
+
+　　　　　　　　　　　　　　　毛泽东
 
 　北国风光，千里冰封，万里雪飘。
 
